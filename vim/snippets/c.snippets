@@ -1,0 +1,59 @@
+# #include <...>
+snippet inc
+	#include <${1:stdio}.h>${2}
+# #include "..."
+snippet Inc
+	#include "${1:`Filename("$1.h")`}"${2}
+# #define
+snippet def
+	#define ${1:SYMBOL}		//!< ${2:Symbol documentation}
+# Header Include-Guard
+# (the randomizer code is taken directly from TextMate; it could probably be
+# cleaner, I don't know how to do it in vim script)
+snippet once
+	#ifndef ${1:`toupper(Filename('', 'UNTITLED').'_'.system("/usr/bin/ruby -e 'print (rand * 2821109907455).round.to_s(36)'"))`}
+	#define $1
+
+	${2}
+
+	#endif /* end of include guard: $1 */
+# If Condition
+snippet if
+	if (${1:/* condition */}) 
+	{
+		${2:// code}
+	}
+snippet el
+	else 
+	{
+		${1}
+	}
+snippet elif
+	else if (${1:/* condition */}) 
+	{
+		${2:// code}
+	}
+# While Loop
+snippet wh
+	while (${1:/* condition */}) 
+	{
+		${2:// code}
+	}
+# For Loop
+snippet for
+	for (${2:i} = 0; $2 < ${1:count}; $2${3:++}) 
+	{
+		${4:// code}
+	}
+# Function
+snippet fun
+	//! \brief ${4:Documentation for the function}
+	${1:void} ${2:function_name}(${3})
+	{
+		${5://TODO: Implementation}
+	}
+# Function Declaration
+snippet fund
+	//! \brief ${4:Documentation for the function}
+	${1:void} ${2:function_name}(${3});${5}
+# Typedef
