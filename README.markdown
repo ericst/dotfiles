@@ -6,16 +6,36 @@ Feel free to take inspirations ;-)
 
 ## Installation
 
-Installation is perforemed by invokit the install.py script:
+### Getting the repository and updating
 
-  ./install.py
+You first need to clone the repository:
 
-It will then create symbolic link pointing to the files in this directory. 
-The files will have the same name as the files in this directory with a 
+    git clone git://github.com/ericst/dotfiles.git ~/.dotfiles
+
+As I use pathogen and git to manage vim plugins you need to initialize and
+update the git submodules.
+
+    cd ~/.dotfiles
+    git submodule init
+    git submodule update
+    
+More informations about this can be found at
+http://vimcasts.org/episodes/synchronizing-plugins-with-git-submodules-and-pathogen/
+    
+
+### Creating the symlinks
+
+The creation of the symlinks is performed by invoking the install.py script:
+
+    ./install.py
+
+This script creates symbolic links pointing to the files in the current
+directory. The files will have the same name as the original files with a
 leading dot.
 
-There is an option to force the install,
+If a file already exists, the script will simply ignore it. There is an option
+to force the install,
 
-  ./install.py -f
+   ./install.py -f
 
 This will delete any file in place and create the desired symlinks.
