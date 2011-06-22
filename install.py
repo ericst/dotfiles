@@ -9,7 +9,7 @@ import shutil
 import argparse
 
 # Script configurations
-ignore      = ['README', 'install.py']
+ignore      = ['README.markdown', 'install.py']
 homedir     = os.environ['HOME']
 dotfilesdir = os.path.dirname(os.path.abspath(__file__))
 
