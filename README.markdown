@@ -36,6 +36,6 @@ leading dot.
 If a file already exists, the script will simply ignore it. There is an option
 to force the install,
 
-   ./install.py -f
+    ./install.py -f
 
 This will delete any file in place and create the desired symlinks.
