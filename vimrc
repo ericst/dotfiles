@@ -162,8 +162,3 @@
 
 " }
 
-
-
-  autocmd BufNewFile  *.c	0r ~/vim/skeleton.c
-  autocmd BufNewFile  *.cpp	0r ~/vim/skeleton.cpp
-  autocmd BufNewFile  *.h 0r ~/vim/skeleton.h
