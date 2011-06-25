@@ -124,7 +124,7 @@
   "       * taglist
   
   " supertab {
-    let g:SuperTabDefaultCompletionType = "<c-x><c-o>"  "Default completion: omnicompletion
+    let g:SuperTabDefaultCompletionType = "context"  "Default completion: omnicompletion
   " }
 
   " taglist {
