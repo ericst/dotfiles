@@ -3,7 +3,6 @@
 "                                      Vim configuration file                                      "
 "                                                                                                  "
 " Author:   Eric Seuret <eric.seuret@gmail.com>                                                    "
-" Date:     2011-06-22                                                                             "
 "                                                                                                  "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -24,6 +23,7 @@
 " }
 
 " Vim UI {
+  set t_Co=256                          " Enable 256bits colors
   colorscheme inkpot                    " Set colorscheme
   set cursorline                        " Display the current line
   set laststatus=2                      " Always show the status line
