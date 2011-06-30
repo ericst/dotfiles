@@ -19,3 +19,6 @@
 [submodule "vim/bundle/inkpot"]
 	path = vim/bundle/inkpot
 	url = https://github.com/ciaranm/inkpot.git
+[submodule "vim/bundle/OmniCppComplete"]
+	path = vim/bundle/OmniCppComplete
+	url = https://github.com/vim-scripts/OmniCppComplete.git
