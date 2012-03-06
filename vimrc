@@ -19,6 +19,9 @@
   set clipboard+=unnamed                " Share windows clipboard
   set noerrorbells                      " No sound on errors
   set mouse=a                           " Mouse everywhere
+  set nobackup                          " No backup files
+  set nowritebackup                     " No file write backup
+  set noswapfile                        " No swap files
   filetype plugin indent on             " Load the filetype plugins/indent settings
   syntax on                             " Set Syntax highlighting on
 " }
