@@ -83,6 +83,7 @@
 " }
 
 " Mappings {
+  let mapleader=","
   
   " Moving around {
     " space / shift-space to scroll in normal mode
