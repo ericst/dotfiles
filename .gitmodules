@@ -16,9 +16,6 @@
 [submodule "vim/bundle/tlib"]
 	path = vim/bundle/tlib
 	url = https://github.com/tomtom/tlib_vim.git
-[submodule "vim/bundle/inkpot"]
-	path = vim/bundle/inkpot
-	url = https://github.com/ciaranm/inkpot.git
 [submodule "vim/bundle/OmniCppComplete"]
 	path = vim/bundle/OmniCppComplete
 	url = https://github.com/vim-scripts/OmniCppComplete.git
@@ -28,6 +25,3 @@
 [submodule "vim/bundle/fugitive"]
 	path = vim/bundle/fugitive
 	url = https://github.com/tpope/vim-fugitive.git
-[submodule "vim/bundle/zenburn"]
-	path = vim/bundle/zenburn
-	url = https://github.com/vim-scripts/Zenburn.git
