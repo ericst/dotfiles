@@ -28,7 +28,7 @@
 
 " Vim UI {
   set t_Co=256                          " Enable 256bits colors
-  colorscheme zenburn                   " Set colorscheme
+  colorscheme zenburn_ericst            " Set colorscheme
   set cursorline                        " Display the current line
   set laststatus=2                      " Always show the status line
   set hlsearch                          " Highlight search
