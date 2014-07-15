@@ -1,0 +1,12 @@
+
+* Text Formatting
+
+Limit to 80 characters. First set the characters limit:
+
+C-x f 80 RET
+
+Then select the paragraph you want to reformat and press:
+
+M-q 
+
+For the just 

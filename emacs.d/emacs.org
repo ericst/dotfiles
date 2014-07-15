@@ -1,0 +1,152 @@
+
+* Emacs Configuration
+** About this file
+I set up my configuration using org-babel. The whole configuration is in this file. So here is what is in my init.el:
+
+#+begin_src emacs-lisp :tangle no
+(package-initialize)
+(require 'org)
+(require 'ob-tangle)
+(org-babel-load-file "~/.emacs.d/emacs.org")
+#+end_src
+
+I took my inspirations from:
+- http://pages.sachachua.com/.emacs.d/Sacha.html
+- https://github.com/pavpanchekha/dotfiles/blob/master/.emacs.d/emacs.org
+
+** Package management 
+I use el-get as a package manager.
+   
+#+begin_src emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+
+(unless (require 'el-get nil 'noerror)
+  (with-current-buffer
+      (url-retrieve-synchronously
+       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
+    (goto-char (point-max))
+    (eval-print-last-sexp)))
+
+(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
+(el-get 'sync)
+#+end_src
+
+** Personal Information
+Name and email address to help Emacs format various messages.
+
+#+begin_src emacs-lisp
+(setq user-full-name "Eric Seuret"
+      user-mail-address "eric.seuret@gmail.com")
+#+end_src
+
+** Custom variables
+As I don't want a automatic system to mess with my configuration, Those
+wariables are kept in a separate file.
+
+#+begin_src emacs-lisp
+(setf custom-file "~/.emacs.d/custom.el")
+(load custom-file)
+#+end_src
+
+** Evil
+As I love the modal editing of vi, I use the [[https://gitorious.org/evil/pages/Home][Evil]] package to emulate it.
+
+#+begin_src emacs-lisp
+;; Install the packages
+(el-get 'sync 'evil-leader)
+(el-get 'sync 'evil)
+
+;; Start the mode
+(global-evil-leader-mode)
+(evil-mode 1)
+
+;; Set the leader key for custom bindings
+(evil-leader/set-leader "é")
+#+end_src
+
+I want RET to automatically indent the new line.
+
+#+begin_src emacs-lisp
+(define-key global-map (kbd "RET") 'newline-and-indent)
+#+end_src
+
+** General configuration 
+*** Backups
+I do want backups but I hate having them in the same folder. So I store them in
+~/.emacs.d/backups. This allows me to keep clean directories.
+
+Also keeping some versions might be a good idea. Disk space is cheap.
+
+#+begin_src emacs-lisp
+(setq
+   backup-by-copying t
+   backup-directory-alist '(("." . "~/.emacs.d/backups"))
+   delete-old-versions t
+   kept-new-versions 6
+   kept-old-versions 2
+   version-control t)
+#+end_src
+
+*** Graphical interface
+**** Generic
+I like my interface to be clean. Therefore I deactivate the toolbars and scroll
+indicators. 
+
+ #+begin_src emacs-lisp
+(set-scroll-bar-mode nil)
+(tool-bar-mode 0)
+(menu-bar-mode 0)
+#+end_src
+
+The startup screen and messages are also of no use to me. So they are deactivated.
+
+#+begin_src emacs-lisp
+(setq inhibit-startup-screen t
+      inhibit-startup-message t
+      inhibit-startup-echo-area-message t)
+#+end_src
+
+**** Themes
+***** Zenburn
+I like this theme so I keep it around just in case.
+#+begin_src emacs-lisp
+(el-get 'sync 'color-theme-zenburn)
+#+end_src
+** Org-mode
+Org-mode is the main reason I made the switch from vim to emacs. Here are some
+customizations to keep track of things.
+
+*** Agenda files
+Here are the files I want to parse for my agendas.
+
+
+#+begin_src emacs-lisp
+(setq org-agenda-files (quote ("~/life"
+                               "~/life/work")))
+#+end_src
+
+*** TODOs 
+
+This is the set of labels I keep for my todo files. 
+
+
+#+begin_src emacs-lisp
+(setq org-todo-keywords 
+      '((sequence "TODO" "ACTION" "NEXT" "WAITING" "HOLD" "|" "CANCELLED" "DONE")))
+#+end_src
+
+Here is a small description of the states.
+
+|-----------+-------------------------------------------|
+| *State*   | *Description*                             |
+|-----------+-------------------------------------------|
+| TODO      | Label a task to be done                   |
+| ACTION    | For meeting moms, label a task to be done |
+| NEXT      | Current tasks to be done                  |
+| WAITING   | Waiting some information from someone     |
+| HOLD      | The task is on hold for another reason    |
+|-----------+-------------------------------------------|
+| CANCELLED | The task has been canceled.               |
+| DONE      | The task has been done                    |
+|-----------+-------------------------------------------|
+
