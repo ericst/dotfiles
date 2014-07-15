@@ -2,3 +2,5 @@
 	name = Eric Seuret
 	email = eric.seuret@gmail.com
   editor = vim
+[push]
+	default = simple
