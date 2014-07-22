@@ -6,11 +6,6 @@
 "                                                                                                  "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Pathogen {
-  call pathogen#infect()
-  call pathogen#helptags()
-" }
-
 " General {
   set nocompatible                      " Break vi-compatible mode
   set hidden                            " Change buffers without saving
@@ -28,7 +23,6 @@
 
 " Vim UI {
   set t_Co=256                          " Enable 256bits colors
-  colorscheme zenburn_ericst            " Set colorscheme
   set cursorline                        " Display the current line
   set laststatus=2                      " Always show the status line
   set hlsearch                          " Highlight search
@@ -81,89 +75,3 @@
     set guioptions-=r                   " Remove right-hand scroll bar
   endif
 " }
-
-" Mappings {
-  let mapleader=","
-  
-  " Moving around {
-    " space / shift-space to scroll in normal mode
-    noremap <S-Space> <C-b>
-    noremap <Space> <C-f>
-
-    " Move arround windows with C-h, even in insert mode
-    map <C-h> <C-w>h
-    map <C-j> <C-w>j
-    map <C-k> <C-w>k
-    map <C-l> <C-w>l
-    imap <C-h> <Esc><C-w>h
-    imap <C-j> <Esc><C-w>j
-    imap <C-k> <Esc><C-w>k
-    imap <C-l> <Esc><C-w>l
-
-  " }
-
-  " Tags navigation {
-    " ét jump to tag, éb jump back
-    map ét <C-]>
-    map éb <C-T>
-  " }
-
-" }
-
-" Abbreviations {
-  iabbrev debio Debiotech S.A.
-  iabbrev ese Eric Seuret
-  iabbrev ydm Yan Demierre
-  iabbrev nse Nicolas Serafini
-  iabbrev nre Nicolas Renaudot
-  iabbrev dv Didier Vecten
-  iabbrev pac Pierre-Alain Charmoy
-  iabbrev bmi Basile Michelet
-  iabbrev ptb Pierre Thiébaud
-" }
-
-" Plugins {
-  " List of installed plugins:
-  "       * supertab
-  "       * snipMate
-  "       * taglist
-  
-  " supertab {
-    let g:SuperTabDefaultCompletionType = "context"  "Default completion: omnicompletion
-  " }
-
-  " taglist {
-	  nnoremap <F4> :TlistToggle<CR>
-    let Tlist_Use_Right_Window = 1    " Display the taglist on the right of the window
-  " }
-
-  " OmniCppComplete {
-    " OmniCppComplete
-    let OmniCpp_NamespaceSearch = 1
-    let OmniCpp_GlobalScopeSearch = 1
-    let OmniCpp_ShowAccess = 1
-    let OmniCpp_ShowPrototypeInAbbr = 1 " show function parameters
-    let OmniCpp_MayCompleteDot = 1 " autocomplete after .
-    let OmniCpp_MayCompleteArrow = 1 " autocomplete after ->
-    let OmniCpp_MayCompleteScope = 1 " autocomplete after ::
-    let OmniCpp_DefaultNamespaces = ["std", "_GLIBCXX_STD"]
-    " automatically open and close the popup menu / preview window
-    au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
-    set completeopt=menuone,menu,longest,preview
-  " }
-
-  " NERDTree {
-	  nnoremap <F3> :NERDTreeToggle<CR>
-  " }
-" }
-
-" Project Management {
-  " Simple project management. Specific project settings are set in the
-  " vimproject file at root where you open vim.
-
-  if filereadable("vimproject")
-    source vimproject
-  endif
-
-" }
-
