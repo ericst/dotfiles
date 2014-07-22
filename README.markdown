@@ -12,17 +12,6 @@ You first need to clone the repository:
 
     git clone git://github.com/ericst/dotfiles.git ~/.dotfiles
 
-As I use pathogen and git to manage vim plugins you need to initialize and
-update the git submodules.
-
-    cd ~/.dotfiles
-    git submodule init
-    git submodule update
-    
-More informations about this can be found at
-http://vimcasts.org/episodes/synchronizing-plugins-with-git-submodules-and-pathogen/
-    
-
 ### Creating the symlinks
 
 The creation of the symlinks is performed by invoking the install.py script:
