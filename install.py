@@ -12,6 +12,8 @@ import argparse
 ignore      = ['README.markdown', 'install.py', 'awesome', 'config']
 homedir     = os.environ['HOME']
 dotfilesdir = os.path.dirname(os.path.abspath(__file__))
+homeconf    = os.path.join(homedir, '.config')
+dotconfdir  = os.path.join(dotfilesdir, 'config')
 
 # Creating the parsing arguments
 parser = argparse.ArgumentParser(description='This is a dotfiles installation script')
@@ -55,10 +57,17 @@ def checkinstall(filename):
 def main():
   """Main function for the install"""
 
+  
   files = [f for f in os.listdir(dotfilesdir) if checkinstall(f)]
 
   for f in files:
     createlink(os.path.join(dotfilesdir, f), os.path.join(homedir, '.'+f))
+
+  
+  files = [f for f in os.listdir(dotconfdir) if checkinstall(f)]
+
+  for f in files:
+    createlink(os.path.join(dotconfdir, f), os.path.join(homeconf, f))
 
 if __name__ == '__main__':
   main()
