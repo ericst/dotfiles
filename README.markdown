@@ -1,4 +1,4 @@
-# Eric Seuret's Dot Files
+# ericst's dot files
 
 These are my config files to configure a machine the way I like it.
 
