@@ -1,2 +1,9 @@
-# A lot of programs assumes bash as shell so I keep it as a default.
-exec fish
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+alias ls='ls --color=auto'
+PS1='[\u@\h \W]\$ '
