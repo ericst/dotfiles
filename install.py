@@ -36,7 +36,6 @@ def createlink(source, destination):
 
       os.symlink(source, destination)
       print('Forced: {1} -> {0}'.format(source, destination))
-      
   else:
     os.symlink(source, destination)
     print('{1} -> {0}'.format(source, destination))
@@ -57,13 +56,13 @@ def checkinstall(filename):
 def main():
   """Main function for the install"""
 
-  
+
   files = [f for f in os.listdir(dotfilesdir) if checkinstall(f)]
 
   for f in files:
     createlink(os.path.join(dotfilesdir, f), os.path.join(homedir, '.'+f))
 
-  
+
   files = [f for f in os.listdir(dotconfdir) if checkinstall(f)]
 
   for f in files:
