@@ -1,4 +1,3 @@
-;; -*- mode: dotspacemacs -*-
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
@@ -91,7 +90,7 @@ before layers configuration."
    ;; Transparency can be toggled through `toggle-transparency'.
    dotspacemacs-inactive-transparency 90
    ;; If non nil unicode symbols are displayed in the mode line.
-   dotspacemacs-mode-line-unicode-symbols t
+   dotspacemacs-mode-line-unicode-symbols nil
    ;; If non nil smooth scrolling (native-scrolling) is enabled. Smooth
    ;; scrolling overrides the default behavior of Emacs which recenters the
    ;; point when it reaches the top or bottom of the screen.
@@ -113,6 +112,9 @@ before layers configuration."
 layers configuration."
   ;; Omnisharp server
   (setq-default omnisharp-server-executable-path "~/stack/OmniSharpServer/OmniSharp/bin/Debug/Omnisharp.exe")
+
+  ;; No separators on the power line
+  (setq powerline-default-separator 'nil)
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
