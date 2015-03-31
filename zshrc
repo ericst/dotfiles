@@ -7,17 +7,8 @@ export ZSH=$HOME/.oh-my-zsh
 # time that oh-my-zsh is loaded.
 ZSH_THEME="ys"
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
 # Uncomment the following line to disable bi-weekly auto-update checks.
 DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
 
 # Uncomment the following line to disable auto-setting terminal title.
 # DISABLE_AUTO_TITLE="true"
@@ -68,6 +59,9 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/site_perl:/usr/bin
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
+
+
+
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
@@ -80,4 +74,12 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/site_perl:/usr/bin
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+
+# Command not found hook on arch
+if [ -e /usr/share/doc/pkgfile/command-not-found.zsh ]
+then
+   source /usr/share/doc/pkgfile/command-not-found.zsh
+fi
+
+# When you forget the sudo (stp = please in french)
 alias stp='sudo $(fc -ln -1)'
