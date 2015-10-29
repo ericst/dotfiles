@@ -1,0 +1,23 @@
+@startuml
+
+[*] -> OPEN
+OPEN -> CLOSED
+CLOSED -> [*] 
+
+OPEN --> WAITING
+WAITING -up-> OPEN
+WAITING -up-> CLOSED
+
+OPEN --> HOLD
+WAITING -> HOLD
+HOLD -up->  CLOSED
+HOLD -up-> OPEN
+HOLD -up-> WAITING
+
+OPEN --> CANCELLED
+WAITING --> CANCELLED
+HOLD --> CANCELLED
+CANCELLED -up-> [*]
+
+
+@enduml
