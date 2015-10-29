@@ -19,13 +19,13 @@
     "moi" 'org-toggle-inline-images
 )
 
-(setq org-todo-keywords
+(setq-default org-todo-keywords
     (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d/!)")
             (sequence "WAITING(w@)" "HOLD(h@)" "DELEGATED(p@)" "|" "CANCELLED(a@/!)" )
             (sequence "OPEN(o@)" "|" "CLOSED(c/!)")
 )))
 
-(setq org-todo-keyword-faces
+(setq-default org-todo-keyword-faces
     (quote (("TODO" :foreground "red" :weight bold)
             ("NEXT" :foreground "cyan" :weight bold)
             ("OPEN" :foreground "cyan" :weight bold)
