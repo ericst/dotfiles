@@ -1,6 +1,6 @@
 [user]
 	name = Eric Seuret
 	email = eric.seuret@gmail.com
-  editor = vim
+  	editor = vim
 [push]
 	default = simple
