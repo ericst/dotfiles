@@ -69,10 +69,10 @@ The Hack font is great.
     ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
     ;; size to make separators look not too crappy.
     dotspacemacs-default-font '("Hack"
-                            :size 20 
+                            :size 22 
                             :weight normal
                             :width normal
-                            :powerline-scale 1.8)
+                            :powerline-scale 2.0)
 )
 #+end_src
 
@@ -319,21 +319,6 @@ will be performed below.
 #+end_src
 
 ** Org
-*** Personal Bindings
-Some personal binding for org-mode.
-
-| Key Binding | Description                  |
-|-------------+------------------------------|
-| ~SPC m o e~ | Execute current source block |
-| ~SPC m o i~ | Toggle in-line images        |
-
-#+begin_src emacs-lisp :tangle space-uconfig.el
-(evil-leader/set-key-for-mode 'org-mode
-    "moe" 'org-babel-execute-src-block
-    "moi" 'org-toggle-inline-images
-)
-#+end_src
-
 *** Todo items
 I have two kind of todo items. Here are their configurations.
 

@@ -14,11 +14,6 @@
     "ofi" 'spacemacs/toggle-fill-column-indicator
 )
 
-(evil-leader/set-key-for-mode 'org-mode
-    "moe" 'org-babel-execute-src-block
-    "moi" 'org-toggle-inline-images
-)
-
 (setq-default org-todo-keywords
     (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d/!)")
             (sequence "WAITING(w@)" "HOLD(h@)" "DELEGATED(p@)" "|" "CANCELLED(a@/!)" )
