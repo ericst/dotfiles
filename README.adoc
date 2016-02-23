@@ -1,0 +1,17 @@
+= ericst's dot files
+Eric Seuret <eric@ericst.ch>
+
+These are my config files to configure a machine the way I like it.
+
+Feel free to take inspirations ;-)
+
+== Installation
+For simplicity, everything is managed by [[RCM][https://github.com/thoughtbot/rcm].
+So just follow their guide to understand.
+
+=== Spacemacs
+Spacemacs will assume that you have it extracted in ~/.emacs.d so don't forget to install it:
+
+---
+$ git clone git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
+---
