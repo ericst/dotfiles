@@ -6,12 +6,13 @@ These are my config files to configure a machine the way I like it.
 Feel free to take inspirations ;-)
 
 == Installation
-For simplicity, everything is managed by [[RCM][https://github.com/thoughtbot/rcm].
+For simplicity, everything is managed by https://github.com/thoughtbot/rcm[RCM].
 So just follow their guide to understand.
 
 === Spacemacs
-Spacemacs will assume that you have it extracted in ~/.emacs.d so don't forget to install it:
+http://spacemacs.org/[Spacemacs] will assume that you have it extracted in ~/.emacs.d so don't forget to install it:
 
+[source,bash]
 ---
 $ git clone git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
 ---
