@@ -13,6 +13,6 @@ So just follow their guide to understand.
 http://spacemacs.org/[Spacemacs] will assume that you have it extracted in ~/.emacs.d so don't forget to install it:
 
 [source,bash]
----
+----
 $ git clone git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
----
+----
