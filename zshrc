@@ -3,13 +3,7 @@
 #
 # Authors:
 #   Eric Seuret <eric.seuret@gmail.com>
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
-
-# Source Prezto.
-if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
-fi
 
 
 ##################################################
@@ -24,6 +18,5 @@ alias stp='sudo $(fc -ln -1)'
 ##################################################
 export EDITOR="vim"
 export VISUAL=$EDITOR
-
-
+export SSH_AUTH_SOCK=/home/ericst/.gnupg/S.gpg-agent.ssh; 
 
