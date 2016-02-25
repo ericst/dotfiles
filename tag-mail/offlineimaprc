@@ -2,7 +2,7 @@
 ### General section ############################################################
 [general]
 ui=ttyui
-accounts = ericst, cylenk
+accounts = ericst, cylenk, gmail
 maxsyncaccounts = 6
 
 ### Mailbox name generation for mutt ###########################################
