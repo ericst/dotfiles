@@ -13,6 +13,7 @@ header = "mailboxes "
 peritem = "+%(accountname)s/%(foldername)s"
 sep = " "
 footer = "\n"
+folderfilter = lambda account, folder: not re.search(r'(Archive$|Trash$)', folder)
 
 ### Accounts definition ########################################################
 [Account ericst]
@@ -31,7 +32,7 @@ autorefresh = 10
 localrepository = gmail-local
 remoterepository = gmail-remote
 status_backend = sqlite
-autorefresh = 30
+autorefresh = 10
 
 ### ericst #####################################################################
 [Repository ericst-local]
@@ -90,9 +91,10 @@ nametrans = lambda folder: re.sub('Junk', '[Gmail].Spam',
 type = Gmail
 remoteuser = eric.seuret@gmail.com
 realdelete = no
-maxconnections = 3
+maxconnections = 4
 ssl = yes
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+auth_mechanisms = GSSAPI, CRAM-MD5, PLAIN, LOGIN
 nametrans = lambda folder: re.sub('.*Spam$', 'Junk', 
                            re.sub('.*Drafts$', 'Drafts', 
                            re.sub('.*Sent Mail$', 'Sent', 
