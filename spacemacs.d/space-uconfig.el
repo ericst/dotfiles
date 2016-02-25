@@ -38,3 +38,5 @@
     `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
     `((".*" ,temporary-file-directory t)))
+
+(setq auto-mode-alist (append '(("/tmp/mutt.*" . markdown-mode)) auto-mode-alist))

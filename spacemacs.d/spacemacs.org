@@ -309,6 +309,7 @@ will be performed below.
      yaml
      latex
      asciidoc
+     markdown
      ;; Apps
      games
      ;; Others
@@ -377,4 +378,13 @@ place all auto-saves and backups in the default system temp directory.
 (setq auto-save-file-name-transforms
     `((".*" ,temporary-file-directory t)))
 #+end_src
+
+** Mutt
+We want to write emails in markdown mode. As this might help with readability.
+
+#+begin_src emacs-lisp :tangle space-uconfig.el
+(setq auto-mode-alist (append '(("/tmp/mutt.*" . markdown-mode)) auto-mode-alist))
+#+end_src
+
+
 

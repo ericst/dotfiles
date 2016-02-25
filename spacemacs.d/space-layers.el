@@ -46,6 +46,7 @@
      yaml
      latex
      asciidoc
+     markdown
      ;; Apps
      games
      ;; Others
