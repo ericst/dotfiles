@@ -1,0 +1,6 @@
+
+folder-hook gmail/.*       source ~/.mutt/accounts/gmail
+folder-hook ericst/.*      source ~/.mutt/accounts/ericst
+folder-hook cylenk/.*      source ~/.mutt/accounts/cylenk
+
+source ~/.mutt/accounts/ericst # default account

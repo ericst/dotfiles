@@ -1,0 +1,33 @@
+
+set folder = ~/.mail
+set mbox_type = Maildir
+
+set realname = "Eric Seuret"
+set spoolfile = "+ericst/Inbox"
+
+set sort              = threads
+set sort_aux          = reverse-last-date-received
+
+set pager_context     = 5
+set pager_index_lines = 10
+
+set editor="emacsclient -a \"\" -t"
+
+# Keep a coppy of set files
+set copy = yes
+
+set mailcap_path = ~/.mutt/mailcap
+
+set implicit_autoview = no
+auto_view text/html
+alternative_order  text/html text/enriched text/plain 
+
+ignore *
+unignore from: to: cc: date: subject:
+hdr_order from: to: cc: date: subject:
+
+source ~/.mutt/colors
+source ~/.mutt/mailboxes
+source ~/.mutt/bindings
+source ~/.mutt/macros
+source ~/.mutt/hooks
