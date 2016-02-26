@@ -1,33 +1,57 @@
+################################################################################
+## General things
+################################################################################
 set realname          = "Eric Seuret"
 
+
+################################################################################
+## Folder configuration
+################################################################################
 set folder            = ~/.mail
 set mbox_type         = Maildir
 set spoolfile         = "+ericst/Inbox"
 
+################################################################################
+## Editing
+################################################################################
+set editor            = "emacsclient -a \"\" -t"
+set send_charset      = "utf-8"
+
+################################################################################
+## Index config
+################################################################################
 set sort              = threads
 set sort_aux          = reverse-last-date-received
 
+set index_format      = "%5C %3Z %{%Y-%m-%d} %-25.25L (%3N pts) %s"
+
+################################################################################
+## Pager config
+################################################################################
 set pager_context     = 5
 set pager_index_lines = 10
-
-set editor            = "emacsclient -a \"\" -t"
-
-# Keep a coppy of sent files
-set copy              = yes
-
-set mailcap_path      = ~/.mutt/mailcap
-
-set index_format      = "%5C %3Z %{%Y-%n-%d} %-25.25L (%4l ln) %s"
-
-auto_view             text/html
-alternative_order     text/html text/enriched text/plain 
 
 ignore                *
 unignore              from: to: cc: date: subject:
 
+auto_view             text/html
+alternative_order     text/html text/enriched text/plain 
+set mailcap_path      = ~/.mutt/mailcap
 
-source ~/.mutt/colors
-source ~/.mutt/mailboxes
-source ~/.mutt/bindings
-source ~/.mutt/macros
-source ~/.mutt/hooks
+################################################################################
+## Sending, replying, etc..
+################################################################################
+set copy              = yes
+
+set forward_format    = "Fwd: %s"
+set mime_forward      = yes             #Forward as is. (better for others
+
+
+################################################################################
+## Other sources for configuration
+################################################################################
+source ~/.mutt/colors                   #Color scheme
+source ~/.mutt/mailboxes                #List of mailboxes, genereted by offlineimap
+source ~/.mutt/bindings                 #Vi-like key-bindigs
+source ~/.mutt/macros                   #Extended actions
+source ~/.mutt/hooks                    #File hooks, managing different accounts
