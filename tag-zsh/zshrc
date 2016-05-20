@@ -26,5 +26,5 @@ export SSH_AUTH_SOCK=/home/ericst/.gnupg/S.gpg-agent.ssh;
 #### tmux autostart
 ##################################################
 if [ "$TMUX" = "" ]; then
-    which tmux &> /dev/null && tmux new-session -A -s scratch
+    which tmux &> /dev/null && tmux new-session -A -D -s scratch
 fi
