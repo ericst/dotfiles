@@ -1,7 +1,7 @@
 
 !------Monokai Theme for urxvt
 urxvt.depth:        32
-urxvt.background:   #303034
+urxvt.background:   #202024
 
 URxvt*foreground:   #B2B2B2
 URxvt*cursorColor:  #FFFFFF
@@ -23,19 +23,16 @@ URxvt*color13:      #FF1D62
 URxvt*color14:      #4BB8FD
 URxvt*color15:      #A020F0
 
-!-----Other UI Settings for urxvt
+!-----Font setting for urxvt
 URxvt.font:         xft:Hack-Regular:pixelsize=21,xft:Symbola
 URxvt.boldFont:     xft:Hack-Bold:pixelsize=21:weight=bold,xft:Symbola
 URxvt.italicFont:   xft:Hack-RegularOblique:pixelsize=14:slant=italic,xft:Symbola
 
-URxvt*scrollBar:      false
-URxvt.geometry:       80x35
-
 !-----HiDPI settings (Taken from ArchWiki)
-Xft.dpi:            210
-Xft.autohint:       0
-Xft.lcdfilter:      lcddefault
-Xft.hintstyle:      hintfull
-Xft.hinting:        1
-Xft.antialias:      1
-Xft.rgba:           rgb
+Xft.dpi: 210
+Xft.autohint: 0
+Xft.lcdfilter:  lcddefault
+Xft.hintstyle:  hintfull
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.rgba: rgb
