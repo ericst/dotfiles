@@ -8,7 +8,7 @@
     ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
     ;; size to make separators look not too crappy.
     dotspacemacs-default-font '("Hack"
-                            :size 22 
+                            :size 21 
                             :weight normal
                             :width normal
                             :powerline-scale 2.0)

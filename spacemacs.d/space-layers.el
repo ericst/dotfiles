@@ -42,6 +42,8 @@
      html
      rust
      emacs-lisp
+     common-lisp
+     clojure
      shell-scripts
      yaml
      latex
@@ -49,6 +51,7 @@
      markdown
      ;; Apps
      games
+     shell
      ;; Others
      finance
      ranger

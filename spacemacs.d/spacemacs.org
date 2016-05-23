@@ -69,7 +69,7 @@ The Hack font is great.
     ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
     ;; size to make separators look not too crappy.
     dotspacemacs-default-font '("Hack"
-                            :size 22 
+                            :size 21 
                             :weight normal
                             :width normal
                             :powerline-scale 2.0)
@@ -305,6 +305,8 @@ will be performed below.
      html
      rust
      emacs-lisp
+     common-lisp
+     clojure
      shell-scripts
      yaml
      latex
@@ -312,6 +314,7 @@ will be performed below.
      markdown
      ;; Apps
      games
+     shell
      ;; Others
      finance
      ranger
