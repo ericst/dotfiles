@@ -11,7 +11,7 @@
                             :size 21 
                             :weight normal
                             :width normal
-                            :powerline-scale 2.0)
+                            :powerline-scale 1.6)
 )
 
 (setq-default

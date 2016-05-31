@@ -72,7 +72,7 @@ The Hack font is great.
                             :size 21 
                             :weight normal
                             :width normal
-                            :powerline-scale 2.0)
+                            :powerline-scale 1.6)
 )
 #+end_src
 
@@ -321,44 +321,6 @@ will be performed below.
      )
   )
 #+end_src
-
-** Org
-*** Todo items
-I have two kind of todo items. Here are their configurations.
-
-#+begin_src emacs-lisp :tangle space-uconfig.el
-(setq-default org-todo-keywords
-    (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d/!)")
-            (sequence "WAITING(w@)" "HOLD(h@)" "DELEGATED(p@)" "|" "CANCELLED(a@/!)" )
-            (sequence "OPEN(o@)" "|" "CLOSED(c/!)")
-)))
-
-(setq-default org-todo-keyword-faces
-    (quote (("TODO" :foreground "red" :weight bold)
-            ("NEXT" :foreground "cyan" :weight bold)
-            ("OPEN" :foreground "cyan" :weight bold)
-            ("DELEGATED" :foreground "cyan" :weight bold)
-            ("WAITING" :foreground "orange" :weight bold)
-            ("HOLD" :foreground "magenta" :weight bold)
-            ("DONE" :foreground "forest green" :weight bold)
-            ("CLOSED" :foreground "forest green" :weight bold)
-            ("CANCELLED" :foreground "forest green" :weight bold)
-)))
-#+end_src
-
-**** Todos
-One type of todos, is the the type I use for my personal todos. It has a rather
-easy sequence diagram that goes like this:
-
-[[file:images/todos.png]]
-
-**** Tasks
-The other type of todos is the one I use for keeping track of projects. This is
-better described in my dashboards. Here is what the sequence diagram looks like: 
-
-[[file:images/tasks.png]]
-
-For more details on them. Please refer to the dashboard descriptions.
 * Emacs
 ** Fill column indicator
 The fill column indicator is practical to quickly see if your file violates the
@@ -388,6 +350,111 @@ We want to write emails in markdown mode. As this might help with readability.
 #+begin_src emacs-lisp :tangle space-uconfig.el
 (setq auto-mode-alist (append '(("/tmp/mutt.*" . markdown-mode)) auto-mode-alist))
 #+end_src
+* Org
+Here is my configuration for org mode. It has been inspired by [[http://doc.norang.ca/org-mode.html][norang's configuration]]
+
+** Todo Items
+I have two kind of todo items. Here are their configurations.
+
+#+begin_src emacs-lisp :tangle space-uconfig.el
+(setq-default org-todo-keywords
+    (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(x/!)")
+            (sequence "WAITING(w@)" "HOLD(h@)" "DELEGATED(d@)" "|" "CANCELLED(a@/!)" )
+            (sequence "OPEN(o@)" "|" "CLOSED(c/!)")
+)))
+
+(setq-default org-todo-keyword-faces
+    (quote (("TODO" :foreground "red" :weight bold)
+            ("NEXT" :foreground "cyan" :weight bold)
+            ("OPEN" :foreground "cyan" :weight bold)
+            ("DELEGATED" :foreground "cyan" :weight bold)
+            ("WAITING" :foreground "orange" :weight bold)
+            ("HOLD" :foreground "magenta" :weight bold)
+            ("DONE" :foreground "forest green" :weight bold)
+            ("CLOSED" :foreground "forest green" :weight bold)
+            ("CANCELLED" :foreground "forest green" :weight bold)
+)))
+#+end_src
+
+*** Tasks
+The first type of todo items are for my personal tasks, and here is how their 
+state diagram looks like.
+
+[[file:images/todos.png]]
+
+*** Issues
+The second type of todo items is to keep track of projects issues. 
+
+[[file:images/tasks.png]]
+** Agenda
+*** Files
+
+All files under the ~\~/org/~ folder are used in the agenda view. This allows to
+easily separate projects. If it grows too big, or needs special attention, just
+create a new file.
+
+#+begin_src emacs-lisp :tangle space-uconfig.el
+(setq org-agenda-files (quote ("~/org/")))
+#+end_src
+
+*** Views
+Here is a list of the preset Views
+
+| Key | Description                      |
+|-----+----------------------------------|
+| ~p~ | Planning View                    |
+| ~i~ | List of OPEN Issues              |
+| ~w~ | List of tasks WAITING or on HOLD |
+| ~d~ | List of tasks DELEGATED          |
+
+The Planning has the following elements:
+
+1. Agenda view of the week.
+2. A list of tasks that I need to refile.
+3. A list of NEXT tasks.
+4. A list of the remaining TODO tasks.
+
+The other views are self-explanatory
 
 
+#+begin_src emacs-lisp :tangle space-uconfig.el
+(setq org-agenda-custom-commands
 
+        '(("p" "Planning"
+          ((agenda "")
+            (tags "refile" ((org-agenda-overriding-header "Items to refile")))
+            (todo "NEXT" ((org-agenda-overriding-header "NEXT Tasks")))
+            (todo "TODO" ((org-agenda-overriding-header "TODO Tasks")))))
+
+          ("i" "List of OPEN Issues" todo "OPEN" 
+              ((org-agenda-overriding-header "OPEN Issues")))
+
+          ("w" "List of tasks WAITING or on HOLD" todo "HOLD|WAITING" 
+              ((org-agenda-overriding-header "Tasks WAITING or on HOLD")))
+
+          ("d" "List of tasks DELEGATED" todo "DELEGATED" 
+              ((org-agenda-overriding-header "Tasks DELEGATED")))
+))
+#+end_src
+** Capture and Refiling
+Everything I capture, goes to the ~\~/org/refile.org~ file. 
+#+begin_src emacs-lisp :tangle space-uconfig.el
+(setq org-default-notes-file "~/org/refile.org")
+#+end_src
+
+*** Capture Templates
+TBD
+
+*** Refiling
+Refiling target includes this file and all org-agenda files.
+
+#+begin_src emacs-lisp :tangle space-uconfig.el
+(setq org-refile-targets (quote ((nil :maxlevel . 9)
+                                 (org-agenda-files :maxlevel . 9))))
+#+end_src
+
+We also want to use full paths as it is easier with helm.
+
+#+begin_src emacs-lisp :tangle space-uconfig.el
+(setq org-refile-use-outline-path t)
+#+end_src
