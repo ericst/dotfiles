@@ -1,0 +1,1 @@
+xcopy /e /i /y . %HOME%\.spacemacs.d
