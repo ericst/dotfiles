@@ -85,6 +85,7 @@ I tend to prefer dark themes.
     ;; Press <SPC> T n to cycle to the next theme in the list (works great
     ;; with 2 themes variants, one dark and one light)
     dotspacemacs-themes '(
+                          base16-eighties-dark
                           monokai
                           solarized-dark
                           spacemacs-dark
@@ -212,10 +213,6 @@ All the rest. I should take a closer look at all this one day.
 #+end_src
 
 * General custom mappings
-Let's see how that freanking auto-fill mode works. I am actually wondering if it   
-and if I add stuf here wask a goo idea... mmmmh it seems like so. and what about
-those stupdide liitll things like having the fill mode work for me
-
 ** Org
 Some key bindings for org-mode should always be available..
 
@@ -251,7 +248,7 @@ one place.
 )
 #+end_src
 
-* Layers 
+* Layers and packages
 ** General configuration
 
 - Distribution -> default to spacemas is okay
@@ -282,7 +279,6 @@ one place.
    ;; the list `dotspacemacs-configuration-layers'. (default t)
    dotspacemacs-delete-orphan-packages t)
 #+end_src
-
 ** Installed layers
 Here is a list of installed layers. If a special configuration is needed, it
 will be performed below.
@@ -320,6 +316,18 @@ will be performed below.
      ranger
      )
   )
+#+end_src
+
+** Extra Packages
+The only extra package is the base16-theme.
+
+#+begin_src emacs-lisp :tangle space-layers.el
+(setq-default 
+   ;; List of additional packages that will be installed without being
+   ;; wrapped in a layer. If you need some configuration for these
+   ;; packages then consider to create a layer, you can also put the
+   ;; configuration in `dotspacemacs/config'.
+   dotspacemacs-additional-packages '(base16-theme)
 #+end_src
 * Emacs
 ** Fill column indicator
