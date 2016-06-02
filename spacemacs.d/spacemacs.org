@@ -69,10 +69,10 @@ The Hack font is great.
     ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
     ;; size to make separators look not too crappy.
     dotspacemacs-default-font '("Hack"
-                            :size 11 
+                            :size 12 
                             :weight normal
                             :width normal
-                            :powerline-scale 1.0)
+                            :powerline-scale 1.1)
 )
 #+end_src
 
