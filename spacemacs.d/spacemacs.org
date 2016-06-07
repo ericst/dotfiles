@@ -365,9 +365,9 @@ I have two kind of todo items. Here are their configurations.
 
 #+begin_src emacs-lisp :tangle space-uconfig.el
 (setq-default org-todo-keywords
-    (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(x/!)")
-            (sequence "WAITING(w@)" "HOLD(h@)" "DELEGATED(d@)" "|" "CANCELLED(a@/!)" )
-            (sequence "OPEN(o@)" "|" "CLOSED(c/!)")
+    (quote ((sequence "TODO(t!)" "NEXT(n!)" "|" "DONE(x!)")
+            (sequence "WAITING(w!)" "HOLD(h!)" "DELEGATED(d!)" "|" "CANCELLED(a!)" )
+            (sequence "OPEN(o!)" "|" "CLOSED(c!)")
 )))
 
 (setq-default org-todo-keyword-faces
