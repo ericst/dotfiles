@@ -477,3 +477,99 @@ We also want to use full paths as it is easier with helm.
 #+begin_src emacs-lisp :tangle space-uconfig.el
 (setq org-refile-use-outline-path t)
 #+end_src
+
+
+** Outlook Integration
+
+Here I register some extra links for org-mode so that I can link to outlook files.
+
+#+begin_src emacs-lisp :tangle space-uconfig.el
+(require 'org)
+
+(org-add-link-type "outlook" 'org-outlook-open)
+
+(defun org-outlook-open (id)
+  "Open the Outlook item identified by ID. ID should be an Outlook GUID"
+  (shell-command (concat
+                  "\"C:\\Program Files (x86)\\Microsoft Office\\Office14\\outlook.exe\" "
+                  "/select outlook:"
+                  id)))
+#+end_src
+
+It is also worth noting that adding some VBA Macros to outlook can be useful. 
+
+First one macro to create new tasks with a link back to the email.
+
+#+BEGIN_SRC visual-basic
+'Adds a task to an org file. (/!\ Add reference to Microsoft Scritping Runtime)
+Sub AddTask()
+
+   Dim objMail As Outlook.MailItem
+   Dim fso As FileSystemObject
+   Dim orgfile As TextStream
+
+   'One and ONLY one message muse be selected
+   If Application.ActiveExplorer.Selection.Count <> 1 Then
+       MsgBox ("Select one and ONLY one message.")
+       Exit Sub
+   End If
+
+   Set objMail = Application.ActiveExplorer.Selection.Item(1)
+   Set fso = New FileSystemObject
+   Set orgfile = fso.OpenTextFile("c:\ericst\org\outlook.org", ForAppending, True)
+   
+   orgfile.WriteLine "* TODO Email: [[outlook:" + objMail.EntryID + "][" + objMail.Subject + " (" + objMail.SenderName + ")]]"
+   orgfile.Close
+
+End Sub
+#+END_SRC
+
+We can also have a macro that copies a link to the clipboard so that you insert it wherever you want.
+#+BEGIN_SRC visual-basic
+'Adds a link to the currently selected message to the clipboard (/!\ Add reference to Microsoft Forms 2.0 Object Library)
+Sub CopyLink()
+
+   Dim objMail As Outlook.MailItem
+   Dim doClipboard As New DataObject
+
+   'One and ONLY one message muse be selected
+   If Application.ActiveExplorer.Selection.Count <> 1 Then
+       MsgBox ("Select one and ONLY one message.")
+       Exit Sub
+   End If
+
+   Set objMail = Application.ActiveExplorer.Selection.Item(1)
+   doClipboard.SetText "[[outlook:" + objMail.EntryID + "][" + objMail.Subject + " (" + objMail.SenderName + ")]]"
+   doClipboard.PutInClipboard
+   
+End Sub
+#+END_SRC
+
+Last, when e-mailing notes, it is interesting to actually be able to insert html in your mail. 
+Here is a macro that do just that.
+
+#+BEGIN_SRC visual-basic
+'Prepends the content of the clipboard to the message (/!\ Add reference to Microsoft Forms 2.0 Object Library)
+Sub PrependHTML()
+    Dim email As Outlook.MailItem
+    Dim cBoard As DataObject
+
+    Set email = Application.ActiveInspector.CurrentItem
+    Set cBoard = New DataObject
+
+
+    cBoard.GetFromClipboard
+    email.HTMLBody = cBoard.GetText + email.HTMLBody
+ 
+    Set cBoard = Nothing
+    Set email = Nothing
+
+End Sub
+#+END_SRC
+
+It is important for those macros to work that you add the following referrences:
+
+- Microsoft Forms 2.0 Object Library \\
+  For clipboard manipulations
+- Microsoft Scritping Runtime \\
+  For the text file manipulations
