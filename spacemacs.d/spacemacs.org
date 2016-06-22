@@ -401,7 +401,10 @@ easily separate projects. If it grows too big, or needs special attention, just
 create a new file.
 
 #+begin_src emacs-lisp :tangle space-uconfig.el
-(setq org-agenda-files (quote ("~/org/")))
+(setq org-agenda-files (quote ("~/org/" 
+                               "~/org/work/"
+                               "~/org/work/notes/"
+                               "~/org/work/meetings/")))
 #+end_src
 
 *** Views
