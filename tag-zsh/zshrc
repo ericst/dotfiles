@@ -19,7 +19,7 @@ alias emax='emacsclient -c -na emacs'
 ##################################################
 export EDITOR="vim"
 export VISUAL=$EDITOR
-export SSH_AUTH_SOCK=/home/ericst/.gnupg/S.gpg-agent.ssh; 
+export SSH_AUTH_SOCK=/run/user/1000/gnupg/S.gpg-agent.ssh
 
 
 ##################################################
