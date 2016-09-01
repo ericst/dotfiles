@@ -4,3 +4,5 @@
  	editor = vim
 [push]
 	default = simple
+[core]
+	trustctime = false
