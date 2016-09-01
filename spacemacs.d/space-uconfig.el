@@ -67,3 +67,14 @@
                                  (org-agenda-files :maxlevel . 9))))
 
 (setq org-refile-use-outline-path t)
+
+(require 'org)
+
+(org-add-link-type "outlook" 'org-outlook-open)
+
+(defun org-outlook-open (id)
+  "Open the Outlook item identified by ID. ID should be an Outlook GUID"
+  (shell-command (concat
+                  "\"C:\\Program Files (x86)\\Microsoft Office\\Office14\\outlook.exe\" "
+                  "/select outlook:"
+                  id)))
