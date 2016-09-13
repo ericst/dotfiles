@@ -85,7 +85,7 @@ I tend to prefer dark themes.
     ;; Press <SPC> T n to cycle to the next theme in the list (works great
     ;; with 2 themes variants, one dark and one light)
     dotspacemacs-themes '(
-                          base16-eighties-dark
+                          apropospriate-dark
                           monokai
                           solarized-dark
                           spacemacs-dark
@@ -313,6 +313,7 @@ will be performed below.
      ;; Others
      finance
      ranger
+     themes-megapack
      )
   )
 #+end_src
@@ -326,7 +327,7 @@ The only extra package is the base16-theme.
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages then consider to create a layer, you can also put the
    ;; configuration in `dotspacemacs/config'.
-   dotspacemacs-additional-packages '(base16-theme))
+   dotspacemacs-additional-packages '())
 #+end_src
 * Emacs
 ** Fill column indicator

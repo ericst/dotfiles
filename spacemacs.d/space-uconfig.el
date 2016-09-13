@@ -24,9 +24,9 @@
 (setq auto-mode-alist (append '(("/tmp/mutt.*" . markdown-mode)) auto-mode-alist))
 
 (setq-default org-todo-keywords
-    (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(x/!)")
-            (sequence "WAITING(w@)" "HOLD(h@)" "DELEGATED(d@)" "|" "CANCELLED(a@/!)" )
-            (sequence "OPEN(o@)" "|" "CLOSED(c/!)")
+    (quote ((sequence "TODO(t!)" "NEXT(n!)" "|" "DONE(x!)")
+            (sequence "WAITING(w!)" "HOLD(h!)" "DELEGATED(d!)" "|" "CANCELLED(a!)" )
+            (sequence "OPEN(o!)" "|" "CLOSED(c!)")
 )))
 
 (setq-default org-todo-keyword-faces
@@ -41,7 +41,10 @@
             ("CANCELLED" :foreground "forest green" :weight bold)
 )))
 
-(setq org-agenda-files (quote ("~/org/")))
+(setq org-agenda-files (quote ("~/org/" 
+                               "~/org/work/"
+                               "~/org/work/notes/"
+                               "~/org/work/meetings/")))
 
 (setq org-agenda-custom-commands
 

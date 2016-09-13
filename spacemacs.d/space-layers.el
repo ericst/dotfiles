@@ -49,6 +49,7 @@
      ;; Others
      finance
      ranger
+     themes-megapack
      )
   )
 
@@ -57,4 +58,4 @@
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages then consider to create a layer, you can also put the
    ;; configuration in `dotspacemacs/config'.
-   dotspacemacs-additional-packages '(base16-theme))
+   dotspacemacs-additional-packages '())
