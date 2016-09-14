@@ -89,3 +89,5 @@
 (setq-default ispell-local-dictionary-alist '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8)))
 
 (server-start)
+
+(setq-default spacemacs-show-trailing-whitespace nil)

@@ -593,3 +593,8 @@ This is necessary on windows as you cannot run an emacs service.
 #+begin_src emacs-lisp :tangle space-uconfig.el
 (server-start)
 #+end_src
+* Trailing whitespaces
+Deactivate the highlight of trailing whitespace.
+#+begin_src emacs-lisp :tangle space-uconfig.el
+(setq-default spacemacs-show-trailing-whitespace nil)
+#+end_src
