@@ -85,3 +85,5 @@
 (setq-default ispell-program-name "hunspell")
 (setq-default ispell-local-dictionary "en_US")
 (setq-default ispell-local-dictionary-alist '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8)))
+
+(server-start)

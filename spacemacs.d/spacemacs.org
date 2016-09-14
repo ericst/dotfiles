@@ -481,7 +481,6 @@ We also want to use full paths as it is easier with helm.
 (setq org-refile-use-outline-path t)
 #+end_src
 
-
 ** Outlook Integration
 
 Here I register some extra links for org-mode so that I can link to outlook files.
@@ -576,12 +575,16 @@ It is important for those macros to work that you add the following referrences:
   For clipboard manipulations
 - Microsoft Scritping Runtime \\
   For the text file manipulations
-
-
 * Spellchecking
 
 #+begin_src emacs-lisp :tangle space-uconfig.el
 (setq-default ispell-program-name "hunspell")
 (setq-default ispell-local-dictionary "en_US")
 (setq-default ispell-local-dictionary-alist '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8)))
+#+end_src
+
+* Start the sever
+This is necessary on windows as you cannot run an emacs service.
+#+begin_src emacs-lisp :tangle space-uconfig.el
+(server-start)
 #+end_src
