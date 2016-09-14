@@ -21,6 +21,7 @@
     dotspacemacs-themes '(
                           apropospriate-dark
                           monokai
+                          base16-eighties
                           solarized-dark
                           spacemacs-dark
                           zenburn))

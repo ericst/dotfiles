@@ -4,6 +4,8 @@
 ;; Any modifications should be done there.
 ;; ---- !!! Warning !!! ----
 
+(server-start)
+
 (evil-leader/set-key "oc" 'org-capture)
 
 (spacemacs/declare-prefix "of" "Filling(Text Align)")
