@@ -21,6 +21,13 @@ export EDITOR="vim"
 export VISUAL=$EDITOR
 export SSH_AUTH_SOCK=/run/user/1000/gnupg/S.gpg-agent.ssh
 
+##################################################
+#### Environments
+##################################################
+
+if [ -f "$HOME/.cargo/env" ]; then
+    source "$HOME/.cargo/env"
+fi
 
 ##################################################
 #### tmux autostart
