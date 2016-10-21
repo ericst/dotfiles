@@ -61,21 +61,6 @@ code ther beside modifying the variables.
 
 * Spacemacs
 ** User interface
-*** Font
-The Hack font is great.
-
-#+begin_src emacs-lisp :tangle space-init.el
-(setq-default
-    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
-    ;; size to make separators look not too crappy.
-    dotspacemacs-default-font '("Hack"
-                            :size 21 
-                            :weight normal
-                            :width normal
-                            :powerline-scale 1.6)
-)
-#+end_src
-
 *** Themes
 I tend to prefer dark themes.
 
@@ -90,6 +75,21 @@ I tend to prefer dark themes.
                           solarized-dark
                           spacemacs-dark
                           zenburn))
+#+end_src
+
+*** Font
+The Hack font is great.
+
+#+begin_src emacs-lisp :tangle space-init.el
+(setq-default
+    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
+    ;; size to make separators look not too crappy.
+    dotspacemacs-default-font '("Hack"
+                            :size 13 
+                            :weight normal
+                            :width normal
+                            :powerline-scale 1.5)
+)
 #+end_src
 
 ** Server
