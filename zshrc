@@ -37,8 +37,11 @@ zplug "plugins/git", from:oh-my-zsh, if:"hash git"
 # Syntax highlighting for commands
 zplug "zsh-users/zsh-syntax-highlighting", from:github, defer:3
 
-# Theme!
-zplug "themes/ys", from:oh-my-zsh
+# Prompt theme
+zplug "themes/dstufft", from:oh-my-zsh
+
+# Color theme
+zplug "chriskempson/base16-shell"
 
 
 # Install packages that have not been installed yet
@@ -52,6 +55,11 @@ if ! zplug check --verbose; then
 fi
 
 zplug load
+
+#################################################
+#### Colors
+#################################################
+base16_eighties
 
 
 ##################################################
