@@ -53,3 +53,11 @@ setopt prompt_subst
 RPROMPT=\$vcs_info_msg_0_
 zstyle ':vcs_info:git:*' formats '%F{240}(%b)%r%f'
 zstyle ':vcs_info:*' enable git
+
+
+## Guix
+if [ -L ~/.guix-profile ]; then
+    export GUIX_PROFILE="$HOME/.config/guix/current"
+    source "$GUIX_PROFILE/etc/profile"
+    export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
+fi
