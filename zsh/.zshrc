@@ -43,7 +43,7 @@ zstyle ':completion:*' expand prefix suffix
 autoload bashcompinit && bashcompinit
 
 ## Prompt
-PROMPT='%(?..%F{red}%? %f)%m:%B%F{240}%1~%f%b%# '
+PROMPT='%(?..%F{red}%? %f)%n@%m %1~ %# '
 
 ### Git integration on rightprompt
 autoload -Uz vcs_info
@@ -51,7 +51,7 @@ precmd_vcs_info() { vcs_info }
 precmd_functions+=( precmd_vcs_info )
 setopt prompt_subst
 RPROMPT=\$vcs_info_msg_0_
-zstyle ':vcs_info:git:*' formats '%F{240}(%b)%r%f'
+zstyle ':vcs_info:git:*' formats '(%b)%r'
 zstyle ':vcs_info:*' enable git
 
 
