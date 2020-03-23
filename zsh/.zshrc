@@ -27,8 +27,6 @@ setopt HIST_REDUCE_BLANKS
 setopt CORRECT
 setopt CORRECT_ALL
 
-
-
 ## TAB completions
 autoload -Uz compinit && compinit
 
@@ -56,8 +54,12 @@ zstyle ':vcs_info:*' enable git
 
 
 ## Guix
-if [ -L ~/.guix-profile ]; then
-    export GUIX_PROFILE="$HOME/.config/guix/current"
+export GUIX_PROFILE="$HOME/.config/guix/current"
+export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
+if [ -e "$GUIX_PROFILE/etc/profile"  ]; then
     source "$GUIX_PROFILE/etc/profile"
-    export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
 fi
+
+
+## Aliases
+alias stow='stow --no-folding'
