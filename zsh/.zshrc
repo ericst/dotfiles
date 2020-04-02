@@ -54,11 +54,12 @@ zstyle ':vcs_info:*' enable git
 
 
 ## Guix
-export GUIX_PROFILE="$HOME/.config/guix/current"
-export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
+export GUIX_PROFILE="$HOME/.guix-profile"
+export GUIX_LOCPATH="$GUIX_PROFILE/lib/locale"
 if [ -e "$GUIX_PROFILE/etc/profile"  ]; then
     source "$GUIX_PROFILE/etc/profile"
 fi
+export GUIX_PACKAGE_PATH="$HOME/git/ericst-guix/"
 
 
 ## Aliases
