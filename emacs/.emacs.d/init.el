@@ -23,14 +23,19 @@
 ;;General Settings
 (setq inhibit-startup-message t)
 (tool-bar-mode -1)
+(show-paren-mode 1)
 
 ;;Backup files
-(setq backup-directory-alist `(("." . "~/emacs.d/backups")))
+(setq backup-directory-alist '(("." . "~/emacs.d/backups/")))
 (setq backup-by-copying t
       delete-old-versions t
       kept-new-versions 6
       kept-old-versions 2
       version-control t)
+
+;;Auto-Saves
+(setq auto-save-default nil)
+
 
 ;;Counsel, Ivy, Swiper
 (use-package counsel
@@ -63,10 +68,30 @@
 (use-package general
   :ensure t)
 
+(use-package company
+  :ensure t
+  :hook (after-init . global-company-mode))
 
+(use-package expand-region
+  :ensure t
+  :config (global-set-key (kbd "C-,") 'er/expand-region))
 
+;; Lisp & Shcheme
+(use-package paredit
+  :ensure t
+  :config
+  (add-hook 'emacs-lisp-mode-hook #'paredit-mode)
+  (add-hook 'lisp-interaction-mode-hook #'paredit-mode)
+  (add-hook 'ielm-mode-hook #'paredit-mode)
+  (add-hook 'lisp-mode-hook #'paredit-mode)
+  (add-hook 'eval-expression-minibuffer-setup-hook #'paredit-mode)
+  (add-hook 'scheme-mode-hook #'paredit-mode))
+
+(use-package geiser) 
 
 ;;Custom file
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
+;;Start the server
+(server-start)
