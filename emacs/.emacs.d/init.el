@@ -1,18 +1,29 @@
-;;;Eric Seuret's Emacs Configureate
-;;;Inspire by: https://sam217pa.github.io/2016/09/02/how-to-build-your-own-spacemacs/
+;;; init.el --- Emacs Configuration. 
+
+;; Author: Eric Seuret
+
+;; This is ericst's Emacs configuragation file. Feel free to take
+;; inspiration from it.
 
 
-;;Setting package repositories
+;;; MELPA & use-package
+
+;; Installing MELPA
 (require 'package)
-(setq package-enable-at-startup nil)
-(setq package-archives
-      '(("gnu" . "https://elpa.gnu.org/packages")
-	("melpa" . "https://melpa.org/packages/")))
-
-;;Install package
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                    (not (gnutls-available-p))))
+       (proto (if no-ssl "http" "https")))
+  (when no-ssl (warn "\
+Your version of Emacs does not support SSL connections,
+which is unsafe because it allows man-in-the-middle attacks.
+There are two things you can do about this warning:
+1. Install an Emacs version that does support SSL and be safe.
+2. Remove this warning from your init file so you won't see it again."))
+  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+  )
 (package-initialize)
 
-;;Bootstrap `use-package'
+;; Bootstraping use-package
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -20,63 +31,68 @@
   (require 'use-package))
 
 
-;;General Settings
+;;; General Setings
+
 (setq inhibit-startup-message t)
 (tool-bar-mode -1)
 (show-paren-mode 1)
 
-;;Backup files
-(setq backup-directory-alist '(("." . "~/emacs.d/backups/")))
+;; Backup files
+(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
 (setq backup-by-copying t
       delete-old-versions t
       kept-new-versions 6
       kept-old-versions 2
       version-control t)
 
-;;Auto-Saves
+;; Auto-Saves
 (setq auto-save-default nil)
 
 
-;;Counsel, Ivy, Swiper
-(use-package counsel
-  :ensure t
-  :config
-  (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-count-format "(%d/%d) ")
-  (global-set-key (kbd "C-s") 'swiper-isearch)
-  (global-set-key (kbd "M-x") 'counsel-M-x)
-  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  (global-set-key (kbd "M-y") 'counsel-yank-pop)
-  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-  (global-set-key (kbd "<f1> l") 'counsel-find-library)
-  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-  (global-set-key (kbd "<f2> j") 'counsel-set-variable)
-  (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
-  (global-set-key (kbd "C-c v") 'ivy-push-view)
-  (global-set-key (kbd "C-c V") 'ivy-pop-view)
-  )
-
-
-;;Base packages
+;;; Core Packages
 (use-package which-key
   :ensure t
   :config (which-key-mode))
-
-(use-package general
-  :ensure t)
 
 (use-package company
   :ensure t
   :hook (after-init . global-company-mode))
 
+(use-package helm
+  :ensure t
+  :init (require 'helm-config)
+  :bind (("M-x" . 'helm-M-x)
+	 ("M-y" . 'helm-show-kill-ring)
+	 ("C-x C-f" . 'helm-find-files)
+	 ("C-h d" . 'helm-info-at-point)
+	 ("C-h i" . 'helm-info)
+	 ("C-x C-d" . 'helm-browse-project)
+	 ("C-h C-f" . 'helm-apropos)
+	 ("C-h a" . 'helm-apropos)
+	 ("C-h C-d" . 'helm-debug-open-last-log))
+  :config (helm-mode 1))
+
+(use-package hydra
+  :ensure t
+  :config (defhydra hydra-zoom (global-map "<f2>")
+	    "Zoom"
+	    ("b" text-scale-increase "in")
+	    ("s" text-scale-decrease "out")))
+
+(use-package outshine
+  :ensure t)
+
 (use-package expand-region
   :ensure t
-  :config (global-set-key (kbd "C-,") 'er/expand-region))
+  :after (hydra)
+  :bind (("C-c e" . 'hydra-expand-region/body))
+  :config (defhydra hydra-expand-region (:pre (er/expand-region 1))
+	    "Expand Region"
+	    ("e" er/expand-region "expand")
+	    ("c" er/contract-region "contract")))
 
-;; Lisp & Shcheme
+
+;;; Lisp & Scheme
 (use-package paredit
   :ensure t
   :config
@@ -89,9 +105,11 @@
 
 (use-package geiser) 
 
-;;Custom file
+
+;;; Custom file & settings
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
-;;Start the server
+
+;;; Emacs Server
 (server-start)
