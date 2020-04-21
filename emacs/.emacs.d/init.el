@@ -127,7 +127,7 @@ There are two things you can do about this warning:
   :config (progn 
 	    (dashboard-setup-startup-hook)
 	    (setq initial-buffer-choice (lambda () (get-buffer
-						    "dashboard")))
+						    "*dashboard*")))
 
 	    (setq dashboard-center-content t)
 	    (setq dashboard-items '((recents . 5)
