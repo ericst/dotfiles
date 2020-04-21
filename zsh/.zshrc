@@ -52,6 +52,11 @@ RPROMPT=\$vcs_info_msg_0_
 zstyle ':vcs_info:git:*' formats '(%b)%r'
 zstyle ':vcs_info:*' enable git
 
+## Emacs editor
+export ALTERNATE_EDITOR=""
+export EDITOR="emacsclient -t"               # $EDITOR opens in terminal
+export VISUAL="emacsclient -a emacs"         # $VISUAL opens in GUI mode
+export GIT_EDITOR="emacsclient -t"
 
 ## Guix
 export GUIX_PROFILE="$HOME/.guix-profile"
@@ -64,3 +69,5 @@ export GUIX_PACKAGE_PATH="$HOME/git/ericst-guix/"
 
 ## Aliases
 alias stow='stow --no-folding'
+alias e="$VISUAL"
+alias et="$EDITOR"
