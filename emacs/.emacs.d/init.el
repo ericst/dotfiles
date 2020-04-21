@@ -1,4 +1,4 @@
-;;; init.el --- Emacs Configuration. 
+;;; init.el --- Emacs Configuration.
 
 ;; Author: Eric Seuret
 
@@ -33,9 +33,12 @@ There are two things you can do about this warning:
 
 ;;; General Setings
 
-(setq inhibit-startup-message t)
-(tool-bar-mode -1)
-(show-paren-mode 1)
+(setq inhibit-startup-message t)	; No startup screen
+(tool-bar-mode -1)			; No toolbar
+(scroll-bar-mode -1)			; No scrollbar
+(global-hl-line-mode 1)			; Highlight current line
+(show-paren-mode 1)			; Show matching parens
+(delete-selection-mode 1)		; Delete an replace selected text
 
 ;; Backup files
 (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
@@ -46,18 +49,28 @@ There are two things you can do about this warning:
       version-control t)
 
 ;; Auto-Saves
+;; TODO: Set it correctly
 (setq auto-save-default nil)
 
 
 ;;; Core Packages
+
+;; Those package represent the core functionaity of my emacs. They are
+;; here mainly for text editing purposes.
+
+
+;; Which-key displays some help on available keys when one is
+;; pressed. This helps with discoverability in general.
 (use-package which-key
   :ensure t
   :config (which-key-mode))
 
+;; Company mode is a general auto-complete framework.
 (use-package company
   :ensure t
   :hook (after-init . global-company-mode))
 
+;; Helm augments the interactivity of emacs.
 (use-package helm
   :ensure t
   :init (require 'helm-config)
@@ -72,6 +85,7 @@ There are two things you can do about this warning:
 	 ("C-h C-d" . 'helm-debug-open-last-log))
   :config (helm-mode 1))
 
+;; Hydra allows the creation of sticky-modes.
 (use-package hydra
   :ensure t
   :config (defhydra hydra-zoom (global-map "<f2>")
@@ -79,9 +93,8 @@ There are two things you can do about this warning:
 	    ("b" text-scale-increase "in")
 	    ("s" text-scale-decrease "out")))
 
-(use-package outshine
-  :ensure t)
-
+;; Expand region allows selection on steroid. It gradually expands the
+;; region by semantic units.
 (use-package expand-region
   :ensure t
   :after (hydra)
@@ -92,21 +105,67 @@ There are two things you can do about this warning:
 	    ("c" er/contract-region "contract")))
 
 
+;;; Projectile
+
+;; Projectile is a project interaction library.
+(use-package projectile
+  :ensure t
+  :bind-keymap ("C-c p" . projectile-command-map)
+  :config (projectile-mode 1))
+
+(use-package helm-projectile
+  :ensure t
+  :after projectile
+  :config
+  (helm-projectile-on))
+
+;;; Dashboard
+
+;; Displays a dashboard with recent files and projects.
+(use-package dashboard
+  :ensure t
+  :config (progn 
+	    (dashboard-setup-startup-hook)
+	    (setq initial-buffer-choice (lambda () (get-buffer
+						    "dashboard")))
+
+	    (setq dashboard-center-content t)
+	    (setq dashboard-items '((recents . 5)
+				    (projects . 5)
+				    (registers . 5)))
+
+	    ))
+
 ;;; Lisp & Scheme
+
+;; Diverse packages and configuration for lisp and scheme
 (use-package paredit
   :ensure t
-  :config
-  (add-hook 'emacs-lisp-mode-hook #'paredit-mode)
-  (add-hook 'lisp-interaction-mode-hook #'paredit-mode)
-  (add-hook 'ielm-mode-hook #'paredit-mode)
-  (add-hook 'lisp-mode-hook #'paredit-mode)
-  (add-hook 'eval-expression-minibuffer-setup-hook #'paredit-mode)
-  (add-hook 'scheme-mode-hook #'paredit-mode))
+  :hook ((emacs-lisp-mode . paredit-mode)
+	 (lisp-interaction-mode . paredit-mode)
+	 (ielm-mode . paredit-mode)
+	 (lisp-mode . paredit-mode)
+	 (eval-expression-minibuffer-setup . paredit-mode)
+	 (scheme-mode . paredit-mode)))
 
-(use-package geiser) 
+(use-package geiser
+  :ensure t) 
 
 
-;;; Custom file & settings
+;;; Outshine
+
+;; Allows to creat sections in code. Kind of like org-mode but as a
+;; minor mode. It extends on outline-minor-mode.
+
+;; So far I only use it in lisp-modes but it could be useful to others.
+
+(use-package outshine
+  :ensure t
+  :hook ((emacs-lisp-mode . outshine-mode)
+	 (scheme-mode . outshine-mode)))
+
+
+;;; Custom file
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
