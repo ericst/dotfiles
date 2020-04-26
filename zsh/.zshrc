@@ -41,7 +41,7 @@ zstyle ':completion:*' expand prefix suffix
 autoload bashcompinit && bashcompinit
 
 # * Prompt
-PROMPT='%(?..%F{red}%? %f)%n@%m %1~ %# '
+PROMPT='%n@%m %1~ %(?..[%F{red}%?%f] )%# '
 
 # * Git integration on rightprompt
 autoload -Uz vcs_info
