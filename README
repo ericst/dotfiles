@@ -1,18 +1,18 @@
-* ericst's dot files
+# ericst's dot files
 
-Eric Seuret [[mailto:eric@ericst.ch][eric@ericst.ch]]
+Eric Seuret [mailto:eric@ericst.ch](eric@ericst.ch)
 
 These are my config files to configure a machine the way I like it.
 
 Feel free to take inspirations ;-)
 
-** Installation
+## Installation
 
 For simplicity, everything is managed with GNU stow.
 
 It is important to use the option --no-folding:
 
-stow --no-folding {{{PACKAGE-NAME}}}
+   stow --no-folding {{{PACKAGE-NAME}}}
 
 TODO: Finish this
 
