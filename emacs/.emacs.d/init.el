@@ -2,12 +2,15 @@
 
 ;; Author: Eric Seuret
 
+
+
+;;; Comentary:
 ;; This is ericst's Emacs configuragation file. Feel free to take
 ;; inspiration from it.
 
+;;; Code:
 
 ;;; MELPA & use-package
-
 ;; Installing MELPA
 (require 'package)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
@@ -39,6 +42,7 @@ There are two things you can do about this warning:
 (global-hl-line-mode 1)			; Highlight current line
 (show-paren-mode 1)			; Show matching parens
 (delete-selection-mode 1)		; Delete an replace selected text
+(setq column-number-mode t)             ; Display columns numbers by default
 
 ;; Backup files
 (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
@@ -52,6 +56,10 @@ There are two things you can do about this warning:
 ;; TODO: Set it correctly
 (setq auto-save-default nil)
 
+
+;;; Flyspell
+(add-hook 'text-mode-hook (lambda () (flyspell-mode 1)))
+(add-hook 'prog-mode-hook (lambda () (flyspell-prog-mode 1)))
 
 ;;; Core Packages
 
@@ -163,6 +171,25 @@ There are two things you can do about this warning:
   :ensure t
   :hook ((emacs-lisp-mode . outshine-mode)
 	 (scheme-mode . outshine-mode)))
+
+;;; C/C++ IDE
+;; https://nilsdeppe.com/posts/emacs-c++-ide
+(use-package flycheck
+  :ensure t
+  :config
+  (add-hook 'c++-mode-hook
+	    (lambda () (setq flycheck-clang-lnguage-standard "c++17")))
+  (global-flycheck-mode))
+
+(use-package irony
+  :ensure t)
+
+(use-package company-irony
+  :ensure t
+  :after (company)
+  :config
+  (add-to-list 'company-backends 'company-irony)
+  )
 
 
 ;;; Custom file
