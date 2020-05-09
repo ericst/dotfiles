@@ -1,0 +1,20 @@
+# -*- mode: snippet -*-
+# name: struct (move & copy)
+# key: struct
+# --
+struct ${1:struct-name} {
+
+       $1(){}
+ 
+       ~$1(){};	
+
+       $1(const $1& other){}
+
+       $1($1&& other) noexcept {}
+
+       $1& operator=(const $1& other){}
+
+       $1& operator=($1& other){}
+       
+       $0
+};

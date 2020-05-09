@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: for ( element-type element-name : array-name) {...}
+# key: for
+# --
+for (${1:element-type} ${2:element-name} : ${3:array-name}) {
+    $0
+}

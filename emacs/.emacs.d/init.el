@@ -78,6 +78,32 @@ There are two things you can do about this warning:
   :ensure t
   :hook (after-init . global-company-mode))
 
+;; YASnippet, provides handy snippets
+(use-package yasnippet
+  :ensure t
+  :after company
+  :config
+  (yas-global-mode 1))
+
+(use-package "xterm-color"
+  :ensure t
+  :init (require 'eshell)
+  :config
+  ;; eshell
+  (add-hook 'eshell-before-prompt-hook
+	    (lambda ()
+	      (setq xterm-color-preserve-properties t)))
+
+  (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+  (setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions))
+  (setenv "TERM" "xterm-256color")
+  (setq compilation-environment '("TERM=xterm-256color"))
+
+  ;; compilation
+  (defun my/advice-compilation-filter (f proc string)
+    (funcall f proc (xterm-color-filter string)))
+  (advice-add 'compilation-filter :around #'my/advice-compilation-filter))
+
 ;; Helm augments the interactivity of emacs.
 (use-package helm
   :ensure t
@@ -112,7 +138,6 @@ There are two things you can do about this warning:
 	    ("e" er/expand-region "expand")
 	    ("c" er/contract-region "contract")))
 
-
 ;;; Projectile
 
 ;; Projectile is a project interaction library.
@@ -132,7 +157,7 @@ There are two things you can do about this warning:
 ;; Displays a dashboard with recent files and projects.
 (use-package dashboard
   :ensure t
-  :config (progn 
+  :config (progn
 	    (dashboard-setup-startup-hook)
 	    (setq initial-buffer-choice (lambda () (get-buffer
 						    "*dashboard*")))
@@ -157,7 +182,7 @@ There are two things you can do about this warning:
 	 (scheme-mode . paredit-mode)))
 
 (use-package geiser
-  :ensure t) 
+  :ensure t)
 
 
 ;;; Outshine
