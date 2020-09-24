@@ -145,6 +145,16 @@ This helps with discoverability in general.
     :config (which-key-mode))
 #+end_src
 
+** Ivy
+=ivy= is a completion framework for emacs. 
+I bring it in via counsel.
+
+#+begin_src emacs-lisp
+  (use-package counsel
+    :bind (("C-s" . swiper))
+    :init (ivy-mode 1))
+#+end_src
+
 ** Company
 ~company~ is a general auto-complete framework.
 Althought it works quite well out-of-the-box, it does need here and there some specialized backends.
@@ -200,6 +210,12 @@ I also don't want some minor adaptations to the ellipsis.
 #+begin_src emacs-lisp
   (setq org-startup-indented t
         org-ellipsis "⤵")
+#+end_src
+
+=org-bullets= replaces =*= in from headers with nice bullets 
+#+begin_src emacs-lisp
+  (use-package org-bullets
+    :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 #+end_src
 
 ** Source blocks
