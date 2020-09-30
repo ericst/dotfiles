@@ -208,7 +208,13 @@ It needs to be loaded after company in order con be properly work with it.
     :config  (yas-global-mode 1))
 #+end_src
 
-** Hydra
+** Avy
+#+begin_src emacs-lisp
+  (use-package avy
+    :bind (("C-:" . avy-goto-char)))
+#+end_src
+
+- →** Hydra
 ~hydra~ allows to creat sticky key-bindings.
 This is pratical to create micro-modes /à la/ vim.
 Below we define a zoom hydra with an ~<f2>~ binding.
