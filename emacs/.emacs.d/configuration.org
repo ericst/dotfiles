@@ -146,6 +146,38 @@ This helps with discoverability in general.
     :config (which-key-mode))
 #+end_src
 
+** God mode
+=god-mode= is enables a sort of modal editing capabilities for Emacs.
+
+When enabled, it transform =C-c C-r= in =cr=.
+
+Rules are simple when in =god-mode=:
+
+- =x= → =C-x= (all inputs are assumed with control modifier)
+- =xs= → =C-x C-s= (chaining is possible)
+- =x s= → =C-x s= (using space remove the control modifier)
+- =gx= → =M-x= (g is used to indicate the meta modifier)
+- =Gx= → =C-M-x= (G is used for the combination of control and meta modifiers)
+- =12n= → =M-12 C-n= (Digit arguments can be used)
+- =uco= → =C-u C-u C-o= (Universal arguments are specified with u)
+
+I use the =cursor-type= as an indicator when I am in =god-mode=.
+If it is a hollow box, it means that I am in =god-mode=
+
+#+begin_src emacs-lisp
+  (setq-default cursor-type 'box)
+
+  (use-package god-mode
+    :bind (("<escape>" . god-local-mode))
+    :config
+    (defun ese/update-cursor ()
+      (setq cursor-type (if (or god-local-mode buffer-read-only)
+                            'hollow
+                          'box)))
+    (add-hook 'god-mode-enabled-hook 'ese/update-cursor)
+    (add-hook 'god-mode-disabled-hook 'ese/update-cursor))
+#+end_src
+
 ** Ivy
 =ivy= is a completion framework for emacs. 
 I bring it in via counsel.
