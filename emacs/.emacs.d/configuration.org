@@ -333,4 +333,11 @@ This is to keep my init.el clean. Every customization should go into ~custom.el~
   (load custom-file)
 #+end_src
 
+* Server start
+Even if I don't always use it, I like to have the server started.
+It comes handy when sometimes I loose the X-Server connection on Emacs under WSL on Windows.
+
+#+begin_src emacs-lisp
+  (server-start)
+#+end_src
 
