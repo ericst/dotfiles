@@ -2,7 +2,8 @@
 ;; Meant to be installed with: ~guix package -m guix-manifest.scm~
 
 (specifications->manifest
- '("stow"
+ '("glibc-locales"
+   "stow"
    "font-fira-code"
    "font-fira-mono"
    "font-fira-sans"
