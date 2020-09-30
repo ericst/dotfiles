@@ -7,14 +7,14 @@
 - [[https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org][Harry R. Schwartz' Configuration]]
 - [[https://github.com/daviwil/runemacs][daviwil's emacs from scratch series]]
 
-* Ideas & Todos [0%]
-- [-] Basic functionality [20%]
-  - [ ] Project management with ~projectile~
-  - [ ] Setup ~ivy~
-  - [ ] Jumps with ~avy~
+* Ideas & Todos [20%]
+- [-] Basic functionality [80%]
+  - [X] Project management with ~projectile~
+  - [X] Setup ~ivy~
+  - [X] Jumps with ~avy~
   - [ ] Take a look at ~dumb-jump~
   - [X] Configure ~flyspell~
-- [ ] Fix autosave [[* Backup files and autosave]]
+- [X] Fix autosave [[* Backup files and autosave]]
 - [ ] Start better key binding description
 - [-] Org-mode [25%]
   - [X] Org-mode UI
@@ -241,6 +241,47 @@ We do define an hydra for it.
               ("c" er/contract-region "contract")))
 #+end_src
 
+** Project Management
+=projectile= is a project management system for Emacs. 
+It provide some nice features working from the root of a project.
+Among those ones:
+
+- Jump to a file in project
+- Compile project
+- Kill all project buffers
+- Grep through project
+- ...
+
+The project root is detected either by the presence of a vc file (git, mercurial, ...), 
+or a special package definition file (lein, maven, ...).
+Alternatively, you can force it to be a project by creation an empty =.projectile= in the root directory.
+
+#+begin_src emacs-lisp
+  (use-package projectile
+    :after (counsel)
+    :config
+    (setq projectile-completion-system 'ivy)
+    (projectile-mode 1)
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+#+end_src
+
+For proper integration with =ivy= we use the =counsel-projectile=
+
+#+begin_src emacs-lisp
+  (use-package counsel-projectile
+    :after (counsel projectile)
+    :config
+    (counsel-projectile-mode t))
+#+end_src
+
+** Git porcelain
+=magit= is user interface for git.
+
+#+begin_src emacs-lisp
+  (use-package magit
+    :bind (("C-c g" . magit-status)))
+#+end_src
+
 * Org-mode
 ** UI adaptation
 I want to have ~org-indent-mode~ on by default. 
@@ -269,7 +310,7 @@ Quickly add source blocks of emacs-lisp with ~C-c C-, el~.
                '("el" . "src emacs-lisp"))
 #+end_src
 
-* Languages
+* Programming
 ** Lisp & Schemes
 For lisps and schemes we basically want paredit mode always on.
 #+begin_src emacs-lisp
