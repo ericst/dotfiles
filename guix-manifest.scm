@@ -2,8 +2,7 @@
 ;; Meant to be installed with: ~guix package -m guix-manifest.scm~
 
 (specifications->manifest
- '("glibc-locales"
-   "stow"
+ '("stow"
    "font-fira-code"
    "font-fira-mono"
    "font-fira-sans"
@@ -12,4 +11,11 @@
    "emacs"
    "grep"
    "ripgrep"
-   "the-silver-searcher"))
+   "the-silver-searcher"
+   "recutils"
+   "aspell"
+   "aspell-dict-fr"
+   "aspell-dict-en"
+   "aspell-dict-es"
+   "aspell-dict-de"
+   "aspell-dict-ru"))
