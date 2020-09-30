@@ -105,7 +105,8 @@ Backup files are usefull, but I don't want them to clutter my working directory.
 So we pack them away in ~\~/.emacs.d/backups~
 
 I still need to look at auto-saves.
-For the moment no autosave.
+
+By default auto-save are made into =/tmp=, which is okay.
 
 #+begin_src emacs-lisp
   (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
@@ -115,7 +116,7 @@ For the moment no autosave.
 	kept-old-versions 2
 	version-control t)
 
-  (setq auto-save-default nil)
+  (setq auto-save-default t)
 #+end_src
 
 ** Theme and font
