@@ -30,6 +30,9 @@ There are two things you can do about this warning:
   (require 'use-package))
 
 ;;; Load Org Configuration
+;; As my configuration will be symlinked by stow.
+;; It is better to follow the symlinked files.
+(setq vc-follow-symlinks t)
 (org-babel-load-file "~/.emacs.d/configuration.org")
 
 (provide 'init)
