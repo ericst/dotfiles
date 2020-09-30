@@ -6,13 +6,15 @@
 * Inspirations & References
 - [[https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org][Harry R. Schwartz' Configuration]]
 - [[https://github.com/daviwil/runemacs][daviwil's emacs from scratch series]]
+- [[https://github.com/alhassy/emacs.d][alhassy's A Life Configuring Emacs]]
 
-* Ideas & Todos [20%]
-- [-] Basic functionality [80%]
+
+* Ideas & Todos [40%]
+- [X] Basic functionality [100%]
   - [X] Project management with ~projectile~
   - [X] Setup ~ivy~
   - [X] Jumps with ~avy~
-  - [ ] Take a look at ~dumb-jump~
+  - [X] Take a look at ~dumb-jump~
   - [X] Configure ~flyspell~
 - [X] Fix autosave [[* Backup files and autosave]]
 - [ ] Start better key binding description
@@ -307,10 +309,21 @@ Quickly add source blocks of emacs-lisp with ~C-c C-, el~.
   (setq org-src-window-setup 'current-window)
 
   (add-to-list 'org-structure-template-alist
-               '("el" . "src emacs-lisp"))
+               '("sel" . "src emacs-lisp"))
 #+end_src
 
 * Programming
+** Jumping to definitions & references
+=dumb-jump= enables "jump to definition" for more than 40 languages.
+It favors a just working approach by using a grep in the background.
+
+Adding it to x-ref allows us to search by using =M-.=.
+
+#+begin_src emacs-lisp
+  (use-package dumb-jump
+    :config
+    (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+#+end_src
 ** Lisp & Schemes
 For lisps and schemes we basically want paredit mode always on.
 #+begin_src emacs-lisp
