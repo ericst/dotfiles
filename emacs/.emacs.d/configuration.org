@@ -8,8 +8,7 @@
 - [[https://github.com/daviwil/runemacs][daviwil's emacs from scratch series]]
 - [[https://github.com/alhassy/emacs.d][alhassy's A Life Configuring Emacs]]
 
-
-* Ideas & Todos [40%]
+* Ideas & Todos [60%]
 - [X] Basic functionality [100%]
   - [X] Project management with ~projectile~
   - [X] Setup ~ivy~
@@ -18,12 +17,12 @@
   - [X] Configure ~flyspell~
 - [X] Fix autosave [[* Backup files and autosave]]
 - [ ] Start better key binding description
-- [-] Org-mode [25%]
+- [-] Org-mode [50%]
   - [X] Org-mode UI
-  - [ ] Org-mode System
+  - [X] Org-mode System
   - [ ] Org-mode Capture
   - [ ] Org-mode Daily Logs
-- [ ] Clean up hooks in [[* Lisp & Schemes]]
+- [X] Clean up hooks in [[* Lisp & Schemes]]
     
 * Use-package
 The file ~init.el~ makes sure that ~use-package~ is installed. 
@@ -90,6 +89,12 @@ Text edition is important. I want to:
   (column-number-mode 1)
 #+end_src
 
+Subword allows to treat CamelCaseNames as three different words.
+
+#+begin_src emacs-lisp
+  (global-subword-mode 1)
+#+end_src
+
 ** Line numbers
 Basically, I want line numbers to be displayed except for org and repl-type modes.
 
@@ -102,7 +107,7 @@ Basically, I want line numbers to be displayed except for org and repl-type mode
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+end_src
 
-** Backup files and autosave
+** Backup files and autosave auto asave
 Backup files are usefull, but I don't want them to clutter my working directory. 
 So we pack them away in ~\~/.emacs.d/backups~
 
@@ -131,7 +136,19 @@ I like the ~one-dark~ theme.
   (set-face-attribute 'default nil :font "Fira Code")
 #+end_src
 
+** Scratch buffer
+This makes a rather useful scratch buffer message.
+
+#+begin_src emacs-lisp
+  (setq initial-scratch-message
+        (concat ";; Welcome. This is Emacs version " emacs-version
+                " with Org-mode version " org-version ".\n"
+                ";; Happy Hacking!\n"))
+#+end_src
+
 * Core Functionality
+This section covers functionality imported by packages.
+
 ** Flyspell
 Flyspell is helpful, so we enable it also for comments.
 #+begin_src emacs-lisp
@@ -186,8 +203,20 @@ I bring it in via counsel.
 
 #+begin_src emacs-lisp
   (use-package counsel
-    :bind (("C-s" . swiper))
+    :bind (("C-s" . swiper)
+           ("M-x" . counsel-M-x)
+           ("C-h f" . counsel-describe-function)
+           ("C-h v" . counsel-describe-variable)
+           ("C-x b" . ivy-switch-buffer))
     :init (ivy-mode 1))
+#+end_src
+
+~ivy-rich~ improves what is displayed into the ivy selection buffer.
+
+#+begin_src emacs-lisp
+  (use-package ivy-rich
+    :after counsel
+    :init (ivy-rich-mode 1))
 #+end_src
 
 ** Company
@@ -211,12 +240,18 @@ It needs to be loaded after company in order con be properly work with it.
 #+end_src
 
 ** Avy
+Avy allows to jump to a specified character.
+
+As I use Swiper (see Ivy), I don't really need a backward I-Search.
+
+So let's use =C-r= to jump to a character.
+
 #+begin_src emacs-lisp
   (use-package avy
-    :bind (("C-:" . avy-goto-char)))
+    :bind (("C-r" . avy-goto-char)))
 #+end_src
 
-- →** Hydra
+** Hydra
 ~hydra~ allows to creat sticky key-bindings.
 This is pratical to create micro-modes /à la/ vim.
 Below we define a zoom hydra with an ~<f2>~ binding.
@@ -284,7 +319,54 @@ For proper integration with =ivy= we use the =counsel-projectile=
     :bind (("C-c g" . magit-status)))
 #+end_src
 
+** Moving Text Around
+Allows using of Org-mode's =M-↑, M-↓= in other modes too.
+
+ #+begin_src emacs-lisp
+   (use-package move-text
+     :config (move-text-default-bindings))
+ #+end_src
+
 * Org-mode
+Some general notes on my system. Inspired by [[https://fortelabs.co/blog/para/][PARA]]
+- ~~exocortex/projects/~ :: Contains projects. Which is collection of tasks with a common, time-delimited goal.
+- ~~exocortex/spheres/~ :: Contains spheres of {influence, responsibilities}. Which are areas, spheres or interest where a standard to be maintained over time.
+- ~~exocortex/logs/~ :: Contains logs, journal of events. Mainly as a record keeping mechanism.
+- ~~exocortex/notes/~ :: Contains permanent notes on topics. At the end it should look like the described method in this book [fn:1].
+- ~~exocortex/archives/~ :: When projects are finished, or spheres become obsolete, I move them here.
+
+** Agenda files
+Places to look for agenda items.
+
+#+begin_src emacs-lisp
+  (setq org-agenda-files '("~/exocortex/projects"
+                           "~/exocortex/spheres"))
+#+end_src
+
+** Todo items
+I don't like the Todo keyword, I prefer task, it is more general I think.
+
+#+begin_src emacs-lisp
+  (setq-default org-todo-keywords
+                '((sequence "TASK(t)" "NEXT(n!)" "WAITING(w@)" "|" "DONE(d!/@)" "CANCELED(c@/@)")))
+
+  (setq org-log-into-drawer t)
+#+end_src
+
+** Source blocks
+When editing code blocks, use the current window rather than poping open a new one.
+
+Quickly add source blocks of emacs-lisp with ~C-c C-, el~.
+
+#+begin_src emacs-lisp
+  (setq org-src-window-setup 'current-window)
+
+  (add-to-list 'org-structure-template-alist
+               '("sel" . "src emacs-lisp"))
+#+end_src
+
+General notes on my system. 
+
 ** UI adaptation
 I want to have ~org-indent-mode~ on by default. 
 I also don't want some minor adaptations to the ellipsis.
@@ -298,18 +380,6 @@ I also don't want some minor adaptations to the ellipsis.
 #+begin_src emacs-lisp
   (use-package org-bullets
     :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-#+end_src
-
-** Source blocks
-When editing code blocks, use the current window rather than poping open a new one.
-
-Quickly add source blocks of emacs-lisp with ~C-c C-, el~.
-
-#+begin_src emacs-lisp
-  (setq org-src-window-setup 'current-window)
-
-  (add-to-list 'org-structure-template-alist
-               '("sel" . "src emacs-lisp"))
 #+end_src
 
 * Programming
@@ -337,6 +407,12 @@ For lisps and schemes we basically want paredit mode always on.
 
     (use-package geiser)
 #+end_src
+** C#
+Just the basic to be able to edit c# files.
+
+#+begin_src emacs-lisp
+  (use-package csharp-mode)
+#+end_src
 
 * Custom file
 This is to keep my init.el clean. Every customization should go into ~custom.el~
@@ -354,3 +430,7 @@ It comes handy when sometimes I loose the X-Server connection on Emacs under WSL
   (server-start)
 #+end_src
 
+* Footnotes
+
+[fn:1] Ahrens, Sönke. How to Take Smart Notes: One Simple Technique to Boost Writing, Learning and Thinking  for Students, Academics and Nonfiction Book Writers, n.d.
+ 
