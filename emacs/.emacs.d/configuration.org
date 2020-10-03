@@ -32,10 +32,11 @@ Always compile packages, and use the news version available.
 * Personal information
 #+begin_src emacs-lisp
   (setq user-full-name "Eric Seuret"
-	user-mail-address "hello@ericst.ch"
-	calendar-latitude 47.39144
-	calendar-longitude 8.0513
-	calendar-location-name "Aarau, Switzerland")
+        user-mail-address "hello@ericst.ch"
+        calendar-week-start-day 1
+        calendar-latitude 47.39144
+        calendar-longitude 8.0513
+        calendar-location-name "Aarau, Switzerland")
 #+end_src
 
 * General Settings
