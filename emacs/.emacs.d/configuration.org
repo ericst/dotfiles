@@ -8,7 +8,7 @@
 - [[https://github.com/daviwil/runemacs][daviwil's emacs from scratch series]]
 - [[https://github.com/alhassy/emacs.d][alhassy's A Life Configuring Emacs]]
 
-* Ideas & Todos [60%]
+* Ideas & Todos [80%]
 - [X] Basic functionality [100%]
   - [X] Project management with ~projectile~
   - [X] Setup ~ivy~
@@ -17,11 +17,11 @@
   - [X] Configure ~flyspell~
 - [X] Fix autosave [[* Backup files and autosave]]
 - [ ] Start better key binding description
-- [-] Org-mode [50%]
+- [X] Org-mode [100%]
   - [X] Org-mode UI
   - [X] Org-mode System
-  - [ ] Org-mode Capture
-  - [ ] Org-mode Daily Logs
+  - [X] Org-mode Capture
+  - [X] Org-mode Daily Logs
 - [X] Clean up hooks in [[* Lisp & Schemes]]
     
 * Use-package
@@ -331,7 +331,7 @@ Allows using of Org-mode's =M-↑, M-↓= in other modes too.
 Some general notes on my system. Inspired by [[https://fortelabs.co/blog/para/][PARA]]
 - ~~exocortex/projects/~ :: Contains projects. Which is collection of tasks with a common, time-delimited goal.
 - ~~exocortex/spheres/~ :: Contains spheres of {influence, responsibilities}. Which are areas, spheres or interest where a standard to be maintained over time.
-- ~~exocortex/logs/~ :: Contains logs, journal of events. Mainly as a record keeping mechanism.
+- ~~exocortex/logs.org~ :: Contains logs, journal of events. Mainly as a record keeping mechanism.
 - ~~exocortex/notes/~ :: Contains permanent notes on topics. At the end it should look like the described method in this book [fn:1].
 - ~~exocortex/archives/~ :: When projects are finished, or spheres become obsolete, I move them here.
 
@@ -348,9 +348,26 @@ I don't like the Todo keyword, I prefer task, it is more general I think.
 
 #+begin_src emacs-lisp
   (setq-default org-todo-keywords
-                '((sequence "TASK(t)" "NEXT(n!)" "WAITING(w@)" "|" "DONE(d!/@)" "CANCELED(c@/@)")))
+                '((sequence "TASK(t)" "NEXT(n!)" "WAITING(w@)" "FUTURE(f)" "|" "DONE(d!/@)" "CANCELED(c@/@)")))
 
   (setq org-log-into-drawer t)
+#+end_src
+
+** Capture configuration
+This is the capture configuration. 
+Basically, I have only two basic templates:
+
+1. Quick one for new tasks that go directly in the inbox
+2. One that I use for logging information
+
+#+begin_src emacs-lisp
+  (bind-key "C-c o c" 'org-capture)
+
+  (setq org-capture-templates
+        '(("t" "Task" entry (file+olp "~/exocortex/spheres/scheduler.org" "Inbox")
+           "* TASK %?\n %i\n")
+          ("l" "Log entry" entry (file+datetree "~/exocortex/logs.org")
+           "* %?\n %i\n")))
 #+end_src
 
 ** Source blocks
