@@ -116,7 +116,7 @@ I like the ~one-dark~ theme.
 
 #+begin_src emacs-lisp
   (use-package one-themes
-    :init (load-theme 'one-dark t))
+    :init (load-theme 'one-light t))
 
   (set-face-attribute 'default nil :font "Fira Code")
 #+end_src
