@@ -30,6 +30,7 @@ Always compile packages, and use the news version available.
 #+end_src
 
 * Personal information
+Here are some basic settings such as my identity and location.
 #+begin_src emacs-lisp
   (setq user-full-name "Eric Seuret"
         user-mail-address "hello@ericst.ch"
@@ -317,16 +318,16 @@ Allows using of Org-mode's =M-↑, M-↓= in other modes too.
 * Exocortex
 Quick description of my exocortex.
 
-- ~~exocortex/org/~ :: Collection of org files used to manage time.
+- ~~/exocortex/ops~ :: Collection of org files used to manage time. Ops stands for operations.
 - ~~exocortex/logs.org~ :: Contains a log, journal of events. Mainly as a record keeping mechanism.
-- ~~exocortex/notes/~ :: Contains permanent notes on topics. At the end it should look like the described method in this book [fn:1].
+- ~~exocortex/memex/~ :: Contains permanent notes on topics. At the end it should look like the described method in this book [fn:1]. Memex stands for Memory Expander.
 - ~~exocortex/archives/~ :: The idea is to keep old org files or task items.
 
 ** Agenda files
 Places to look for agenda items.
 
 #+begin_src emacs-lisp
-  (setq org-agenda-files '("~/exocortex/org"))
+  (setq org-agenda-files '("~/exocortex/ops"))
 #+end_src
 
 ** Todo items
@@ -351,7 +352,7 @@ templates:
   (bind-key "C-c o c" 'org-capture)
 
   (setq org-capture-templates
-        '(("t" "Task" entry (file+olp "~/exocortex/org/scheduler.org" "Inbox")
+        '(("t" "Task" entry (file+olp "~/exocortex/ops/scheduler.org" "Inbox")
            "* TASK %?\n %i\n")
           ("l" "Log entry" entry (file+datetree "~/exocortex/logs.org")
            "* %?\n %i\n")))
