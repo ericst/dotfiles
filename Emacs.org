@@ -66,7 +66,7 @@ Here are some basic settings such as my identity and location.
 ** Org-mode
 This is to make sure org-mode is load for the rest of the configuration.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle ../.emacs.d/init.el
     (require 'org)
 #+end_src
 ** Window and frame
@@ -155,9 +155,9 @@ This makes a rather useful scratch buffer message.
 
 #+begin_src emacs-lisp :tangle ../.emacs.d/init.el
   (setq initial-scratch-message
-        (concat ";; Welcome. This is Emacs version " emacs-version
-                " with Org-mode version " "org-version" ".\n"
-                ";; Happy Hacking!\n"))
+	(concat ";; Welcome. This is Emacs version " emacs-version
+		" with Org-mode version " org-version ".\n"
+		";; Happy Hacking!\n"))
 #+end_src
 
 * Core Functionality
