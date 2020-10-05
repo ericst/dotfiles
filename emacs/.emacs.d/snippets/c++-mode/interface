@@ -1,9 +1,0 @@
-# -*- mode: snippet -*-
-# name: struct (interface, purely virtual)
-# key: struct
-# --
-struct ${1:interface-name} {
-       virtual ~$1() = default;
-       virtual ${2:fn-type} ${3:fn-name}(${4:fn-args}) = 0;
-       $0
-};
