@@ -3,11 +3,6 @@
 #+EMAIL: hello@ericst.ch
 #+OPTIONS: toc:nil num:nil
 
-* Inspirations & References
-- [[https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org][Harry R. Schwartz' Configuration]]
-- [[https://github.com/daviwil/runemacs][daviwil's emacs from scratch series]]
-- [[https://github.com/alhassy/emacs.d][alhassy's A Life Configuring Emacs]]
-
 * Use-package
 The file ~init.el~ makes sure that ~use-package~ is installed. 
 
@@ -20,8 +15,8 @@ it, which makes for a bad experience when starting on a new box.
   ;; Installing MELPA
   (require 'package)
   (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-		      (not (gnutls-available-p))))
-	 (proto (if no-ssl "http" "https")))
+                      (not (gnutls-available-p))))
+         (proto (if no-ssl "http" "https")))
     (when no-ssl (warn "\
   Your version of Emacs does not support SSL connections,
   which is unsafe because it allows man-in-the-middle attacks.
@@ -64,10 +59,12 @@ Here are some basic settings such as my identity and location.
 
 * General Settings
 ** Org-mode
-This is to make sure org-mode is load for the rest of the configuration.
+This is to make sure org-mode is load for the rest of the
+configuration. Also, we want the last version of org-mode.
 
 #+begin_src emacs-lisp :tangle ../.emacs.d/init.el
-    (require 'org)
+  (use-package org)
+  (require 'org)
 #+end_src
 ** Window and frame
 We start by adapting the window by removing what we don't need.
@@ -367,29 +364,92 @@ I don't like the Todo keyword, I prefer task, it is more general I think.
   (setq org-log-into-drawer t)
 #+end_src
 
+** Projects generation
+
+The idea is that I generate a separate file for each project. Each
+short-lived project (that is project with a given goal and end date)
+also has an id to identify the uniquely and distinguish them from
+long-lived projects which are just identified by a slug.
+
+#+begin_src emacs-lisp :tangle ../.emacs.d/init.el
+  (defun ese/list-existing-ids (directory)
+    "Returns a list of project ids in the directory as strings"
+    (split-string
+     (shell-command-to-string (concat "ls " directory " | grep -Eo \"^[0-9]+\""))))
+
+
+  (defun ese/random-unique-id (existing-ids)
+    "Randomly creates a project id non-yet existing in the given list"
+    (let ((project-id (number-to-string (+ 10000 (random 89999)))))
+      (if (seq-contains-p existing-ids project-id)
+          (ese/get-project-numbers existing-ids)
+        project-id)))
+
+  (defun ese/create-new-project-file ()
+    "Create a new project file"
+    (interactive)
+    (let* ((id (ese/random-unique-id (append
+                                        (ese/list-existing-ids "~/exocortex/ops/")
+                                        (ese/list-existing-ids "~/exocortex/archives/"))))
+           (slug (read-string (concat "Project " id "'s slug:"))))
+       (expand-file-name (format "%s-%s.org" id slug) "~/exocortex/ops/")))
+#+end_src
+
 ** Capture 
-Capture new items
 This is the capture configuration. Basically, I have only two basic
 templates:
 
 1. Quick one for new tasks that go directly in the inbox
 2. One that I use for logging information
 
+The rests are here to create new projects.
+
 #+begin_src emacs-lisp :tangle ../.emacs.d/init.el
   (bind-key "C-c o c" 'org-capture)
+
+
 
   (setq org-capture-templates
         '(("t" "Task" entry (file+olp "~/exocortex/ops/scheduler.org" "Inbox")
            "* TASK %?\n %i\n")
-          ("l" "Log entry" entry (file+datetree "~/exocortex/logs.org")
-           "* %?\n %i\n")))
+          ("l" "Log entry" entry (file+olp+datetree "~/exocortex/logs.org")
+           "* %?\n %i\n")
+          ("p" "New Project" plain (file ese/create-new-project-file)
+           "#+TITLE: %^{TITLE}\n#+OPTIONS: toc:nil num:nil\n\n* Goal\n%?")))
+#+end_src
+
+** Agenda
+I like to keep things simple. The agenda shows scheduled tasks as well
+as next tasks. Everything else is hidden.
+
+It is only during the weekly review that I want to see per projects
+all tasks.
+
+I also have a view to use during planning with tasks that are
+unscheduled and don't have any deadline. Those are good candidates to
+look at during a weekly review.
+
+#+begin_src emacs-lisp :tangle ../.emacs.d/init.el
+  (bind-key "C-c o a" 'org-agenda)
+
+  (setq org-agenda-custom-commands
+        '(("a" "Agenda for the current week"
+           ((agenda "")
+            (todo "NEXT")))
+          ("u" "Unscheduled Tasks"
+           ((tags-todo "-FUTURE-DEADLINE={.+}-SCHEDULED={.+}")))
+          ("f" "Future Tasks"
+           ((todo "FUTURE")))))
 #+end_src
 
 ** Refiling
 I want to be able to refile anywhere in my current agenda files. It is
 really important.
 
+I also want that to be organized as a hierarchy.
+
 #+begin_src emacs-lisp :tangle ../.emacs.d/init.el
+  (setq org-refile-use-outline-path file)
   (setq org-refile-targets '((nil . (:maxlevel . 4))
                              (org-agenda-files . (:maxlevel . 4))))
 #+end_src
@@ -420,7 +480,9 @@ I also don't want some minor adaptations to the ellipsis.
 =org-bullets= replaces =*= in from headers with nice bullets 
 #+begin_src emacs-lisp :tangle ../.emacs.d/init.el
   (use-package org-bullets
-    :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+    :custom (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●" "○" "●"))
+    :init 
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 #+end_src
 
 * Programming
@@ -446,7 +508,7 @@ For lisps and schemes we basically want paredit mode always on.
                           scheme-mode-hook))
             (add-hook mode (lambda () (paredit-mode 1)))))
 
-    (use-package geiser)
+  (use-package geiser)
 #+end_src
 ** C#
 Just the basic to be able to edit c# files.
@@ -488,6 +550,11 @@ This makes for a nice integration of the server with the desktop
    StartupWMClass=Emacs
    Keywords=Text;Editor;
  #+end_src
+
+* Inspirations & References
+- [[https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org][Harry R. Schwartz' Configuration]]
+- [[https://github.com/daviwil/runemacs][daviwil's emacs from scratch series]]
+- [[https://github.com/alhassy/emacs.d][alhassy's A Life Configuring Emacs]]
 
 * Footnotes
 
