@@ -430,16 +430,17 @@ unscheduled and don't have any deadline. Those are good candidates to
 look at during a weekly review.
 
 #+begin_src emacs-lisp :tangle ../.emacs.d/init.el
-  (bind-key "C-c o a" 'org-agenda)
+    (bind-key "C-c o a" 'org-agenda)
 
-  (setq org-agenda-custom-commands
-        '(("a" "Agenda for the current week"
-           ((agenda "")
-            (todo "NEXT")))
-          ("u" "Unscheduled Tasks"
-           ((tags-todo "-FUTURE-DEADLINE={.+}-SCHEDULED={.+}")))
-          ("f" "Future Tasks"
-           ((todo "FUTURE")))))
+    (setq org-agenda-custom-commands
+          '(("a" "Agenda for the current week"
+             ((agenda "")
+              (todo "NEXT")))
+            ("u" "Unscheduled Tasks"
+             ((tags-todo "-FUTURE-DEADLINE={.+}-SCHEDULED={.+}")
+              (todo "NEXT")))
+            ("f" "Future Tasks"
+             ((todo "FUTURE")))))
 #+end_src
 
 ** Refiling
