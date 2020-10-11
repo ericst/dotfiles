@@ -450,7 +450,7 @@ really important.
 I also want that to be organized as a hierarchy.
 
 #+begin_src emacs-lisp :tangle ../.emacs.d/init.el
-  (setq org-refile-use-outline-path file)
+  (setq org-refile-use-outline-path 'file)
   (setq org-refile-targets '((nil . (:maxlevel . 4))
                              (org-agenda-files . (:maxlevel . 4))))
 #+end_src
