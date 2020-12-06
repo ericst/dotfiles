@@ -339,6 +339,16 @@ Allows using of Org-mode's =M-↑, M-↓= in other modes too.
      :config (move-text-default-bindings))
 #+end_src
 
+** Dead Keys
+For some reason, dead keys don't seem to work properly on my
+system. The following corrects it on starting emacs. It comes from:
+[[https://www.emacswiki.org/emacs/DeadKeys][Dead Keys on Emacs Wiki]]
+
+#+begin_src emacs-lisp :tangle ../.emacs.d/init.el
+  (require 'iso-transl)
+#+end_src
+
+
 * Exocortex
 Quick description of my exocortex.
 
