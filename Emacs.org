@@ -1,6 +1,6 @@
 #+TITLE: ericst's Emacs configuration
 #+AUTHOR: Eric Seuret
-#+EMAIL: hello@ericst.ch
+#+EMAIL: eric@ericst.ch
 #+OPTIONS: toc:nil num:nil
 
 * Use-package
@@ -347,7 +347,6 @@ system. The following corrects it on starting emacs. It comes from:
 #+begin_src emacs-lisp :tangle ../.emacs.d/init.el
   (require 'iso-transl)
 #+end_src
-
 
 * Exocortex
 Quick description of my exocortex.
