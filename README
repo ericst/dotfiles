@@ -1,18 +1,63 @@
-# ericst's dot files
+			  ___________________
 
-Eric Seuret [mailto:eric@ericst.ch](eric@ericst.ch)
+			   ERICST'S DOTFILES
 
-These are my config files to configure a machine the way I like it.
+			      Eric Seuret
+			  ___________________
 
-Feel free to take inspirations ;-)
 
-## Installation
+Table of Contents
+_________________
 
-For simplicity, everything is managed with GNU stow.
+1. Introduction
+2. The configurations
+3. Tangle Script
 
-It is important to use the option --no-folding:
 
-   stow --no-folding {{{PACKAGE-NAME}}}
 
-TODO: Finish this
 
+
+1 Introduction
+==============
+
+  Those are my dotfiles. They are supplied in the form of literate Emacs
+  org-mode.
+
+  One way of installing them is to open the desired file and run
+  `org-babel-tangle-file' on them. However, a small script `tangle.sh'
+  is provided for convenience. You can therefore use it as is:
+
+  ,----
+  | source tangle.sh <file-to-tangle>
+  `----
+
+
+2 The configurations
+====================
+
+  The following are my configuration files. You can activate them by
+  either opening them in emacs an running `org-babel-tangle-file' (`C-c
+  C-v t') or, as explained in the introduction, by using the `tangle.sh'
+  script.
+
+  [Emacs.org]
+        My emacs configuration.
+
+
+[Emacs.org] <file:Emacs.org>
+
+
+3 Tangle Script
+===============
+
+  The tangle script is provided as a script to be sourced because I
+  sometimes will execute on GNU guix installations. It is therefore
+  difficult to know in advance where bash will be located for the
+  shebang.
+
+  ,----
+  | echo "Running org-babel-tangle-file on $1"
+  | emacs --batch \
+  |       --eval "(require 'org)" \
+  |       --eval "(org-babel-tangle-file \"$1\")"
+  `----

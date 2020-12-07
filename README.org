@@ -1,0 +1,50 @@
+#+TITLE: ericst's Dotfiles
+#+AUTHOR: Eric Seuret
+#+EMAIL: eric@ericst.ch
+
+* Introduction
+Those are my dotfiles. They are supplied in the form of literate Emacs
+org-mode.
+
+One way of installing them is to open the desired file and run
+~org-babel-tangle-file~ on them. However, a small script ~tangle.sh~
+is provided for convenience. You can therefore use it as is:
+
+#+begin_src bash :tangle no
+  source tangle.sh <file-to-tangle>
+#+end_src
+
+* The configurations
+The following are my configuration files. You can activate them by
+either opening them in emacs an running ~org-babel-tangle-file~ (~C-c
+C-v t~) or, as explained in the introduction, by using the ~tangle.sh~
+script.
+
+- [[file:Emacs.org][Emacs.org]] :: My emacs configuration.
+
+* Tangle Script
+The tangle script is provided as a script to be sourced because I
+sometimes will execute on GNU guix installations. It is therefore
+difficult to know in advance where bash will be located for the
+shebang. 
+
+#+begin_src bash :tangle tangle.sh
+  echo "Running org-babel-tangle-file on $1"
+  emacs --batch \
+        --eval "(require 'org)" \
+        --eval "(org-babel-tangle-file \"$1\")"
+#+end_src
+
+* Generation of README                                             :noexport:
+The following code when executed with ~C-c C-c~ will export this file
+as a nice README for consumption on the terminal, or display on git
+websites.
+
+#+begin_src emacs-lisp :tangle no :results silent
+  (setq-local org-export-show-temporary-export-buffer 'nil)
+  (org-ascii-export-as-ascii)
+  (set-buffer "*Org ASCII Export*")
+  (write-file "README")
+  (kill-buffer "README")
+#+end_src
+
