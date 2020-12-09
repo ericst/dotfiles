@@ -1,63 +1,79 @@
-			  ___________________
-
+			  ━━━━━━━━━━━━━━━━━━━
 			   ERICST'S DOTFILES
 
 			      Eric Seuret
-			  ___________________
+			  ━━━━━━━━━━━━━━━━━━━
 
 
 Table of Contents
-_________________
+─────────────────
 
 1. Introduction
-2. The configurations
-3. Tangle Script
+.. 1. Tangle Script
+2. Tools
+3. Machines
 
 
 
 
 
 1 Introduction
-==============
+══════════════
 
   Those are my dotfiles. They are supplied in the form of literate Emacs
-  org-mode.
+  org-mode. The different configuration are therefore easy to follow,
+  update and kept in a documented way.
 
   One way of installing them is to open the desired file and run
   `org-babel-tangle-file' on them. However, a small script `tangle.sh'
   is provided for convenience. You can therefore use it as is:
 
-  ,----
-  | source tangle.sh <file-to-tangle>
-  `----
+  ┌────
+  │ source tangle.sh <file-to-tangle>
+  └────
+
+  It is worth noting, that each org-mode file can be tangled into
+  several different files.
 
 
-2 The configurations
-====================
-
-  The following are my configuration files. You can activate them by
-  either opening them in emacs an running `org-babel-tangle-file' (`C-c
-  C-v t') or, as explained in the introduction, by using the `tangle.sh'
-  script.
-
-  [Emacs.org]
-        My emacs configuration.
-
-
-[Emacs.org] <file:Emacs.org>
-
-
-3 Tangle Script
-===============
+1.1 Tangle Script
+─────────────────
 
   The tangle script is provided as a script to be sourced because I
   sometimes will execute on GNU guix installations. It is therefore
   difficult to know in advance where bash will be located for the
   shebang.
 
-  ,----
-  | echo "Running org-babel-tangle-file on $1"
-  | emacs --batch \
-  |       --eval "(require 'org)" \
-  |       --eval "(org-babel-tangle-file \"$1\")"
-  `----
+  ┌────
+  │ echo "Running org-babel-tangle-file on $1"
+  │ emacs --batch \
+  │       --eval "(require 'org)" \
+  │       --eval "(org-babel-tangle-file \"$1\")"
+  └────
+
+
+2 Tools
+═══════
+
+  I keep one general file per tool. This file describe then the intended
+  configuration and can directly be tangled as the configuration if need
+  be.
+
+  You will find those files in the *tools* sub-directory.
+
+  [Emacs.org]
+        My emacs configuration.
+
+
+[Emacs.org] <file:tools/Emacs.org>
+
+
+3 Machines
+══════════
+
+  I also keep a configuration for each separate machine I use
+  (e.g. Laptop, Desktop or Work Computer). This file serves to describe
+  and set different machines' specificity (alternate directory paths,
+  idiosyncrasy due to the specific OS.)
+
+  You will find those files in the *machines* sub-directory.

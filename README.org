@@ -4,7 +4,8 @@
 
 * Introduction
 Those are my dotfiles. They are supplied in the form of literate Emacs
-org-mode.
+org-mode. The different configuration are therefore easy to follow,
+update and kept in a documented way.
 
 One way of installing them is to open the desired file and run
 ~org-babel-tangle-file~ on them. However, a small script ~tangle.sh~
@@ -14,15 +15,10 @@ is provided for convenience. You can therefore use it as is:
   source tangle.sh <file-to-tangle>
 #+end_src
 
-* The configurations
-The following are my configuration files. You can activate them by
-either opening them in emacs an running ~org-babel-tangle-file~ (~C-c
-C-v t~) or, as explained in the introduction, by using the ~tangle.sh~
-script.
+It is worth noting, that each org-mode file can be tangled into
+several different files.
 
-- [[file:Emacs.org][Emacs.org]] :: My emacs configuration.
-
-* Tangle Script
+** Tangle Script
 The tangle script is provided as a script to be sourced because I
 sometimes will execute on GNU guix installations. It is therefore
 difficult to know in advance where bash will be located for the
@@ -35,6 +31,23 @@ shebang.
         --eval "(org-babel-tangle-file \"$1\")"
 #+end_src
 
+* Tools
+I keep one general file per tool. This file describe then the intended
+configuration and can directly be tangled as the configuration if need
+be.
+
+You will find those files in the *tools* sub-directory.
+
+- [[file:tools/Emacs.org][Emacs.org]] :: My emacs configuration.
+
+* Machines
+I also keep a configuration for each separate machine I use
+(e.g. Laptop, Desktop or Work Computer). This file serves to describe
+and set different machines' specificity (alternate directory paths,
+idiosyncrasy due to the specific OS.)
+
+You will find those files in the *machines* sub-directory.
+
 * Generation of README                                             :noexport:
 The following code when executed with ~C-c C-c~ will export this file
 as a nice README for consumption on the terminal, or display on git
@@ -42,7 +55,7 @@ websites.
 
 #+begin_src emacs-lisp :tangle no :results silent
   (setq-local org-export-show-temporary-export-buffer 'nil)
-  (org-ascii-export-as-ascii)
+  (org-ascii-export-as-ascii 'nil 'nil 'nil 'nil '(:ascii-charset utf-8))
   (set-buffer "*Org ASCII Export*")
   (write-file "README")
   (kill-buffer "README")
