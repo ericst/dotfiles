@@ -1,0 +1,183 @@
+#+TITLE: ericst's Bash Configuration
+#+AUTHOR: Eric Seuret
+#+EMAIL: eric@ericst.ch
+
+* Configuration files
+To configure bash's interactive behavior correctly, one must interact with three
+configuration files. Two of them (~~/.bashrc~ and ~~/.bash_profile~) are for GNU
+bash himself whereas the last one (~/.inputrc~) is for the GNU Readline library
+and will therefore affect all programs using this library.
+
+Bash per-default loads only one of the files. For login shells it is
+~/.bash_profile~ whereas for non-login shells it is ~/.bashrc~. Of course this
+has a reason. For instance environment management in guix creates sub-shells and
+would have you not dirty the sub-environment if possible. Therefore
+modifications that would affect such environment (e.g. to the path) should be
+done only for login-shells (See [[http://guix.gnu.org/manual/en/html_node/Invoking-guix-environment.html#Invoking-guix-environment][Invoking guix-environment]] in the GNU guix
+manual).
+
+Still to avoid repeating ourselves, we will treat ~/.bashrc~ as common to login
+and non-login shells and source ~/.bashrc~ into our ~~/.bash_profile~.
+
+#+begin_src bash :tangle ~/.bash_profile
+  if [ -f ~/.bashrc ]; then
+        source ~/.bashrc;
+  fi
+#+end_src
+
+* Basics
+** Readline
+Readline is an important part of the interactive part of Bash. You can see my
+configuration of it in [[file:Readline.org][Readline.org]]
+
+** History
+Mos of this is taken from the article titled [[https://sanctum.geek.nz/arabesque/better-bash-history/][Better Bash History]].
+
+First we want to append to the history instead of rewriting it. We also want to
+keep as much as possible into our history.
+
+#+begin_src bash :tangle ~/.bashrc
+  shopt -s histappend
+  HISTFILESIZE=1000000
+  HISTSIZE=1000000
+#+end_src
+
+Of course, not everything is worth saving. For instance duplicate or empty lines
+are not interesting. Setting ~HISTCONTROL~ to the correct value will allow us to
+not save them. Also, some commands, such as the ones used for job control or
+simply listing contents of a directory, are not conveying any particular meaning
+
+#+begin_src bash :tangle ~/.bashrc
+  HISTCONTROL=ignoreboth
+  export HISTIGNORE="exit:ls:bg:fg:jobs:history"
+#+end_src
+
+Recording not only the command but also the date at which it was recorded could
+prove useful. Setting ~HISTTIMEFORMAT~ will do just that.
+
+#+begin_src bash :tangle ~/.bashrc
+  HISTTIMEFORMAT='%F %T '
+#+end_src
+
+** Directory navigation
+When using a shell directory navigation is important to put yourself in the
+right context.
+
+We want bash to help us as much as possible. ~autocd~ allows us to change
+directory by only typing its name without even issuing the ~cd~
+command. ~cdspell~ and ~dirspell~ will auto correct types.
+
+#+begin_src bash :tangle ~/.bashrc
+  shopt -s autocd
+  shopt -s dirspell
+  shopt -s cdspell
+#+end_src
+
+When you change directory, it can be cumbersome to have to get out of your
+current directory to a well-known directory. Bash provides two mechanism to help
+with that. The directory ~~/projects/~ is a collection my projects. Adding it to the
+~CDPATH~ variable will allow me ~cd~ in any project from wherever. The option
+~cdable_vars~ enable us to made variable viable ~cd~ targets.
+
+#+begin_src bash :tangle ~/.bashrc
+  CDPATH=".:~/projects"
+  shopt -s cdable_vars
+#+end_src
+
+With the ~cdable_vars~ option set, having some bookmarks outside of the ~CDPAT~
+becomes interesting.
+
+#+begin_src bash :tangle ~/.bashrc
+  dotfiles="$HOME/dotfiles/"
+  documents="$HOME/Documents/"
+  downloads="$HOME/Downloads/"
+#+end_src
+ 
+* Prompt
+Editing the prompt is a complex story. This is for the moment a stub as I would
+like to extend on it.
+
+#+begin_src bash :tangle ~/.bashrc
+  PS1="\u@\h \w \$ "
+#+end_src
+
+Ideally, those would be my requirements: Have the hostname displayed only if on
+a remote shell. When a command exits with a result different than zero, display
+that value somehow. Changes the it whenever in guix environment...
+
+* Applications
+** Editor
+My editor of choice is Emacs. Below I set environment variables to make sure
+that it is correctly selected by other applications. I also set two aliases to
+edit files quicker. ~e~ open Emacs whereas ~et~ opens it in a terminal.
+
+#+begin_src bash :tangle ~/.bashrc
+  export ALTERNATE_EDITOR=""
+  export EDITOR="emacsclient -ta \"emacs -nw\""
+  export VISUAL="emacsclient -na \"emacs"\"
+  export GIT_EDITOR="$EDITOR"
+  alias e="$VISUAL"
+  alias et="$EDITOR"
+  alias emacs="$VISUAL"
+#+end_src
+
+** Guix
+The following makes sure that my guix profile is correctly set.
+
+#+begin_src bash :tangle ~/.bash_profile
+  export GUIX_PROFILE="$HOME/.guix-profile"
+  export GUIX_LOCPATH="$GUIX_PROFILE/lib/locale"
+  if [ -e "$GUIX_PROFILE/etc/profile"  ]; then
+      source "$GUIX_PROFILE/etc/profile"
+  fi
+#+end_src
+
+** ~ls~ 
+Those aliases make the ~ls~ nicer.
+
+- ~ls~ :: output is colorized
+- ~ll~ :: output use a long listing
+- ~l.~ :: outputs hidden files
+
+#+begin_src bash :tangle ~/.bashrc
+  alias ls='ls --color=auto'
+  alias ll='ls --color=auto -lh'
+  alias l.='ls --color=auto -d .*'
+#+end_src
+
+** Safety nets
+Here are some safety nets. 
+
+~rm~ will refuse to delete ~/~ and prompt confirmation whenever I try to delete
+more than 3 files.
+
+~mv~, ~cp~ and ~ln~ will always ask before overwriting anything.
+
+~ch{own,mod,grp}~ won't allow me to change permissions on ~/~
+
+
+#+begin_src bash :tangle ~/.bashrc
+  alias rm='rm -I --preserve-root'
+
+  alias mv='mv -i'
+  alias cp='cp -i'
+  alias ln='ln -i'
+ 
+  alias chown='chown --preserve-root'
+  alias chmod='chmod --preserve-root'
+  alias chgrp='chgrp --preserve-root'
+#+end_src
+
+* Path
+On login shells we will also extend the ~PATH~ to include small scripts I might
+want to write.
+
+#+begin_src bash :tangle ~/.bash_profile
+  export PATH="$HOME/bin:$PATH"
+#+end_src
+
+* Reference & Inspiration
+- [[https://mrzool.cc/writing/sensible-bash/][Sensible Bash]]
+- [[https://sanctum.geek.nz/arabesque/better-bash-history/][Better Bash History]]
+- [[https://tiswww.case.edu/php/chet/readline/readline.html][GNU Readline Library]]
+- [[https://www.gnu.org/software/bash/manual/html_node/index.html][Bash Reference Manual]] 

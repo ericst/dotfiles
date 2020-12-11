@@ -1,0 +1,36 @@
+#+TITLE: Readline Configuration
+#+AUTHOR: Eric Seuret
+#+EMAIL: eric@ericst.ch
+
+* Introduction
+Readline configuration affects a lot of programs using it.
+
+* Bell
+I don't like my computer beeping, I would rather prefer a visual feedback, as it
+is more discreet.
+
+#+begin_src fundamental :tangle ~/.inputrc
+  set bell-style visible
+#+end_src
+
+* Completion
+Readline is responsible for the interactive parts of the tab completion. Here
+are the settings that make for a nice experience.
+
+- ~completion-ignore-case~ :: Perform completions in a case-insensitive way.
+
+- ~completion-map-case~ :: Treat '-' as equivalent to '_' when looking for
+  completion matches. This simplify the typing.
+
+- ~match-hidden-files~ :: Makes completion work on hidden files without having
+  to supply the . character.
+
+- ~show-all-if-ambiguous~ :: Show immediately possible completions. I don't want
+  to press Tab two-times.
+
+#+begin_src fundamental :tangle ~/.inputrc
+set completion-ignore-case on
+set completion-map-case on
+set match-hidden-files on
+set show-all-if-ambiguous on
+#+end_src

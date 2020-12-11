@@ -1,7 +1,7 @@
 #+TITLE: ericst's Emacs configuration
 #+AUTHOR: Eric Seuret
 #+EMAIL: eric@ericst.ch
-#+OPTIONS: toc:nil num:nil
+
 
 * Use-package
 The file ~init.el~ makes sure that ~use-package~ is installed. 

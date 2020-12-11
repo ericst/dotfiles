@@ -15,14 +15,10 @@ is provided for convenience. You can therefore use it as is:
   source tangle.sh <file-to-tangle>
 #+end_src
 
-It is worth noting, that each org-mode file can be tangled into
-several different files.
-
-** Tangle Script
 The tangle script is provided as a script to be sourced because I
 sometimes will execute on GNU guix installations. It is therefore
 difficult to know in advance where bash will be located for the
-shebang. 
+shebang. Here is the script.
 
 #+begin_src bash :tangle tangle.sh
   echo "Running org-babel-tangle-file on $1"
@@ -31,6 +27,9 @@ shebang.
         --eval "(org-babel-tangle-file \"$1\")"
 #+end_src
 
+It is worth noting, that each org-mode file can be tangled into
+several different files.
+
 * Tools
 I keep one general file per tool. This file describe then the intended
 configuration and can directly be tangled as the configuration if need
@@ -38,7 +37,9 @@ be.
 
 You will find those files in the *tools* sub-directory.
 
-- [[file:tools/Emacs.org][Emacs.org]] :: My emacs configuration.
+- [[file:tools/Emacs.org][Emacs.org]] :: My Emacs configuration.
+- [[file:tools/Bash.org][Bash.org]] :: My Bash configuration.
+- [[file:tools/Readline.org][Readline.org]] :: My Readline configuration.
 
 * Machines
 I also keep a configuration for each separate machine I use
