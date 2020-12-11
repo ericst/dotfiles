@@ -91,6 +91,7 @@ becomes interesting.
   dotfiles="$HOME/dotfiles/"
   documents="$HOME/Documents/"
   downloads="$HOME/Downloads/"
+  exocortex="$HOME/exocortex/"
 #+end_src
  
 * Prompt

@@ -59,13 +59,14 @@ Here are some basic settings such as my identity and location.
 
 * General Settings
 ** Org-mode
-This is to make sure org-mode is load for the rest of the
-configuration. Also, we want the last version of org-mode.
+This is to make sure org-mode is loaded for the rest of the configuration. Also,
+we want the last version of org-mode.
 
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package org)
   (require 'org)
 #+end_src
+
 ** Window and frame
 We start by adapting the window by removing what we don't need.
 
@@ -107,9 +108,18 @@ Subword allows to treat CamelCaseNames as three different words.
   (global-subword-mode 1)
 #+end_src
 
+Emacs has a smart feature allowing it to redistribute breaks in paragraph to
+sort of justify it. We want that to happen automatically in certain modes.
+
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (setq-default fill-column 80)
+  (add-hook 'text-mode-hook 'turn-on-auto-fill)
+  (add-hook 'org-mode-hook 'turn-on-auto-fill)
+#+end_src
+
 ** Line numbers
-Basically, I want line numbers to be displayed except for org and
-repl-type modes.
+Basically, I want line numbers to be displayed except for org and repl-type
+modes.
 
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el 
   (global-display-line-numbers-mode 1)
@@ -355,8 +365,8 @@ system. The following corrects it on starting emacs. It comes from:
 * Exocortex
 Quick description of my exocortex.
 
-- ~~/exocortex/ops~ :: Collection of org files used to manage
-  time. Ops stands for operations.
+- ~~/exocortex/agenda~ :: Collection of org files used to manage
+  time.
 - ~~exocortex/logs.org~ :: Contains a log, journal of events. Mainly
   as a record keeping mechanism.
 - ~~exocortex/memex/~ :: Contains permanent notes on topics. At the
