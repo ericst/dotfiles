@@ -28,7 +28,15 @@ and non-login shells and source ~/.bashrc~ into our ~~/.bash_profile~.
 * Basics
 ** Readline
 Readline is an important part of the interactive part of Bash. You can see my
-configuration of it in [[file:Readline.org][Readline.org]]
+configuration of it in [[file:Readline.org][Readline.org]].
+
+A note here, in my Readline configuration I do bind ~C-s~ to perform incremental
+search on history. This conflicts with XON/XOFF flow control, therefore I
+de-activate that but only for interactive sessions.
+
+#+begin_src bash :tangle ~/.bashrc
+  [[ $- == *i* ]] && stty -ixon
+#+end_src
 
 ** History
 Mos of this is taken from the article titled [[https://sanctum.geek.nz/arabesque/better-bash-history/][Better Bash History]].
@@ -57,6 +65,12 @@ prove useful. Setting ~HISTTIMEFORMAT~ will do just that.
 
 #+begin_src bash :tangle ~/.bashrc
   HISTTIMEFORMAT='%F %T '
+#+end_src
+
+Now we only need to make a small alias to search easily into the history.
+
+#+begin_src bash :tangle ~/.bashrc
+  alias hs="history | grep"
 #+end_src
 
 ** Directory navigation
@@ -95,18 +109,75 @@ becomes interesting.
 #+end_src
  
 * Prompt
-Editing the prompt is a complex story. This is for the moment a stub as I would
-like to extend on it.
+For my prompt, I would like to have something rather simple. Basically here are
+the elements:
+
+- return code :: displayed only if it was different than 0, otherwise it is
+  useless.
+- user :: Always displayed, it is important
+- host :: Useful for context
+- directory :: Useful for context, I only need the base name.
+- environment :: When I am in ~guix environment~, I would like to know it.
+
+** Prompt function
+
+As I have conditionals, it my prompt, the easiest way to make sure it is printed
+out correctly is to use the ~PROMPT_COMMAND~ variable from Bash.
 
 #+begin_src bash :tangle ~/.bashrc
-  PS1="\u@\h \w \$ "
+  update_prompt (){
+
+      # The return code if present
+      if [ $? != 0 ]; then
+          PS1='-------> error: $?<-------\n'
+      else
+          PS1=''
+      fi
+
+      # The user name, host & host
+      PS1+='\u@\h \W'
+
+      #Guix environment, if present
+      if [ -n "$GUIX_ENVIRONMENT" ]; then
+         PS1+=' [dev]'
+      fi
+
+      #Prompt
+      PS1+=' \$ '
+  }
+
+  PROMPT_COMMAND=update_prompt
 #+end_src
+
 
 Ideally, those would be my requirements: Have the hostname displayed only if on
 a remote shell. When a command exits with a result different than zero, display
 that value somehow. Changes the it whenever in guix environment...
 
 * Applications
+** Safety nets
+Here are some safety nets. 
+
+~rm~ will refuse to delete ~/~ and prompt confirmation whenever I try to delete
+more than 3 files.
+
+~mv~, ~cp~ and ~ln~ will always ask before overwriting anything.
+
+~ch{own,mod,grp}~ won't allow me to change permissions on ~/~
+
+
+#+begin_src bash :tangle ~/.bashrc
+  alias rm='rm -I --preserve-root'
+
+  alias mv='mv -i'
+  alias cp='cp -i'
+  alias ln='ln -i'
+ 
+  alias chown='chown --preserve-root'
+  alias chmod='chmod --preserve-root'
+  alias chgrp='chgrp --preserve-root'
+#+end_src
+
 ** Editor
 My editor of choice is Emacs. Below I set environment variables to make sure
 that it is correctly selected by other applications. I also set two aliases to
@@ -140,33 +211,54 @@ Those aliases make the ~ls~ nicer.
 - ~ll~ :: output use a long listing
 - ~l.~ :: outputs hidden files
 
+Adding an extra ~l~ at the end will also pipe to less
+
 #+begin_src bash :tangle ~/.bashrc
-  alias ls='ls --color=auto'
-  alias ll='ls --color=auto -lh'
-  alias l.='ls --color=auto -d .*'
+  alias ls="ls --color=auto"
+  alias lsl="ls --color=auto | less"
+  alias ll="ls --color=auto -lh"
+  alias lll="ls --color=auto -lh | less"
+  alias l.="ls --color=auto -d .*"
+  alias l.l="ls --color=auto -d .* | less"
 #+end_src
 
-** Safety nets
-Here are some safety nets. 
-
-~rm~ will refuse to delete ~/~ and prompt confirmation whenever I try to delete
-more than 3 files.
-
-~mv~, ~cp~ and ~ln~ will always ask before overwriting anything.
-
-~ch{own,mod,grp}~ won't allow me to change permissions on ~/~
-
+** ~grep~
+It is also nice to have colors automatically in grep.
 
 #+begin_src bash :tangle ~/.bashrc
-  alias rm='rm -I --preserve-root'
+  alias grep='grep --color=auto'
+#+end_src
 
-  alias mv='mv -i'
-  alias cp='cp -i'
-  alias ln='ln -i'
- 
-  alias chown='chown --preserve-root'
-  alias chmod='chmod --preserve-root'
-  alias chgrp='chgrp --preserve-root'
+** ~ps~ 
+First an alias to display a nicer table of processes.
+
+#+begin_src bash :tangle ~/.bashrc
+  alias ps="ps auxf"
+  alias psl="ps auxf | less"
+#+end_src
+
+I often need to look for a particular process, so being able to search for it
+directly is a time saver.
+
+#+begin_src bash :tangle ~/.bashrc
+  alias psg="ps aux | grep -v grep | \grep -i -e VSZ -e"
+#+end_src
+
+** ~mkdir~
+Per default I want to create any missing directory.
+
+#+begin_src bash :tangle ~/.bashrc
+alias mkdir="mkdir -pv"
+#+end_src
+
+The function ~mkcd~ is extremely useful, to create a directory and immediately
+change to it.
+
+#+begin_src bash :tangle ~/.bashrc
+  mcd () {
+      mkdir -p $1
+      cd $1
+  } 
 #+end_src
 
 * Path
@@ -180,5 +272,4 @@ want to write.
 * Reference & Inspiration
 - [[https://mrzool.cc/writing/sensible-bash/][Sensible Bash]]
 - [[https://sanctum.geek.nz/arabesque/better-bash-history/][Better Bash History]]
-- [[https://tiswww.case.edu/php/chet/readline/readline.html][GNU Readline Library]]
 - [[https://www.gnu.org/software/bash/manual/html_node/index.html][Bash Reference Manual]] 

@@ -34,3 +34,23 @@ set completion-map-case on
 set match-hidden-files on
 set show-all-if-ambiguous on
 #+end_src
+
+* Bindings
+Those bindings are here to make my life a bit easier. When I wan to search, I
+always want to search backwards, no need to go forward usually.
+
+#+begin_src fundamental :tangle ~/.inputrc
+Control-s: reverse-search-history
+Control-r: forward-search-history
+#+end_src
+
+Also searching for the string you already wrote is more useful than
+non-incremental search.
+
+#+begin_src fundamental :tangle ~/.inputrc
+Meta-p: history-substring-search-backward
+Meta-n: history-substring-search-forward
+#+end_src
+
+* References
+- [[https://tiswww.case.edu/php/chet/readline/readline.html][GNU Readline Library]]
