@@ -1,0 +1,23 @@
+#+TITLE: Git Configuration
+#+AUTHOR: Eric Seuret
+#+EMAIL: eric@ericst.ch
+
+* Introduction
+This is my git configuration.
+
+* User
+Here are my user configurations.
+
+#+begin_src conf-unix :tangle ~/.gitconfig
+  [user]
+          name = Eric Seuret
+          email = eric@ericst.ch
+#+end_src
+
+* Push
+This is the default behavior, nonetheless, I make sure of it.
+
+#+begin_src conf-unix :tangle ~/.gitconfig
+  [push]
+          default = simple
+#+end_src

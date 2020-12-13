@@ -120,16 +120,15 @@ the elements:
 - environment :: When I am in ~guix environment~, I would like to know it.
 
 ** Prompt function
-
 As I have conditionals, it my prompt, the easiest way to make sure it is printed
 out correctly is to use the ~PROMPT_COMMAND~ variable from Bash.
 
 #+begin_src bash :tangle ~/.bashrc
-  update_prompt (){
 
+  update_prompt (){
       # The return code if present
       if [ $? != 0 ]; then
-          PS1='-------> error: $?<-------\n'
+          PS1='(${?}) '
       else
           PS1=''
       fi
