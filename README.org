@@ -40,6 +40,8 @@ You will find those files in the *tools* sub-directory.
 - [[file:tools/Emacs.org][Emacs.org]] :: My Emacs configuration.
 - [[file:tools/Bash.org][Bash.org]] :: My Bash configuration.
 - [[file:tools/Readline.org][Readline.org]] :: My Readline configuration.
+- [[file:tools/Git.org][Git.org]] :: My Git configuration.
+
 
 * Machines
 I also keep a configuration for each separate machine I use
