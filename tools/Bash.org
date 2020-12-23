@@ -181,7 +181,6 @@ edit files quicker. ~e~ open Emacs whereas ~et~ opens it in a terminal.
   export GIT_EDITOR="$EDITOR"
   alias e="$VISUAL"
   alias et="$EDITOR"
-  alias emacs="$VISUAL"
 #+end_src
 
 ** Guix
