@@ -42,7 +42,6 @@ You will find those files in the *tools* sub-directory.
 - [[file:tools/Readline.org][Readline.org]] :: My Readline configuration.
 - [[file:tools/Git.org][Git.org]] :: My Git configuration.
 
-
 * Machines
 I also keep a configuration for each separate machine I use
 (e.g. Laptop, Desktop or Work Computer). This file serves to describe

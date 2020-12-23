@@ -379,7 +379,7 @@ Quick description of my exocortex.
 Places to look for agenda items.
 
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
-  (setq org-agenda-files '("~/exocortex/ops"))
+  (setq org-agenda-files '("~/exocortex/agenda"))
 #+end_src
 
 ** Todo items
@@ -439,7 +439,7 @@ The rests are here to create new projects.
 
 
   (setq org-capture-templates
-        '(("t" "Task" entry (file+olp "~/exocortex/ops/scheduler.org" "Inbox")
+        '(("t" "Task" entry (file+olp "~/exocortex/agenda/scheduler.org" "Inbox")
            "* TASK %?\n %i\n")
           ("l" "Log entry" entry (file+olp+datetree "~/exocortex/logs.org")
            "* %?\n %i\n")
