@@ -9,6 +9,7 @@ Table of Contents
 ─────────────────
 
 1. Introduction
+.. 1. Migration to stow
 2. Tools
 3. Machines
 
@@ -38,13 +39,29 @@ Table of Contents
 
   ┌────
   │ echo "Running org-babel-tangle-file on $1"
-  │ emacs --batch \
+  │ \emacs --batch \
   │       --eval "(require 'org)" \
   │       --eval "(org-babel-tangle-file \"$1\")"
   └────
 
   It is worth noting, that each org-mode file can be tangled into
   several different files.
+
+
+1.1 Migration to stow
+─────────────────────
+
+  In the end, it is maybe easier to use stow. I am migrating the
+  explanation files to sub-folders that can be installed with stow.
+
+  Once this is finished, the way to install it will be with:
+
+  ┌────
+  │ stow --no-folding  $package
+  └────
+
+  Using the –no-folding option ensures that I only link the files, no
+  folders. That way the git repository stays clean.
 
 
 2 Tools
@@ -62,6 +79,8 @@ Table of Contents
         My Bash configuration.
   [Readline.org]
         My Readline configuration.
+  [Git.org]
+        My Git configuration.
 
 
 [Emacs.org] <file:tools/Emacs.org>
@@ -69,6 +88,8 @@ Table of Contents
 [Bash.org] <file:tools/Bash.org>
 
 [Readline.org] <file:tools/Readline.org>
+
+[Git.org] <file:tools/Git.org>
 
 
 3 Machines

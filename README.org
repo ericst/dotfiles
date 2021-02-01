@@ -1,3 +1,4 @@
+
 #+TITLE: ericst's Dotfiles
 #+AUTHOR: Eric Seuret
 #+EMAIL: eric@ericst.ch
@@ -29,6 +30,19 @@ shebang. Here is the script.
 
 It is worth noting, that each org-mode file can be tangled into
 several different files.
+
+** Migration to stow
+In the end, it is maybe easier to use stow. I am migrating the explanation
+files to sub-folders that can be installed with stow. 
+
+Once this is finished, the way to install it will be with:
+
+#+begin_src bash :tangle no
+  stow --no-folding  $package
+#+end_src
+
+Using the --no-folding option ensures that I only link the files, no
+folders. That way the git repository stays clean.
 
 * Tools
 I keep one general file per tool. This file describe then the intended

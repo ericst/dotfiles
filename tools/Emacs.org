@@ -11,7 +11,7 @@ installs the package. It is essential to bootstrap on fresh box.
 Otherwise, ~use-package~ waits until you need a package to download
 it, which makes for a bad experience when starting on a new box.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   ;; Installing MELPA
   (require 'package)
   (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
@@ -39,7 +39,7 @@ it, which makes for a bad experience when starting on a new box.
 
 Always compile packages, and use the news version available.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package auto-compile
     :config (auto-compile-on-load-mode))
 
@@ -48,7 +48,7 @@ Always compile packages, and use the news version available.
 
 * Personal information
 Here are some basic settings such as my identity and location.
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (setq user-full-name "Eric Seuret"
         user-mail-address "eric@ericst.ch"
         calendar-week-start-day 1
@@ -62,7 +62,7 @@ Here are some basic settings such as my identity and location.
 This is to make sure org-mode is loaded for the rest of the configuration. Also,
 we want the last version of org-mode.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package org)
   (require 'org)
 #+end_src
@@ -79,7 +79,7 @@ And we add some breathing room to the text content by increasing
 fringe value.  We also want to start with the frame maximized as Emacs
 is important.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (setq inhibit-startup-message t
 	visible-bell t)
   (tool-bar-mode -1)
@@ -95,7 +95,7 @@ Text edition is important. I want to:
 - Delete and replace selected text
 - Display columns number by default
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (global-hl-line-mode 1)
   (show-paren-mode 1)
   (delete-selection-mode 1)
@@ -104,14 +104,14 @@ Text edition is important. I want to:
 
 Subword allows to treat CamelCaseNames as three different words.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (global-subword-mode 1)
 #+end_src
 
 Emacs has a smart feature allowing it to redistribute breaks in paragraph to
 sort of justify it. We want that to happen automatically in certain modes.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (setq-default fill-column 80)
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
   (add-hook 'org-mode-hook 'turn-on-auto-fill)
@@ -121,7 +121,7 @@ sort of justify it. We want that to happen automatically in certain modes.
 Basically, I want line numbers to be displayed except for org and repl-type
 modes.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el 
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el 
   (global-display-line-numbers-mode 1)
   (dolist (mode '(org-mode-hook
 		  term-mode-hook
@@ -138,7 +138,7 @@ I still need to look at auto-saves.
 
 By default auto-save are made into ~/tmp~, which is okay.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
   (setq backup-by-copying t
 	delete-old-versions t
@@ -152,7 +152,7 @@ By default auto-save are made into ~/tmp~, which is okay.
 ** Theme and font
 I like the ~one-dark~ theme.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package one-themes
     :init (load-theme 'one-light t))
 
@@ -162,7 +162,7 @@ I like the ~one-dark~ theme.
 ** Scratch buffer
 This makes a rather useful scratch buffer message.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (setq initial-scratch-message
 	(concat ";; Welcome. This is Emacs version " emacs-version
 		" with Org-mode version " org-version ".\n"
@@ -174,7 +174,7 @@ This section covers functionality imported by packages.
 
 ** Flyspell
 Flyspell is helpful, so we enable it also for comments.
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (add-hook 'text-mode-hook 'flyspell-mode)
   (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 #+end_src
@@ -182,7 +182,7 @@ Flyspell is helpful, so we enable it also for comments.
 ~which-key~ displays some help on available key-bindings chain when in
 the middle. This helps with discoverability in general.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package which-key
     :config (which-key-mode))
 #+end_src
@@ -205,7 +205,7 @@ Rules are simple when in ~god-mode~:
 I use the ~cursor-type~ as an indicator when I am in ~god-mode~.
 If it is a hollow box, it means that I am in ~god-mode~
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (setq-default cursor-type 'box)
 
   (use-package god-mode
@@ -223,7 +223,7 @@ If it is a hollow box, it means that I am in ~god-mode~
 ~ivy~ is a completion framework for emacs. 
 I bring it in via counsel.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package counsel
     :bind (("C-s" . swiper)
            ("M-x" . counsel-M-x)
@@ -237,7 +237,7 @@ I bring it in via counsel.
 
 ~ivy-rich~ improves what is displayed into the ivy selection buffer.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package ivy-rich
     :after counsel
     :init (ivy-rich-mode 1))
@@ -249,7 +249,7 @@ quite well out-of-the-box, it does need here and there some
 specialized backends. Those backends are then configured as need in
 the languages sections.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package company
     :hook (after-init . global-company-mode))
 #+end_src
@@ -258,7 +258,7 @@ the languages sections.
 ~yasnippet~ provides handy snippets of code. It needs to be loaded
 after company in order con be properly work with it.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package yasnippet
     :after company
     :config  (yas-global-mode 1))
@@ -271,7 +271,7 @@ As I use Swiper (see Ivy), I don't really need a backward I-Search.
 
 So let's use ~C-r~ to jump to a character.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package avy
     :bind (("C-r" . avy-goto-char)))
 #+end_src
@@ -281,7 +281,7 @@ So let's use ~C-r~ to jump to a character.
 This is pratical to create micro-modes /à la/ vim.
 Below we define a zoom hydra with an ~<f2>~ binding.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package hydra
     :config (defhydra hydra-zoom (global-map "<f2>")
 	      "Zoom"
@@ -293,7 +293,7 @@ Below we define a zoom hydra with an ~<f2>~ binding.
 ~expand-region~ allows selection on steroid. 
 It gradually expands the region by semantic-units. 
 We do define an hydra for it.
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package expand-region
     :after (hydra)
     :bind (("C-c e" . 'hydra-expand-region/body))
@@ -319,7 +319,7 @@ mercurial, ...), or a special package definition file (lein, maven,
 ...).  Alternatively, you can force it to be a project by creation an
 empty ~.projectile~ file in the root directory.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package projectile
     :after (counsel)
     :config
@@ -330,7 +330,7 @@ empty ~.projectile~ file in the root directory.
 
 For proper integration with ~ivy~ we use the ~counsel-projectile~
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package counsel-projectile
     :after (counsel projectile)
     :config
@@ -340,7 +340,7 @@ For proper integration with ~ivy~ we use the ~counsel-projectile~
 ** Git porcelain
 ~magit~ is a user interface for git.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package magit
     :bind (("C-c g" . magit-status)))
 #+end_src
@@ -348,7 +348,7 @@ For proper integration with ~ivy~ we use the ~counsel-projectile~
 ** Moving Text Around
 Allows using of Org-mode's ~M-↑, M-↓~ in other modes too.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
    (use-package move-text
      :config (move-text-default-bindings))
 #+end_src
@@ -358,7 +358,7 @@ For some reason, dead keys don't seem to work properly on my
 system. The following corrects it on starting emacs. It comes from:
 [[https://www.emacswiki.org/emacs/DeadKeys][Dead Keys on Emacs Wiki]]
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (require 'iso-transl)
 #+end_src
 
@@ -378,7 +378,7 @@ Quick description of my exocortex.
 ** Agenda files
 Places to look for agenda items.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (setq org-agenda-files '("~/exocortex/agenda"))
 #+end_src
 
@@ -386,9 +386,9 @@ Places to look for agenda items.
 I don't like the Todo keyword, I prefer task, it is more general I
 think.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (setq-default org-todo-keywords
-                '((sequence "TASK(t)" "NEXT(n!)" "WAITING(w@)" "FUTURE(f)" "|" "DONE(d!/@)" "CANCELED(c@/@)")))
+                '((sequence "TODO(t)" "NEXT(n!)" "WAITING(w@)" "FUTURE(f)" "|" "DONE(d!/@)" "CANCELED(c@/@)")))
 
   (setq org-log-into-drawer t)
 #+end_src
@@ -400,7 +400,7 @@ short-lived project (that is project with a given goal and end date)
 also has an id to identify the uniquely and distinguish them from
 long-lived projects which are just identified by a slug.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (defun ese/list-existing-ids (directory)
     "Returns a list of project ids in the directory as strings"
     (split-string
@@ -433,7 +433,7 @@ templates:
 
 The rests are here to create new projects.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (bind-key "C-c o c" 'org-capture)
 
 
@@ -458,7 +458,7 @@ I also have a view to use during planning with tasks that are
 unscheduled and don't have any deadline. Those are good candidates to
 look at during a weekly review.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
     (bind-key "C-c o a" 'org-agenda)
 
     (setq org-agenda-custom-commands
@@ -478,7 +478,7 @@ really important.
 
 I also want that to be organized as a hierarchy.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (setq org-refile-use-outline-path 'file)
   (setq org-refile-targets '((nil . (:maxlevel . 4))
                              (org-agenda-files . (:maxlevel . 4))))
@@ -490,7 +490,7 @@ open a new one.
 
 Quickly add source blocks of emacs-lisp with ~C-c C-, el~.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (setq org-src-window-setup 'current-window)
 
   (add-to-list 'org-structure-template-alist
@@ -503,13 +503,13 @@ General notes on my system.
 I want to have ~org-indent-mode~ on by default. 
 I also don't want some minor adaptations to the ellipsis.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (setq org-startup-indented t
         org-ellipsis "⤵")
 #+end_src
 
 ~org-bullets~ replaces ~*~ in from headers with nice bullets 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package org-bullets
     :custom (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●" "○" "●"))
     :init 
@@ -523,14 +523,14 @@ It favors a just working approach by using a grep in the background.
 
 Adding it to x-ref allows us to search by using ~M-.~.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package dumb-jump
     :config
     (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 #+end_src
 ** Lisp & Schemes
 For lisps and schemes we basically want paredit mode always on.
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package paredit
     :init (dolist (mode '(emacs-lisp-mode-hook
                           lisp-interaction-mode-hook
@@ -544,14 +544,14 @@ For lisps and schemes we basically want paredit mode always on.
 ** C#
 Just the basic to be able to edit c# files.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package csharp-mode)
 #+end_src
 
 * Custom file
 This is to keep my init.el clean. Every customization should go into ~custom.el~
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (setq custom-file "~/.emacs.d/custom.el")
   (load custom-file)
 #+end_src
@@ -560,14 +560,14 @@ This is to keep my init.el clean. Every customization should go into ~custom.el~
 Even if I don't always use it, I like to have the server started.
 It comes handy when sometimes I loose the X-Server connection on Emacs under WSL on Windows.
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (server-start)
 #+end_src
 
 * Desktop file
 This makes for a nice integration of the server with the desktop
 
- #+begin_src conf-desktop :tangle ~/.local/share/applications/emacs.desktop
+ #+begin_src conf-desktop :tangle ../emacs/.local/share/applications/emacs.desktop
    [Desktop Entry]
    Name=Emacs
    GenericName=Text Editor
