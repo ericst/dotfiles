@@ -171,7 +171,6 @@ This makes a rather useful scratch buffer message.
 
 * Core Functionality
 This section covers functionality imported by packages.
-
 ** Flyspell
 Flyspell is helpful, so we enable it also for comments.
 #+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
@@ -224,15 +223,16 @@ If it is a hollow box, it means that I am in ~god-mode~
 I bring it in via counsel.
 
 #+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
-  (use-package counsel
-    :bind (("C-s" . swiper)
-           ("M-x" . counsel-M-x)
-           ("C-h f" . counsel-describe-function)
-           ("C-h v" . counsel-describe-variable)
-           ("C-x b" . ivy-switch-buffer))
-    :init
-    (ivy-mode 1)
-    (setq ivy-use-virtual-buffers t))
+    (use-package counsel
+      :bind (("C-s" . swiper)
+             ("M-x" . counsel-M-x)
+             ("C-h f" . counsel-describe-function)
+             ("C-h v" . counsel-describe-variable)
+             ("C-x b" . ivy-switch-buffer))
+      :init
+      (ivy-mode 1)
+      (setq ivy-use-virtual-buffers t)
+      (setq ivy-use-selectable-prompt t))
 #+end_src
 
 ~ivy-rich~ improves what is displayed into the ivy selection buffer.
@@ -363,15 +363,18 @@ system. The following corrects it on starting emacs. It comes from:
 #+end_src
 
 * Exocortex
-Quick description of my exocortex.
+Quick description of my exocortex. The idea is to free my main cortex for
+usefull things and not try to keep track of everything always.
 
 - ~~/exocortex/agenda~ :: Collection of org files used to manage
   time.
-- ~~exocortex/logs.org~ :: Contains a log, journal of events. Mainly
-  as a record keeping mechanism.
 - ~~exocortex/memex/~ :: Contains permanent notes on topics. At the
   end it should look like the described method in this
   book [fn:1]. Memex stands for Memory Expander.
+- ~~exocortex/skel/~ :: Contains different templates files to facilitate the use
+  of my exocortex. 
+- ~~exocortex/journal.org~ :: Contains a journal of events. Kind of like a
+  /journal de bord/.
 - ~~exocortex/archives/~ :: The idea is to keep old org files or task
   items.
 
@@ -383,46 +386,30 @@ Places to look for agenda items.
 #+end_src
 
 ** Todo items
-I don't like the Todo keyword, I prefer task, it is more general I
-think.
+This is how I organize my todo keyboards items.
 
 #+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (setq-default org-todo-keywords
-                '((sequence "TODO(t)" "NEXT(n!)" "WAITING(w@)" "FUTURE(f)" "|" "DONE(d!/@)" "CANCELED(c@/@)")))
+                '((sequence "TODO(t!)" "NEXT(n!)" "WAITING(w!)" "FUTURE(f!)" "|" "DONE(d!)" "CANCELED(c!)")))
 
   (setq org-log-into-drawer t)
 #+end_src
 
-** Projects generation
+Here is a short description of all states:
 
-The idea is that I generate a separate file for each project. Each
-short-lived project (that is project with a given goal and end date)
-also has an id to identify the uniquely and distinguish them from
-long-lived projects which are just identified by a slug.
+- TODO :: Self-explanatory, an item that needs doing.
+- NEXT :: This item is on the NEXT list. It means that it is currently being
+  working on.
+- WAITING :: This means that in order to complete the task, I am waiting for
+  some more information.
+- FUTURE :: This is a task that doesn't need immediate action for the moment.
+- DONE :: This means that the task was done an completed.
+- CANCELED :: This means that the task was canceled before being done.
 
-#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
-  (defun ese/list-existing-ids (directory)
-    "Returns a list of project ids in the directory as strings"
-    (split-string
-     (shell-command-to-string (concat "ls " directory " | grep -Eo \"^[0-9]+\""))))
-
-
-  (defun ese/random-unique-id (existing-ids)
-    "Randomly creates a project id non-yet existing in the given list"
-    (let ((project-id (number-to-string (+ 10000 (random 89999)))))
-      (if (seq-contains-p existing-ids project-id)
-          (ese/get-project-numbers existing-ids)
-        project-id)))
-
-  (defun ese/create-new-project-file ()
-    "Create a new project file"
-    (interactive)
-    (let* ((id (ese/random-unique-id (append
-                                        (ese/list-existing-ids "~/exocortex/ops/")
-                                        (ese/list-existing-ids "~/exocortex/archives/"))))
-           (slug (read-string (concat "Project " id "'s slug:"))))
-       (expand-file-name (format "%s-%s.org" id slug) "~/exocortex/ops/")))
-#+end_src
+A note on logging. Each task records a time stamp of state transition. But
+logging is made separately (via capture) on the project level. The idea is that
+so the log becomes useful, but reconstruction of the task can be done quickly by
+knowing what happened when.
 
 ** Capture 
 This is the capture configuration. Basically, I have only two basic
@@ -436,15 +423,39 @@ The rests are here to create new projects.
 #+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (bind-key "C-c o c" 'org-capture)
 
-
-
   (setq org-capture-templates
-        '(("t" "Task" entry (file+olp "~/exocortex/agenda/scheduler.org" "Inbox")
-           "* TASK %?\n %i\n")
-          ("l" "Log entry" entry (file+olp+datetree "~/exocortex/logs.org")
-           "* %?\n %i\n")
-          ("p" "New Project" plain (file ese/create-new-project-file)
-           "#+TITLE: %^{TITLE}\n#+OPTIONS: toc:nil num:nil\n\n* Goal\n%?")))
+        '(("t" "TODO" entry (file+olp "~/exocortex/agenda/main.org" "Inbox")
+           "* TODO %?\n %i\n")
+          ("j" "Journal entry" entry (file+olp+datetree "~/exocortex/journal.org")
+           "* %?\n %i\n")))
+#+end_src
+
+** Memex
+
+Memex stands for memory extender. The idea is to collect knowledge in a sort of
+all encompassing wiki. Org-roam is system that allows to easily manage
+collection of org-file by also keeping track of back links. 
+
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
+  (use-package org-roam
+    :ensure t
+    :init
+    (setq org-roam-directory "~/exocortex/memex")
+    (setq org-roam-capture-templates '(("m" "Memex note" plain (function org-roam-capture--get-point)
+                                        "%?"
+                                        :file-name "%<%Y%m%dT%H%M%S>-${slug}"
+                                        :head "#+TITLE: ${title}\n#+AUTHOR: Eric Seuret\n"
+                                        :unnarrowed t)))
+    (add-hook 'after-init-hook 'org-roam-mode))
+#+end_src
+
+Of course, we need that system to be included into our work environment.
+
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
+  (bind-key "C-c o m" 'org-roam-capture)
+  (bind-key "C-c o f" 'org-roam-find-file)
+  (bind-key "C-c o l" 'org-roam-insert)
+  (bind-key "C-c o r" 'org-roam-buffer-toggle-display)
 #+end_src
 
 ** Agenda
@@ -511,7 +522,7 @@ I also don't want some minor adaptations to the ellipsis.
 ~org-bullets~ replaces ~*~ in from headers with nice bullets 
 #+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package org-bullets
-    :custom (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●" "○" "●"))
+    :custom (org-bullets-bullet-list '("◉" "●" "○" "▶" "▹" "●" "○" "▶" "▹" "●" "○" "▶" "▹"))
     :init 
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 #+end_src
@@ -586,6 +597,7 @@ This makes for a nice integration of the server with the desktop
 - [[https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org][Harry R. Schwartz' Configuration]]
 - [[https://github.com/daviwil/runemacs][daviwil's emacs from scratch series]]
 - [[https://github.com/alhassy/emacs.d][alhassy's A Life Configuring Emacs]]
+- [[http://doc.norang.ca/org-mode.html][Org Mode - Organize Your Life in Plain Text!]]
 
 * Footnotes
 

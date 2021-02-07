@@ -106,7 +106,8 @@ There are two things you can do about this warning:
          ("C-x b" . ivy-switch-buffer))
   :init
   (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t))
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-use-selectable-prompt t))
 
 (use-package ivy-rich
   :after counsel
@@ -159,43 +160,33 @@ There are two things you can do about this warning:
 (setq org-agenda-files '("~/exocortex/agenda"))
 
 (setq-default org-todo-keywords
-              '((sequence "TODO(t)" "NEXT(n!)" "WAITING(w@)" "FUTURE(f)" "|" "DONE(d!/@)" "CANCELED(c@/@)")))
+              '((sequence "TODO(t!)" "NEXT(n!)" "WAITING(w!)" "FUTURE(f!)" "|" "DONE(d!)" "CANCELED(c!)")))
 
 (setq org-log-into-drawer t)
 
-(defun ese/list-existing-ids (directory)
-  "Returns a list of project ids in the directory as strings"
-  (split-string
-   (shell-command-to-string (concat "ls " directory " | grep -Eo \"^[0-9]+\""))))
-
-
-(defun ese/random-unique-id (existing-ids)
-  "Randomly creates a project id non-yet existing in the given list"
-  (let ((project-id (number-to-string (+ 10000 (random 89999)))))
-    (if (seq-contains-p existing-ids project-id)
-        (ese/get-project-numbers existing-ids)
-      project-id)))
-
-(defun ese/create-new-project-file ()
-  "Create a new project file"
-  (interactive)
-  (let* ((id (ese/random-unique-id (append
-                                      (ese/list-existing-ids "~/exocortex/ops/")
-                                      (ese/list-existing-ids "~/exocortex/archives/"))))
-         (slug (read-string (concat "Project " id "'s slug:"))))
-     (expand-file-name (format "%s-%s.org" id slug) "~/exocortex/ops/")))
-
 (bind-key "C-c o c" 'org-capture)
 
-
-
 (setq org-capture-templates
-      '(("t" "Task" entry (file+olp "~/exocortex/agenda/scheduler.org" "Inbox")
-         "* TASK %?\n %i\n")
-        ("l" "Log entry" entry (file+olp+datetree "~/exocortex/logs.org")
-         "* %?\n %i\n")
-        ("p" "New Project" plain (file ese/create-new-project-file)
-         "#+TITLE: %^{TITLE}\n#+OPTIONS: toc:nil num:nil\n\n* Goal\n%?")))
+      '(("t" "TODO" entry (file+olp "~/exocortex/agenda/main.org" "Inbox")
+         "* TODO %?\n %i\n")
+        ("j" "Journal entry" entry (file+olp+datetree "~/exocortex/journal.org")
+         "* %?\n %i\n")))
+
+(use-package org-roam
+  :ensure t
+  :init
+  (setq org-roam-directory "~/exocortex/memex")
+  (setq org-roam-capture-templates '(("m" "Memex note" plain (function org-roam-capture--get-point)
+                                      "%?"
+                                      :file-name "%<%Y%m%dT%H%M%S>-${slug}"
+                                      :head "#+TITLE: ${title}\n#+AUTHOR: Eric Seuret\n"
+                                      :unnarrowed t)))
+  (add-hook 'after-init-hook 'org-roam-mode))
+
+(bind-key "C-c o m" 'org-roam-capture)
+(bind-key "C-c o f" 'org-roam-find-file)
+(bind-key "C-c o l" 'org-roam-insert)
+(bind-key "C-c o r" 'org-roam-buffer-toggle-display)
 
 (bind-key "C-c o a" 'org-agenda)
 
@@ -222,7 +213,7 @@ There are two things you can do about this warning:
       org-ellipsis "⤵")
 
 (use-package org-bullets
-  :custom (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●" "○" "●"))
+  :custom (org-bullets-bullet-list '("◉" "●" "○" "▶" "▹" "●" "○" "▶" "▹" "●" "○" "▶" "▹"))
   :init 
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
