@@ -169,6 +169,8 @@ There are two things you can do about this warning:
 (setq org-capture-templates
       '(("t" "TODO" entry (file+olp "~/exocortex/agenda/main.org" "Inbox")
          "* TODO %?\n %i\n")
+        ("l" "Log entry (current buffer)" entry (file+olp+datetree buffer-file-name "Log")
+         "* %?\n %i\n")
         ("j" "Journal entry" entry (file+olp+datetree "~/exocortex/journal.org")
          "* %?\n %i\n")))
 
