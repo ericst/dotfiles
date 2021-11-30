@@ -107,7 +107,8 @@ There are two things you can do about this warning:
   :init
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t)
-  (setq ivy-use-selectable-prompt t))
+  (setq ivy-use-selectable-prompt t)
+  (setq recentf-keep '(file-remote-p file-readable-p)))
 
 (use-package ivy-rich
   :after counsel
