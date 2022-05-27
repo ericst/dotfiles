@@ -8,7 +8,7 @@ This is my git configuration.
 * User
 Here are my user configurations.
 
-#+begin_src conf-unix :tangle ~/.gitconfig
+#+begin_src conf-unix :tangle ../git/.gitconfig
   [user]
           name = Eric Seuret
           email = eric@ericst.ch
@@ -17,7 +17,7 @@ Here are my user configurations.
 * Push
 This is the default behavior, nonetheless, I make sure of it.
 
-#+begin_src conf-unix :tangle ~/.gitconfig
+#+begin_src conf-unix :tangle ../git/.gitconfig
   [push]
           default = simple
 #+end_src

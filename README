@@ -9,9 +9,7 @@ Table of Contents
 ─────────────────
 
 1. Introduction
-.. 1. Migration to stow
-2. Tools
-3. Machines
+2. Source
 
 
 
@@ -24,7 +22,8 @@ Table of Contents
   org-mode. The different configuration are therefore easy to follow,
   update and kept in a documented way.
 
-  One way of installing them is to open the desired file and run
+  Those configuration are then tangled into stow packages. Generally,
+  whenever I edit the configuration I do tangle the source by running
   `org-babel-tangle-file' on them. However, a small script `tangle.sh'
   is provided for convenience. You can therefore use it as is:
 
@@ -47,14 +46,9 @@ Table of Contents
   It is worth noting, that each org-mode file can be tangled into
   several different files.
 
-
-1.1 Migration to stow
-─────────────────────
-
-  In the end, it is maybe easier to use stow. I am migrating the
-  explanation files to sub-folders that can be installed with stow.
-
-  Once this is finished, the way to install it will be with:
+  One advantage of creating the files in stow packages, is to be use
+  them without even having emacs installed. By simply stowing the
+  necessary package:
 
   ┌────
   │ stow --no-folding  $package
@@ -64,40 +58,25 @@ Table of Contents
   folders. That way the git repository stays clean.
 
 
-2 Tools
-═══════
+2 Source
+════════
 
   I keep one general file per tool. This file describe then the intended
   configuration and can directly be tangled as the configuration if need
   be.
 
-  You will find those files in the *tools* sub-directory.
+  You will find those files in the *src* sub-directory.
 
   [Emacs.org]
         My Emacs configuration.
   [Bash.org]
-        My Bash configuration.
-  [Readline.org]
-        My Readline configuration.
+        My Bash configuration. Also includes readline.
   [Git.org]
         My Git configuration.
 
 
-[Emacs.org] <file:tools/Emacs.org>
+[Emacs.org] <file:src/Emacs.org>
 
-[Bash.org] <file:tools/Bash.org>
+[Bash.org] <file:src/Bash.org>
 
-[Readline.org] <file:tools/Readline.org>
-
-[Git.org] <file:tools/Git.org>
-
-
-3 Machines
-══════════
-
-  I also keep a configuration for each separate machine I use
-  (e.g. Laptop, Desktop or Work Computer). This file serves to describe
-  and set different machines' specificity (alternate directory paths,
-  idiosyncrasy due to the specific OS.)
-
-  You will find those files in the *machines* sub-directory.
+[Git.org] <file:src/Git.org>

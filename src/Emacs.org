@@ -433,34 +433,6 @@ The rests are here to create new projects.
            "* %?\n %i\n")))
 #+end_src
 
-** Memex
-
-Memex stands for memory extender. The idea is to collect knowledge in a sort of
-all encompassing wiki. Org-roam is system that allows to easily manage
-collection of org-file by also keeping track of back links. 
-
-#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
-  (use-package org-roam
-    :ensure t
-    :init
-    (setq org-roam-directory "~/exocortex/memex")
-    (setq org-roam-capture-templates '(("m" "Memex note" plain (function org-roam-capture--get-point)
-                                        "%?"
-                                        :file-name "%<%Y%m%dT%H%M%S>-${slug}"
-                                        :head "#+TITLE: ${title}\n#+AUTHOR: Eric Seuret\n"
-                                        :unnarrowed t)))
-    (add-hook 'after-init-hook 'org-roam-mode))
-#+end_src
-
-Of course, we need that system to be included into our work environment.
-
-#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
-  (bind-key "C-c o m" 'org-roam-capture)
-  (bind-key "C-c o f" 'org-roam-find-file)
-  (bind-key "C-c o l" 'org-roam-insert)
-  (bind-key "C-c o r" 'org-roam-buffer-toggle-display)
-#+end_src
-
 ** Agenda
 I like to keep things simple. The agenda shows scheduled tasks as well
 as next tasks. Everything else is hidden.

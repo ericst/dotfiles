@@ -1,4 +1,3 @@
-
 #+TITLE: ericst's Dotfiles
 #+AUTHOR: Eric Seuret
 #+EMAIL: eric@ericst.ch
@@ -8,9 +7,10 @@ Those are my dotfiles. They are supplied in the form of literate Emacs
 org-mode. The different configuration are therefore easy to follow,
 update and kept in a documented way.
 
-One way of installing them is to open the desired file and run
-~org-babel-tangle-file~ on them. However, a small script ~tangle.sh~
-is provided for convenience. You can therefore use it as is:
+Those configuration are then tangled into stow packages. Generally, whenever I
+edit the configuration I do tangle the source by running ~org-babel-tangle-file~
+on them. However, a small script ~tangle.sh~ is provided for convenience. You
+can therefore use it as is:
 
 #+begin_src bash :tangle no
   source tangle.sh <file-to-tangle>
@@ -31,11 +31,8 @@ shebang. Here is the script.
 It is worth noting, that each org-mode file can be tangled into
 several different files.
 
-** Migration to stow
-In the end, it is maybe easier to use stow. I am migrating the explanation
-files to sub-folders that can be installed with stow. 
-
-Once this is finished, the way to install it will be with:
+One advantage of creating the files in stow packages, is to be use them without
+even having emacs installed. By simply stowing the necessary package:
 
 #+begin_src bash :tangle no
   stow --no-folding  $package
@@ -44,25 +41,16 @@ Once this is finished, the way to install it will be with:
 Using the --no-folding option ensures that I only link the files, no
 folders. That way the git repository stays clean.
 
-* Tools
+* Source
 I keep one general file per tool. This file describe then the intended
 configuration and can directly be tangled as the configuration if need
 be.
 
-You will find those files in the *tools* sub-directory.
+You will find those files in the *src* sub-directory.
 
-- [[file:tools/Emacs.org][Emacs.org]] :: My Emacs configuration.
-- [[file:tools/Bash.org][Bash.org]] :: My Bash configuration.
-- [[file:tools/Readline.org][Readline.org]] :: My Readline configuration.
-- [[file:tools/Git.org][Git.org]] :: My Git configuration.
-
-* Machines
-I also keep a configuration for each separate machine I use
-(e.g. Laptop, Desktop or Work Computer). This file serves to describe
-and set different machines' specificity (alternate directory paths,
-idiosyncrasy due to the specific OS.)
-
-You will find those files in the *machines* sub-directory.
+- [[file:src/Emacs.org][Emacs.org]] :: My Emacs configuration.
+- [[file:src/Bash.org][Bash.org]] :: My Bash configuration. Also includes readline.
+- [[file:src/Git.org][Git.org]] :: My Git configuration.
 
 * Generation of README                                             :noexport:
 The following code when executed with ~C-c C-c~ will export this file

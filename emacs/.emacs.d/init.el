@@ -175,22 +175,6 @@ There are two things you can do about this warning:
         ("j" "Journal entry" entry (file+olp+datetree "~/exocortex/journal.org")
          "* %?\n %i\n")))
 
-(use-package org-roam
-  :ensure t
-  :init
-  (setq org-roam-directory "~/exocortex/memex")
-  (setq org-roam-capture-templates '(("m" "Memex note" plain (function org-roam-capture--get-point)
-                                      "%?"
-                                      :file-name "%<%Y%m%dT%H%M%S>-${slug}"
-                                      :head "#+TITLE: ${title}\n#+AUTHOR: Eric Seuret\n"
-                                      :unnarrowed t)))
-  (add-hook 'after-init-hook 'org-roam-mode))
-
-(bind-key "C-c o m" 'org-roam-capture)
-(bind-key "C-c o f" 'org-roam-find-file)
-(bind-key "C-c o l" 'org-roam-insert)
-(bind-key "C-c o r" 'org-roam-buffer-toggle-display)
-
 (bind-key "C-c o a" 'org-agenda)
 
 (setq org-agenda-custom-commands
