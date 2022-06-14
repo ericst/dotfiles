@@ -58,6 +58,19 @@ Here are some basic settings such as my identity and location.
 #+end_src
 
 * General Settings
+
+** Cua-mode
+Honestly, at the end of the day, I spent most of my days between applications
+which have the so called C-c, C-x, C-v, C-z standardized. It makes sense to have
+it working in a similar way in emacs.
+
+On top of that, there is no functionality lost as when a region is active, I can
+use the original bindings of C-c and C-x by simply doubling them.
+
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
+  (cua-mode t)
+#+end_src
+
 ** Org-mode
 This is to make sure org-mode is loaded for the rest of the configuration. Also,
 we want the last version of org-mode.

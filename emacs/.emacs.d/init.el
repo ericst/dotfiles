@@ -34,6 +34,8 @@ There are two things you can do about this warning:
       calendar-longitude 8.0513
       calendar-location-name "Aarau, Switzerland")
 
+(cua-mode t)
+
 (use-package org)
 (require 'org)
 
