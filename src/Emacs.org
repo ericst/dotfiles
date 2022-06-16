@@ -184,6 +184,7 @@ This makes a rather useful scratch buffer message.
 
 * Core Functionality
 This section covers functionality imported by packages.
+
 ** Flyspell
 Flyspell is helpful, so we enable it also for comments.
 #+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
@@ -516,6 +517,21 @@ I also don't want some minor adaptations to the ellipsis.
 #+end_src
 
 * Programming
+
+** lsp-mode
+Almost every language comes with a lsp server those days. So we install
+lsp-mode.
+
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
+  (use-package lsp-mode
+    :init
+    (setq lsp-keymap-prefix "C-c l")
+    :hook ((csharp-mode . lsp)
+           (lsp-mode . lsp-enable-which-key-integration))
+    :commands lsp)
+
+  (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+#+end_src
 ** Jumping to definitions & references
 ~dumb-jump~ enables "jump to definition" for more than 40 languages.
 It favors a just working approach by using a grep in the background.
@@ -544,7 +560,16 @@ For lisps and schemes we basically want paredit mode always on.
 Just the basic to be able to edit c# files.
 
 #+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
-  (use-package csharp-mode)
+  (use-package csharp-mode
+        :hook ((csharp-mode . lsp)))
+#+end_src
+** Vue
+This is so that I can also develop Vue based frontends.
+
+#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
+  (use-package vue-mode
+    :mode "\\.vue\\'"
+    :hook ((vue-mode . lsp)))
 #+end_src
 
 * Custom file

@@ -206,6 +206,15 @@ There are two things you can do about this warning:
   :init 
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :hook ((csharp-mode . lsp)
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
+
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+
 (use-package dumb-jump
   :config
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
@@ -220,7 +229,12 @@ There are two things you can do about this warning:
 
 (use-package geiser)
 
-(use-package csharp-mode)
+(use-package csharp-mode
+      :hook ((csharp-mode . lsp)))
+
+(use-package vue-mode
+  :mode "\\.vue\\'"
+  :hook ((vue-mode . lsp)))
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
