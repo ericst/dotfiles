@@ -59,18 +59,6 @@ Here are some basic settings such as my identity and location.
 
 * General Settings
 
-** Cua-mode
-Honestly, at the end of the day, I spent most of my days between applications
-which have the so called C-c, C-x, C-v, C-z standardized. It makes sense to have
-it working in a similar way in emacs.
-
-On top of that, there is no functionality lost as when a region is active, I can
-use the original bindings of C-c and C-x by simply doubling them.
-
-#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
-  (cua-mode t)
-#+end_src
-
 ** Org-mode
 This is to make sure org-mode is loaded for the rest of the configuration. Also,
 we want the last version of org-mode.
@@ -115,11 +103,6 @@ Text edition is important. I want to:
   (column-number-mode 1)
 #+end_src
 
-Subword allows to treat CamelCaseNames as three different words.
-
-#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
-  (global-subword-mode 1)
-#+end_src
 
 Emacs has a smart feature allowing it to redistribute breaks in paragraph to
 sort of justify it. We want that to happen automatically in certain modes.
@@ -167,7 +150,7 @@ I like the ~one-dark~ theme.
 
 #+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package one-themes
-    :init (load-theme 'one-light t))
+    :init (load-theme 'one-dark t))
 
   (set-face-attribute 'default nil :font "Fira Code")
 #+end_src
@@ -200,46 +183,13 @@ the middle. This helps with discoverability in general.
     :config (which-key-mode))
 #+end_src
 
-** God mode
-~god-mode~ is enables a sort of modal editing capabilities for Emacs.
-
-When enabled, it transform ~C-c C-r~ in ~cr~.
-
-Rules are simple when in ~god-mode~:
-
-- ~x~ → ~C-x~ (all inputs are assumed with control modifier)
-- ~xs~ → ~C-x C-s~ (chaining is possible)
-- ~x s~ → ~C-x s~ (using space remove the control modifier)
-- ~gx~ → ~M-x~ (g is used to indicate the meta modifier)
-- ~Gx~ → ~C-M-x~ (G is used for the combination of control and meta modifiers)
-- ~12n~ → ~M-12 C-n~ (Digit arguments can be used)
-- ~uuo~ → ~C-u C-u C-o~ (Universal arguments are specified with u)
-
-I use the ~cursor-type~ as an indicator when I am in ~god-mode~.
-If it is a hollow box, it means that I am in ~god-mode~
-
-#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
-  (setq-default cursor-type 'box)
-
-  (use-package god-mode
-    :bind (("<escape>" . god-local-mode))
-    :config
-    (defun ese/update-cursor ()
-      (setq cursor-type (if (or god-local-mode buffer-read-only)
-                            'hollow
-                          'box)))
-    (add-hook 'god-mode-enabled-hook 'ese/update-cursor)
-    (add-hook 'god-mode-disabled-hook 'ese/update-cursor))
-#+end_src
-
 ** Ivy
 ~ivy~ is a completion framework for emacs. 
 I bring it in via counsel.
 
 #+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package counsel
-    :bind (("C-s" . swiper)
-           ("M-x" . counsel-M-x)
+    :bind (("M-x" . counsel-M-x)
            ("C-h f" . counsel-describe-function)
            ("C-h v" . counsel-describe-variable)
            ("C-x b" . ivy-switch-buffer))
@@ -267,55 +217,6 @@ the languages sections.
 #+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
   (use-package company
     :hook (after-init . global-company-mode))
-#+end_src
-
-** Yasnippet
-~yasnippet~ provides handy snippets of code. It needs to be loaded
-after company in order con be properly work with it.
-
-#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
-  (use-package yasnippet
-    :after company
-    :config  (yas-global-mode 1))
-#+end_src
-
-** Avy
-Avy allows to jump to a specified character.
-
-As I use Swiper (see Ivy), I don't really need a backward I-Search.
-
-So let's use ~C-r~ to jump to a character.
-
-#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
-  (use-package avy
-    :bind (("C-r" . avy-goto-char)))
-#+end_src
-
-** Hydra
-~hydra~ allows to create sticky key-bindings.
-This is pratical to create micro-modes /à la/ vim.
-Below we define a zoom hydra with an ~<f2>~ binding.
-
-#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
-  (use-package hydra
-    :config (defhydra hydra-zoom (global-map "<f2>")
-	      "Zoom"
-	      ("b" text-scale-increase "in")
-	      ("s" text-scale-decrease "out")))
-#+end_src
-
-** Expand-region
-~expand-region~ allows selection on steroid. 
-It gradually expands the region by semantic-units. 
-We do define an hydra for it.
-#+begin_src emacs-lisp :tangle ../emacs/.emacs.d/init.el
-  (use-package expand-region
-    :after (hydra)
-    :bind (("C-c e" . 'hydra-expand-region/body))
-    :config (defhydra hydra-expand-region (:pre (er/expand-region 1))
-              "Expand Region"
-              ("e" er/expand-region "expand")
-              ("c" er/contract-region "contract")))
 #+end_src
 
 ** Project Management

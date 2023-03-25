@@ -34,8 +34,6 @@ There are two things you can do about this warning:
       calendar-longitude 8.0513
       calendar-location-name "Aarau, Switzerland")
 
-(cua-mode t)
-
 (use-package org)
 (require 'org)
 
@@ -49,8 +47,6 @@ There are two things you can do about this warning:
 (show-paren-mode 1)
 (delete-selection-mode 1)
 (column-number-mode 1)
-
-(global-subword-mode 1)
 
 (setq-default fill-column 80)
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
@@ -73,7 +69,7 @@ There are two things you can do about this warning:
 (setq auto-save-default t)
 
 (use-package one-themes
-  :init (load-theme 'one-light t))
+  :init (load-theme 'one-dark t))
 
 (set-face-attribute 'default nil :font "Fira Code")
 
@@ -88,21 +84,8 @@ There are two things you can do about this warning:
 (use-package which-key
   :config (which-key-mode))
 
-(setq-default cursor-type 'box)
-
-(use-package god-mode
-  :bind (("<escape>" . god-local-mode))
-  :config
-  (defun ese/update-cursor ()
-    (setq cursor-type (if (or god-local-mode buffer-read-only)
-                          'hollow
-                        'box)))
-  (add-hook 'god-mode-enabled-hook 'ese/update-cursor)
-  (add-hook 'god-mode-disabled-hook 'ese/update-cursor))
-
 (use-package counsel
-  :bind (("C-s" . swiper)
-         ("M-x" . counsel-M-x)
+  :bind (("M-x" . counsel-M-x)
          ("C-h f" . counsel-describe-function)
          ("C-h v" . counsel-describe-variable)
          ("C-x b" . ivy-switch-buffer))
@@ -118,27 +101,6 @@ There are two things you can do about this warning:
 
 (use-package company
   :hook (after-init . global-company-mode))
-
-(use-package yasnippet
-  :after company
-  :config  (yas-global-mode 1))
-
-(use-package avy
-  :bind (("C-r" . avy-goto-char)))
-
-(use-package hydra
-  :config (defhydra hydra-zoom (global-map "<f2>")
-	    "Zoom"
-	    ("b" text-scale-increase "in")
-	    ("s" text-scale-decrease "out")))
-
-(use-package expand-region
-  :after (hydra)
-  :bind (("C-c e" . 'hydra-expand-region/body))
-  :config (defhydra hydra-expand-region (:pre (er/expand-region 1))
-            "Expand Region"
-            ("e" er/expand-region "expand")
-            ("c" er/contract-region "contract")))
 
 (use-package projectile
   :after (counsel)
