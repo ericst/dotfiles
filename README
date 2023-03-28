@@ -1,8 +1,8 @@
-			  ━━━━━━━━━━━━━━━━━━━
-			   ERICST'S DOTFILES
+                          ━━━━━━━━━━━━━━━━━━━
+                           ERICST'S DOTFILES
 
-			      Eric Seuret
-			  ━━━━━━━━━━━━━━━━━━━
+                              Eric Seuret
+                          ━━━━━━━━━━━━━━━━━━━
 
 
 Table of Contents
@@ -22,40 +22,7 @@ Table of Contents
   org-mode. The different configuration are therefore easy to follow,
   update and kept in a documented way.
 
-  Those configuration are then tangled into stow packages. Generally,
-  whenever I edit the configuration I do tangle the source by running
-  `org-babel-tangle-file' on them. However, a small script `tangle.sh'
-  is provided for convenience. You can therefore use it as is:
-
-  ┌────
-  │ source tangle.sh <file-to-tangle>
-  └────
-
-  The tangle script is provided as a script to be sourced because I
-  sometimes will execute on GNU guix installations. It is therefore
-  difficult to know in advance where bash will be located for the
-  shebang. Here is the script.
-
-  ┌────
-  │ echo "Running org-babel-tangle-file on $1"
-  │ \emacs --batch \
-  │       --eval "(require 'org)" \
-  │       --eval "(org-babel-tangle-file \"$1\")"
-  └────
-
-  It is worth noting, that each org-mode file can be tangled into
-  several different files.
-
-  One advantage of creating the files in stow packages, is to be use
-  them without even having emacs installed. By simply stowing the
-  necessary package:
-
-  ┌────
-  │ stow --no-folding  $package
-  └────
-
-  Using the –no-folding option ensures that I only link the files, no
-  folders. That way the git repository stays clean.
+  Each file is then tangled directly in the correct files.
 
 
 2 Source

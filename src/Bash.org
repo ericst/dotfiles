@@ -2,6 +2,10 @@
 #+AUTHOR: Eric Seuret
 #+EMAIL: eric@ericst.ch
 
+#+PROPERTY: header-args+ :comments both
+#+PROPERTY: header-args+ :mkdirp yes
+#+PROPERTY: header-args+ :tangle "~/.bashrc"
+
 * Introduction
 To configure bash's interactive behavior correctly, one must interact with three
 configuration files. Two of them (~~/.bashrc~ and ~~/.bash_profile~) are for GNU
@@ -25,7 +29,7 @@ A note here, in my Readline configuration I do bind ~C-s~ to perform incremental
 search on history. This conflicts with XON/XOFF flow control, therefore I
 de-activate that but only for interactive sessions.
 
-#+begin_src bash :tangle ../bash/.bashrc
+#+begin_src bash
   [[ $- == *i* ]] && stty -ixon
 #+end_src
 
@@ -35,7 +39,7 @@ Mos of this is taken from the article titled [[https://sanctum.geek.nz/arabesque
 First we want to append to the history instead of rewriting it. We also want to
 keep as much as possible into our history.
 
-#+begin_src bash :tangle ../bash/.bashrc
+#+begin_src bash
   shopt -s histappend
   HISTFILESIZE=1000000
   HISTSIZE=1000000
@@ -46,7 +50,7 @@ are not interesting. Setting ~HISTCONTROL~ to the correct value will allow us to
 not save them. Also, some commands, such as the ones used for job control or
 simply listing contents of a directory, are not conveying any particular meaning
 
-#+begin_src bash :tangle ../bash/.bashrc
+#+begin_src bash
   HISTCONTROL=ignoreboth
   export HISTIGNORE="exit:ls:bg:fg:jobs:history"
 #+end_src
@@ -54,13 +58,13 @@ simply listing contents of a directory, are not conveying any particular meaning
 Recording not only the command but also the date at which it was recorded could
 prove useful. Setting ~HISTTIMEFORMAT~ will do just that.
 
-#+begin_src bash :tangle ../bash/.bashrc
+#+begin_src bash
   HISTTIMEFORMAT='%F %T '
 #+end_src
 
 Now we only need to make a small alias to search easily into the history.
 
-#+begin_src bash :tangle ../bash/.bashrc
+#+begin_src bash
   alias hs="history | grep"
 #+end_src
 
@@ -72,7 +76,7 @@ We want bash to help us as much as possible. ~autocd~ allows us to change
 directory by only typing its name without even issuing the ~cd~
 command. ~cdspell~ and ~dirspell~ will auto correct types.
 
-#+begin_src bash :tangle ../bash/.bashrc
+#+begin_src bash
   shopt -s autocd
   shopt -s dirspell
   shopt -s cdspell
@@ -84,7 +88,7 @@ with that. The directory ~~/projects/~ is a collection my projects. Adding it to
 ~CDPATH~ variable will allow me ~cd~ in any project from wherever. The option
 ~cdable_vars~ enable us to made variable viable ~cd~ targets.
 
-#+begin_src bash :tangle ../bash/.bashrc
+#+begin_src bash
   CDPATH=".:~/projects"
   shopt -s cdable_vars
 #+end_src
@@ -92,7 +96,7 @@ with that. The directory ~~/projects/~ is a collection my projects. Adding it to
 With the ~cdable_vars~ option set, having some bookmarks outside of the ~CDPAT~
 becomes interesting.
 
-#+begin_src bash :tangle ../bash/.bashrc
+#+begin_src bash
   dotfiles="$HOME/dotfiles/"
   documents="$HOME/Documents/"
   downloads="$HOME/Downloads/"
@@ -114,7 +118,7 @@ the elements:
 As I have conditionals, it my prompt, the easiest way to make sure it is printed
 out correctly is to use the ~PROMPT_COMMAND~ variable from Bash.
 
-#+begin_src bash :tangle ../bash/.bashrc
+#+begin_src bash
 
   update_prompt (){
       local return_code=$?
@@ -157,7 +161,7 @@ more than 3 files.
 ~ch{own,mod,grp}~ won't allow me to change permissions on ~/~
 
 
-#+begin_src bash :tangle ../bash/.bashrc
+#+begin_src bash
   alias rm='rm -I --preserve-root'
 
   alias mv='mv -i'
@@ -174,7 +178,7 @@ My editor of choice is Emacs. Below I set environment variables to make sure
 that it is correctly selected by other applications. I also set two aliases to
 edit files quicker. ~e~ open Emacs whereas ~et~ opens it in a terminal.
 
-#+begin_src bash :tangle ../bash/.bashrc
+#+begin_src bash
   export ALTERNATE_EDITOR=""
   export EDITOR="emacsclient -ta \"emacs -nw\""
   export VISUAL="emacsclient -na \"emacs"\"
@@ -186,7 +190,7 @@ edit files quicker. ~e~ open Emacs whereas ~et~ opens it in a terminal.
 ** Guix
 The following makes sure that my guix profile is correctly set.
 
-#+begin_src bash :tangle ../bash/.bash_profile
+#+begin_src bash
   export GUIX_PROFILE="$HOME/.guix-profile"
   export GUIX_LOCPATH="$GUIX_PROFILE/lib/locale"
   if [ -e "$GUIX_PROFILE/etc/profile"  ]; then
@@ -203,7 +207,7 @@ Those aliases make the ~ls~ nicer.
 
 Adding an extra ~l~ at the end will also pipe to less
 
-#+begin_src bash :tangle ../bash/.bashrc
+#+begin_src bash
   alias ls="ls --color=auto"
   alias lsl="ls --color=auto | less"
   alias ll="ls --color=auto -lh"
@@ -215,14 +219,14 @@ Adding an extra ~l~ at the end will also pipe to less
 ** ~grep~
 It is also nice to have colors automatically in grep.
 
-#+begin_src bash :tangle ../bash/.bashrc
+#+begin_src bash
   alias grep='grep --color=auto'
 #+end_src
 
 ** ~ps~ 
 First an alias to display a nicer table of processes.
 
-#+begin_src bash :tangle ../bash/.bashrc
+#+begin_src bash
   alias ps="ps auxf"
   alias psl="ps auxf | less"
 #+end_src
@@ -230,21 +234,21 @@ First an alias to display a nicer table of processes.
 I often need to look for a particular process, so being able to search for it
 directly is a time saver.
 
-#+begin_src bash :tangle ../bash/.bashrc
+#+begin_src bash
   alias psg="ps aux | grep -v grep | \grep -i -e VSZ -e"
 #+end_src
 
 ** ~mkdir~
 Per default I want to create any missing directory.
 
-#+begin_src bash :tangle ../bash/.bashrc
+#+begin_src bash
 alias mkdir="mkdir -pv"
 #+end_src
 
 The function ~mkcd~ is extremely useful, to create a directory and immediately
 change to it.
 
-#+begin_src bash :tangle ../bash/.bashrc
+#+begin_src bash
   mcd () {
       mkdir -p $1
       cd $1
@@ -252,10 +256,14 @@ change to it.
 #+end_src
 
 * Bash Profile
+:PROPERTIES:
+:header-args+: :tangle "~/.bash_profile"
+:END:
+
 ** System profile
 When working on a system, it is also a good idea to source the global definitions.
 
-#+begin_src bash :tangle ../bash/.bash_profile
+#+begin_src bash
   if [ -f /etc/profile ]; then
       source /etc/profile;
   fi
@@ -265,7 +273,7 @@ When working on a system, it is also a good idea to source the global definition
 To avoid repeating ourselves, we will treat ~~/.bashrc~ as common to login
 and non-login shells and source ~~/.bashrc~ into our ~~/.bash_profile~.
 
-#+begin_src bash :tangle ../bash/.bash_profile
+#+begin_src bash
   if [ -f ~/.bashrc ]; then
       source ~/.bashrc;
   fi
@@ -275,11 +283,16 @@ and non-login shells and source ~~/.bashrc~ into our ~~/.bash_profile~.
 On login shells we will also extend the ~PATH~ to include small scripts I might
 want to write.
 
-#+begin_src bash :tangle ../bash/.bash_profile
+#+begin_src bash
   export PATH="$HOME/bin:$PATH"
 #+end_src
 
 * Readline
+:PROPERTIES:
+:header-args+: :tangle "~/.inputrc"
+:header-args+: :comments no
+:END:
+
 ** Introduction
 Readline configuration affects a lot of programs using it. However, it is mainly
 used by bash, that is why the configuration is here.
@@ -288,7 +301,7 @@ used by bash, that is why the configuration is here.
 I don't like my computer beeping, I would rather prefer a visual feedback, as it
 is more discreet.
 
-#+begin_src fundamental :tangle ../bash/.inputrc
+#+begin_src fundamental
   set bell-style visible
 #+end_src
 
@@ -307,7 +320,7 @@ are the settings that make for a nice experience.
 - ~show-all-if-ambiguous~ :: Show immediately possible completions. I don't want
   to press Tab two-times.
 
-#+begin_src fundamental :tangle ../bash/.inputrc
+#+begin_src fundamental
 set completion-ignore-case on
 set completion-map-case on
 set match-hidden-files on
@@ -318,7 +331,7 @@ set show-all-if-ambiguous on
 Those bindings are here to make my life a bit easier. Searching for the string
 you already wrote is more useful than non-incremental search.
 
-#+begin_src fundamental :tangle ../bash/.inputrc
+#+begin_src fundamental
 Meta-p: history-substring-search-backward
 Meta-n: history-substring-search-forward
 #+end_src

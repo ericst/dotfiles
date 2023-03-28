@@ -1,9 +1,0 @@
-set bell-style visible
-
-set completion-ignore-case on
-set completion-map-case on
-set match-hidden-files on
-set show-all-if-ambiguous on
-
-Meta-p: history-substring-search-backward
-Meta-n: history-substring-search-forward

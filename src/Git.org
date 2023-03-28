@@ -2,13 +2,17 @@
 #+AUTHOR: Eric Seuret
 #+EMAIL: eric@ericst.ch
 
+#+PROPERTY: header-args+ :comments both
+#+PROPERTY: header-args+ :mkdirp yes
+#+PROPERTY: header-args+ :tangle "~/.gitconfig"
+
 * Introduction
 This is my git configuration.
 
 * User
 Here are my user configurations.
 
-#+begin_src conf-unix :tangle ../git/.gitconfig
+#+begin_src conf-unix
   [user]
           name = Eric Seuret
           email = eric@ericst.ch
@@ -17,7 +21,7 @@ Here are my user configurations.
 * Push
 This is the default behavior, nonetheless, I make sure of it.
 
-#+begin_src conf-unix :tangle ../git/.gitconfig
+#+begin_src conf-unix
   [push]
           default = simple
 #+end_src
