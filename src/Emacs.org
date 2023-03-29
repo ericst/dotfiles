@@ -9,6 +9,16 @@
 * Use-package
 The file ~init.el~ makes sure that ~use-package~ is installed. 
 
+On windows, when I compile emacs with MSYS2, I end up with a weird bug
+where the gnupg homedire is wrongly defined. I found the following to
+correct that and allows packages to be loaded correctly.
+
+#+begin_src emacs-lisp
+  (if (memq system-type '(windows-nt ms-dos))
+      (setq package-gnupghome-dir "~/.emacs.d/elpa/gnupg"))
+#+end_src
+
+
 This installs the MELPA repository and makes sure that ~use-package~
 installs the package. It is essential to bootstrap on fresh box.
 Otherwise, ~use-package~ waits until you need a package to download
