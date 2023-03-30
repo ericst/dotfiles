@@ -196,29 +196,19 @@ the middle. This helps with discoverability in general.
     :config (which-key-mode))
 #+end_src
 
-** Ivy
-~ivy~ is a completion framework for emacs. 
-I bring it in via counsel.
+** Helm
+~helm~ is a completion framework for emacs. 
 
 #+begin_src emacs-lisp
-  (use-package counsel
-    :bind (("M-x" . counsel-M-x)
-           ("C-h f" . counsel-describe-function)
-           ("C-h v" . counsel-describe-variable)
-           ("C-x b" . ivy-switch-buffer))
+  (use-package helm
+    :bind (("M-x"		.	helm-M-x)
+           ("C-x C-f"	.       helm-find-files)
+           ("C-x b"	        .       helm-buffers-list)
+           ("M-i"		.	helm-imenu))
     :init
-    (ivy-mode 1)
-    (setq ivy-use-virtual-buffers t)
-    (setq ivy-use-selectable-prompt t)
-    (setq recentf-keep '(file-remote-p file-readable-p)))
-#+end_src
-
-~ivy-rich~ improves what is displayed into the ivy selection buffer.
-
-#+begin_src emacs-lisp
-  (use-package ivy-rich
-    :after counsel
-    :init (ivy-rich-mode 1))
+    (helm-mode 1)
+    (setq helm-mode-fuzzy-match			 t
+          helm-completion-in-region-fuzzy-match	 t)
 #+end_src
 
 ** Company
@@ -250,20 +240,10 @@ empty ~.projectile~ file in the root directory.
 
 #+begin_src emacs-lisp
   (use-package projectile
-    :after (counsel)
+    :after (helm)
     :config
-    (setq projectile-completion-system 'ivy)
     (projectile-mode 1)
     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
-#+end_src
-
-For proper integration with ~ivy~ we use the ~counsel-projectile~
-
-#+begin_src emacs-lisp
-  (use-package counsel-projectile
-    :after (counsel projectile)
-    :config
-    (counsel-projectile-mode t))
 #+end_src
 
 ** Git porcelain
@@ -443,8 +423,6 @@ lsp-mode.
     :hook ((csharp-mode . lsp)
            (lsp-mode . lsp-enable-which-key-integration))
     :commands lsp)
-
-  (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 #+end_src
 ** Jumping to definitions & references
 ~dumb-jump~ enables "jump to definition" for more than 40 languages.
