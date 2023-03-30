@@ -202,13 +202,14 @@ the middle. This helps with discoverability in general.
 #+begin_src emacs-lisp
   (use-package helm
     :bind (("M-x"		.	helm-M-x)
-           ("C-x C-f"	.       helm-find-files)
-           ("C-x b"	        .       helm-buffers-list)
-           ("M-i"		.	helm-imenu))
+	   ("C-x C-f"	.       helm-find-files)
+	   ("C-x b"	        .       helm-buffers-list)
+	   ("M-i"		.	helm-imenu))
     :init
     (helm-mode 1)
     (setq helm-mode-fuzzy-match			 t
-          helm-completion-in-region-fuzzy-match	 t)
+	  helm-completion-in-region-fuzzy-match	 t))
+  
 #+end_src
 
 ** Company
@@ -277,11 +278,6 @@ usefull things and not try to keep track of everything always.
 
 - ~~/exocortex/agenda~ :: Collection of org files used to manage
   time.
-- ~~exocortex/memex/~ :: Contains permanent notes on topics. At the
-  end it should look like the described method in this
-  book [fn:1]. Memex stands for Memory Expander.
-- ~~exocortex/skel/~ :: Contains different templates files to facilitate the use
-  of my exocortex. 
 - ~~exocortex/journal.org~ :: Contains a journal of events. Kind of like a
   /journal de bord/.
 - ~~exocortex/archives/~ :: The idea is to keep old org files or task
@@ -503,10 +499,4 @@ This makes for a nice integration of the server with the desktop
 - [[https://github.com/daviwil/runemacs][daviwil's emacs from scratch series]]
 - [[https://github.com/alhassy/emacs.d][alhassy's A Life Configuring Emacs]]
 - [[http://doc.norang.ca/org-mode.html][Org Mode - Organize Your Life in Plain Text!]]
-
-* Footnotes
-
-[fn:1] Ahrens, Sönke. How to Take Smart Notes: One Simple Technique to
-Boost Writing, Learning and Thinking for Students, Academics and
-Nonfiction Book Writers, n.d.
  
