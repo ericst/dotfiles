@@ -276,7 +276,7 @@ system. The following corrects it on starting emacs. It comes from:
 Quick description of my exocortex. The idea is to free my main cortex for
 usefull things and not try to keep track of everything always.
 
-- ~~/exocortex/agenda~ :: Collection of org files used to manage
+- ~~/exocortex/projects/~ :: Collection of org files used to manage
   time.
 - ~~exocortex/journal.org~ :: Contains a journal of events. Kind of like a
   /journal de bord/.
@@ -287,7 +287,7 @@ usefull things and not try to keep track of everything always.
 Places to look for agenda items.
 
 #+begin_src emacs-lisp
-  (setq org-agenda-files '("~/exocortex/agenda"))
+  (setq org-agenda-files '("~/exocortex/projects"))
 #+end_src
 
 ** Todo items
@@ -329,7 +329,7 @@ The rests are here to create new projects.
   (bind-key "C-c o c" 'org-capture)
 
   (setq org-capture-templates
-        '(("t" "TODO" entry (file+olp "~/exocortex/agenda/main.org" "Inbox")
+        '(("t" "TODO" entry (file+olp "~/exocortex/projects/main.org" "Inbox")
            "* TODO %?\n %i\n")
           ("l" "Log entry (current buffer)" entry (file+olp+datetree buffer-file-name "Log")
            "* %?\n %i\n")
