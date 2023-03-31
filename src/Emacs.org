@@ -287,7 +287,7 @@ usefull things and not try to keep track of everything always.
 Places to look for agenda items.
 
 #+begin_src emacs-lisp
-  (setq org-agenda-files '("~/exocortex/projects"))
+  (setq org-agenda-files '("~/exocortex/projects/"))
 #+end_src
 
 ** Todo items
@@ -295,7 +295,7 @@ This is how I organize my todo keyboards items.
 
 #+begin_src emacs-lisp
   (setq-default org-todo-keywords
-                '((sequence "TODO(t!)" "NEXT(n!)" "WAITING(w!)" "FUTURE(f!)" "|" "DONE(d!)" "CANCELED(c!)")))
+                '((sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "FUTURE(f)" "|" "DONE(d)" "CANCELED(c)")))
 
   (setq org-log-into-drawer t)
 #+end_src
@@ -311,10 +311,9 @@ Here is a short description of all states:
 - DONE :: This means that the task was done an completed.
 - CANCELED :: This means that the task was canceled before being done.
 
-A note on logging. Each task records a time stamp of state transition. But
-logging is made separately (via capture) on the project level. The idea is that
-so the log becomes useful, but reconstruction of the task can be done quickly by
-knowing what happened when.
+A note on logging. There is almost no recording of what happened when. As this
+is not really useful. The logging can be done at a project level via
+capture. See the capture templates below.
 
 ** Capture 
 This is the capture configuration. Basically, I have only two basic
@@ -322,8 +321,8 @@ templates:
 
 1. Quick one for new tasks that go directly in the inbox
 2. One that I use for logging information
-
-The rests are here to create new projects.
+3. One for journalling. As it is something that I would like to take slowly as
+   an habit.
 
 #+begin_src emacs-lisp
   (bind-key "C-c o c" 'org-capture)
@@ -331,9 +330,9 @@ The rests are here to create new projects.
   (setq org-capture-templates
         '(("t" "TODO" entry (file+olp "~/exocortex/projects/main.org" "Inbox")
            "* TODO %?\n %i\n")
-          ("l" "Log entry (current buffer)" entry (file+olp+datetree buffer-file-name "Log")
-           "* %?\n %i\n")
-          ("j" "Journal entry" entry (file+olp+datetree "~/exocortex/journal.org")
+          ("l" "Log entry (current buffer)" entry (file+olp buffer-file-name "Logs")
+           "* %<%Y-%m-%d> %?\n %i\n")
+          ("j" "Journal entry (global)" entry (file+olp+datetree "~/exocortex/journal.org")
            "* %?\n %i\n")))
 #+end_src
 
@@ -355,7 +354,7 @@ look at during a weekly review.
           '(("a" "Agenda for the current week"
              ((agenda "")
               (todo "NEXT")))
-            ("u" "Unscheduled Tasks"
+            ("u" "Unscheduled Tasks globally"
              ((tags-todo "-FUTURE-DEADLINE={.+}-SCHEDULED={.+}")
               (todo "NEXT")))
             ("f" "Future Tasks"
@@ -369,10 +368,34 @@ really important.
 I also want that to be organized as a hierarchy.
 
 #+begin_src emacs-lisp
-  (setq org-refile-use-outline-path 'file)
-  (setq org-refile-targets '((nil . (:maxlevel . 4))
-                             (org-agenda-files . (:maxlevel . 4))))
+  (setq org-refile-use-outline-path 'file
+        org-outline-path-complete-in-steps nil)
+  (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))
+                             (nil . (:maxlevel . 2))))
 #+end_src
+
+** Archiving
+As I have one file per project, when I am archiving a project, I actually need
+to rename it. This is not an available command in emacs, so here goes.
+
+#+begin_src emacs-lisp
+  (defun ese-move-file-and-rename-buffer ()
+    "Rename the current buffer and file it is visiting."
+    (interactive)
+    (let ((filename (buffer-file-name)))
+      (if (not (and filename (file-exists-p filename)))
+          (message "Buffer is not visiting a file!")
+        (let ((new-name (read-file-name "New name: " filename)))
+          (cond
+           ((vc-backend filename) (vc-rename-file filename new-name))
+           (t
+            (rename-file filename new-name t)
+            (set-visited-file-name new-name t t)))))))
+
+  (global-set-key (kbd "C-c r") #'ese-move-file-and-rename-buffer)
+#+end_src
+
+
 
 ** Source blocks
 When editing code blocks, use the current window rather than poping
@@ -384,10 +407,11 @@ Quickly add source blocks of emacs-lisp with ~C-c C-, el~.
   (setq org-src-window-setup 'current-window)
 
   (add-to-list 'org-structure-template-alist
-               '("sel" . "src emacs-lisp"))
+               '("sel" . "src emacs-lisp")
+               '("ssc" . "src scheme")
+               '("sba" . "src bash"))
 #+end_src
 
-General notes on my system. 
 
 ** UI adaptation
 I want to have ~org-indent-mode~ on by default. 
