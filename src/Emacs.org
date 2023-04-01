@@ -406,10 +406,10 @@ Quickly add source blocks of emacs-lisp with ~C-c C-, el~.
 #+begin_src emacs-lisp
   (setq org-src-window-setup 'current-window)
 
-  (add-to-list 'org-structure-template-alist
-               '("sel" . "src emacs-lisp")
-               '("ssc" . "src scheme")
-               '("sba" . "src bash"))
+  (dolist (element '(("sel" . "src emacs-lisp")
+                     ("ssc" . "src scheme")
+                     ("sba" . "src bash")))
+    (add-to-list 'org-structure-template-alist element))
 #+end_src
 
 
