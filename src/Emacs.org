@@ -72,15 +72,6 @@ Here are some basic settings such as my identity and location.
 
 * General Settings
 
-** Org-mode
-This is to make sure org-mode is loaded for the rest of the configuration. Also,
-we want the last version of org-mode.
-
-#+begin_src emacs-lisp
-  (use-package org)
-  (require 'org)
-#+end_src
-
 ** Window and frame
 We start by adapting the window by removing what we don't need.
 
@@ -178,6 +169,48 @@ This makes a rather useful scratch buffer message.
 		";; Happy Hacking!\n"))
 #+end_src
 
+* Org-mode
+** Loading
+This is to make sure org-mode is loaded for the rest of the configuration. Also,
+we want the last version of org-mode.
+
+#+begin_src emacs-lisp
+  (use-package org)
+  (require 'org)
+#+end_src
+
+** Source blocks
+When editing code blocks, use the current window rather than poping
+open a new one.
+
+Quickly add source blocks of emacs-lisp with ~C-c C-, el~.
+
+#+begin_src emacs-lisp
+  (setq org-src-window-setup 'current-window)
+
+  (dolist (element '(("sel" . "src emacs-lisp")
+                     ("ssc" . "src scheme")
+                     ("sba" . "src bash")))
+    (add-to-list 'org-structure-template-alist element))
+#+end_src
+
+** UI adaptation
+I want to have ~org-indent-mode~ on by default. 
+I also don't want some minor adaptations to the ellipsis.
+
+#+begin_src emacs-lisp
+  (setq org-startup-indented t
+        org-ellipsis "⤵")
+#+end_src
+
+~org-bullets~ replaces ~*~ in from headers with nice bullets 
+#+begin_src emacs-lisp
+  (use-package org-bullets
+    :custom (org-bullets-bullet-list '("◉" "●" "○" "▶" "▹" "●" "○" "▶" "▹" "●" "○" "▶" "▹"))
+    :init 
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+#+end_src
+
 * Core Functionality
 This section covers functionality imported by packages.
 
@@ -270,164 +303,6 @@ system. The following corrects it on starting emacs. It comes from:
 
 #+begin_src emacs-lisp
   (require 'iso-transl)
-#+end_src
-
-* Exocortex
-Quick description of my exocortex. The idea is to free my main cortex for
-usefull things and not try to keep track of everything always.
-
-- ~~/exocortex/projects/~ :: Collection of org files used to manage
-  time.
-- ~~exocortex/journal.org~ :: Contains a journal of events. Kind of like a
-  /journal de bord/.
-- ~~exocortex/archives/~ :: The idea is to keep old org files or task
-  items.
-
-** Agenda files
-Places to look for agenda items.
-
-#+begin_src emacs-lisp
-  (setq org-agenda-files '("~/exocortex/projects/"))
-#+end_src
-
-** Todo items
-This is how I organize my todo keyboards items.
-
-#+begin_src emacs-lisp
-  (setq-default org-todo-keywords
-                '((sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "FUTURE(f)" "|" "DONE(d)" "CANCELED(c)")))
-
-  (setq org-log-into-drawer t)
-#+end_src
-
-Here is a short description of all states:
-
-- TODO :: Self-explanatory, an item that needs doing.
-- NEXT :: This item is on the NEXT list. It means that it is currently being
-  working on.
-- WAITING :: This means that in order to complete the task, I am waiting for
-  some more information.
-- FUTURE :: This is a task that doesn't need immediate action for the moment.
-- DONE :: This means that the task was done an completed.
-- CANCELED :: This means that the task was canceled before being done.
-
-A note on logging. There is almost no recording of what happened when. As this
-is not really useful. The logging can be done at a project level via
-capture. See the capture templates below.
-
-** Capture 
-This is the capture configuration. Basically, I have only two basic
-templates:
-
-1. Quick one for new tasks that go directly in the inbox
-2. One that I use for logging information
-3. One for journalling. As it is something that I would like to take slowly as
-   an habit.
-
-#+begin_src emacs-lisp
-  (bind-key "C-c o c" 'org-capture)
-
-  (setq org-capture-templates
-        '(("t" "TODO" entry (file+olp "~/exocortex/projects/main.org" "Inbox")
-           "* TODO %?\n %i\n")
-          ("l" "Log entry (current buffer)" entry (file+olp buffer-file-name "Logs")
-           "* %<%Y-%m-%d> %?\n %i\n")
-          ("j" "Journal entry (global)" entry (file+olp+datetree "~/exocortex/journal.org")
-           "* %?\n %i\n")))
-#+end_src
-
-** Agenda
-I like to keep things simple. The agenda shows scheduled tasks as well
-as next tasks. Everything else is hidden.
-
-It is only during the weekly review that I want to see per projects
-all tasks.
-
-I also have a view to use during planning with tasks that are
-unscheduled and don't have any deadline. Those are good candidates to
-look at during a weekly review.
-
-#+begin_src emacs-lisp
-    (bind-key "C-c o a" 'org-agenda)
-
-    (setq org-agenda-custom-commands
-          '(("a" "Agenda for the current week"
-             ((agenda "")
-              (todo "NEXT")))
-            ("u" "Unscheduled Tasks globally"
-             ((tags-todo "-FUTURE-DEADLINE={.+}-SCHEDULED={.+}")
-              (todo "NEXT")))
-            ("f" "Future Tasks"
-             ((todo "FUTURE")))))
-#+end_src
-
-** Refiling
-I want to be able to refile anywhere in my current agenda files. It is
-really important.
-
-I also want that to be organized as a hierarchy.
-
-#+begin_src emacs-lisp
-  (setq org-refile-use-outline-path 'file
-        org-outline-path-complete-in-steps nil)
-  (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))
-                             (nil . (:maxlevel . 2))))
-#+end_src
-
-** Archiving
-As I have one file per project, when I am archiving a project, I actually need
-to rename it. This is not an available command in emacs, so here goes.
-
-#+begin_src emacs-lisp
-  (defun ese-move-file-and-rename-buffer ()
-    "Rename the current buffer and file it is visiting."
-    (interactive)
-    (let ((filename (buffer-file-name)))
-      (if (not (and filename (file-exists-p filename)))
-          (message "Buffer is not visiting a file!")
-        (let ((new-name (read-file-name "New name: " filename)))
-          (cond
-           ((vc-backend filename) (vc-rename-file filename new-name))
-           (t
-            (rename-file filename new-name t)
-            (set-visited-file-name new-name t t)))))))
-
-  (global-set-key (kbd "C-c r") #'ese-move-file-and-rename-buffer)
-#+end_src
-
-
-
-** Source blocks
-When editing code blocks, use the current window rather than poping
-open a new one.
-
-Quickly add source blocks of emacs-lisp with ~C-c C-, el~.
-
-#+begin_src emacs-lisp
-  (setq org-src-window-setup 'current-window)
-
-  (dolist (element '(("sel" . "src emacs-lisp")
-                     ("ssc" . "src scheme")
-                     ("sba" . "src bash")))
-    (add-to-list 'org-structure-template-alist element))
-#+end_src
-
-
-** UI adaptation
-I want to have ~org-indent-mode~ on by default. 
-I also don't want some minor adaptations to the ellipsis.
-
-#+begin_src emacs-lisp
-  (setq org-startup-indented t
-        org-ellipsis "⤵")
-#+end_src
-
-~org-bullets~ replaces ~*~ in from headers with nice bullets 
-#+begin_src emacs-lisp
-  (use-package org-bullets
-    :custom (org-bullets-bullet-list '("◉" "●" "○" "▶" "▹" "●" "○" "▶" "▹" "●" "○" "▶" "▹"))
-    :init 
-    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 #+end_src
 
 * Programming
