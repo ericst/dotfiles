@@ -1,0 +1,117 @@
+# Enable vi mode
+set -o vi
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
+fi
+
+# Add some bin folders.
+if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
+    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+fi
+export PATH
+
+
+# Most of this is taken from the article titled [[https://sanctum.geek.nz/arabesque/better-bash-history/][Better Bash History]].
+
+# First we want to append to the history instead of rewriting it. We also want to
+# keep as much as possible into our history.
+shopt -s histappend
+HISTFILESIZE=1000000
+HISTSIZE=1000000
+
+
+# Of course, not everything is worth saving. For instance duplicate or empty lines
+# are not interesting. Setting ~HISTCONTROL~ to the correct value will allow us to
+# not save them. Also, some commands, such as the ones used for job control or
+# simply listing contents of a directory, are not conveying any particular meaning
+HISTCONTROL=ignoreboth
+export HISTIGNORE="exit:ls:bg:fg:jobs:history"
+
+# Recording not only the command but also the date at which it was recorded could
+# prove useful. Setting ~HISTTIMEFORMAT~ will do just that.
+HISTTIMEFORMAT='%F %T '
+
+
+
+# Now we only need to make a small alias to search easily into the history.
+alias hs="history | grep"
+
+
+# When using a shell directory navigation is important to put yourself in the
+# right context.
+# We want bash to help us as much as possible. ~autocd~ allows us to change
+# directory by only typing its name without even issuing the ~cd~
+# command. ~cdspell~ and ~dirspell~ will auto correct types.
+# TODO: Work set a CDPATH variable
+shopt -s autocd
+shopt -s dirspell
+shopt -s cdspell
+
+
+
+
+# Here are some safety nets. 
+
+# ~rm~ will refuse to delete ~/~ and prompt confirmation whenever I try to delete
+# more than 3 files.
+# ~mv~, ~cp~ and ~ln~ will always ask before overwriting anything.
+# ~ch{own,mod,grp}~ won't allow me to change permissions on ~/~
+alias rm='rm -I --preserve-root'
+
+alias mv='mv -i'
+alias cp='cp -i'
+alias ln='ln -i'
+
+alias chown='chown --preserve-root'
+alias chmod='chmod --preserve-root'
+alias chgrp='chgrp --preserve-root'
+
+
+# My editor of choice is Neovim. Below I set environment variables to make sure
+# that it is correctly selected by other applications. I also set an alias to
+# edit files quicker.
+export ALTERNATE_EDITOR="vi"
+export EDITOR="nvim"
+export VISUAL="nvim"
+export GIT_EDITOR="$EDITOR"
+alias e="$VISUAL"
+
+# It is nice to have colors automatically in grep.
+alias grep='grep --color=auto'
+
+
+# aliases for listing processes and looking for specific ones
+alias ps="ps auxf"
+alias psl="ps auxf | less"
+alias psg="ps aux | grep -v grep | \grep -i -e VSZ -e"
+
+
+# Per default I want to create any missing directory.
+alias mkdir="mkdir -pv"
+
+
+# The function ~mkcd~ is extremely useful, to create a directory and immediately
+# change to it.
+mcd () {
+    mkdir -p $1
+    cd $1
+}
+
+# Source everything into a ~/.bashrc.d.
+# TODO move configuration there, to make it nicer
+if [ -d ~/.bashrc.d ]; then
+    for rc in ~/.bashrc.d/*; do
+        if [ -f "$rc" ]; then
+            . "$rc"
+        fi
+    done
+fi
+unset rc
+
+
+# References:
+# https://sanctum.geek.nz/arabesque/better-bash-history/ - Better Bash History
+# https://www.gnu.org/software/bash/manual/html_node/index.html - Bash Reference Manual
+# https://tiswww.case.edu/php/chet/readline/readline.html - GNU Readline Library

@@ -1,0 +1,5 @@
+= ericst's dotfiles
+
+Those are my dotfiles. I moved the repository to https://www.chezmoi.io/[chezmoi].
+
+Please look at the doc there for more information on how to set things up.
