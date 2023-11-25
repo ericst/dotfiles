@@ -32,8 +32,8 @@ set show-mode-in-prompt on
 #     4: steady underline
 #     5: blinking bar (xterm)
 #     6: steady bar (xterm)
-set vi-ins-mode-string (ins)\1\e[5 q\2
-set vi-cmd-mode-string (cmd)\1\e[1 q\2
+set vi-ins-mode-string (i)\1\e[5 q\2
+set vi-cmd-mode-string (n)\1\e[1 q\2
 $endif
 
 # References
