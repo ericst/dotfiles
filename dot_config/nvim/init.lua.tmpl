@@ -523,5 +523,21 @@ vim.opt.scrolloff = 8
 
 vim.opt.nu = true
 
+{{ if eq .chezmoi.os "linux" }}
+{{   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+local in_wsl = os.getenv('WSL_DISTRO_NAME') ~= nil
+
+if in_wsl then
+    vim.g.clipboard = {
+        name = 'wsl clipboard',
+        copy =  { ["+"] = { "clip.exe" },   ["*"] = { "clip.exe" } },
+        paste = { ["+"] = { "wsl-nvim-paste" }, ["*"] = { "wsl-nvim-paste" } },
+        cache_enabled = true
+    }
+end
+{{   end }}
+{{ end }}
+
+
 -- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
+-- vim: ts=2 sts=2 sw=2 ft=lua

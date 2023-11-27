@@ -1,0 +1,10 @@
+LICENSE
+README.adoc
+
+bin/wsl-nvim-paste
+{{ if eq .chezmoi.os "linux" }}
+{{   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+!bin/wsl-nvim-paste
+{{   end }}
+{{ end }}
+
