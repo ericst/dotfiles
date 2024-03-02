@@ -10,10 +10,6 @@ fi
 if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
     PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 fi
-
-if [ -d "$HOME/.raku/bin" ]; then
-    PATH="$HOME/.raku/bin:$PATH"
-fi
 export PATH
 
 
@@ -109,6 +105,15 @@ mcd () {
     cd $1
 }
 
+# Raku configuration
+if [ -d "$HOME/.raku/bin" ]; then
+    PATH="$HOME/.raku/bin:$PATH"
+fi
+export PATH
+
+ZEF_INSTALL_TO=home
+export ZEF_INSTALL_TO
+
 # Source everything into a ~/.bashrc.d.
 # TODO move configuration there, to make it nicer
 if [ -d ~/.bashrc.d ]; then
@@ -119,6 +124,7 @@ if [ -d ~/.bashrc.d ]; then
     done
 fi
 unset rc
+
 
 
 # References:
