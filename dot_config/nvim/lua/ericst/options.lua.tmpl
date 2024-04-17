@@ -58,6 +58,10 @@ vim.opt.smartindent = true
 -- Always keep a little bit of context top and bottom
 vim.opt.scrolloff = 10
 
+-- Set foldmethod by defaut to indent 
+vim.opt.foldmethod = 'indent'
+vim.opt.foldlevel = 10
+
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
