@@ -57,18 +57,6 @@ return {
             ['<C-d>'] = cmp.mapping.scroll_docs(4),
 
             ['<C-e>'] = cmp.mapping.abort(),
-            ['<C-y>'] = cmp.mapping.confirm({select = true}),
-            ['<CR>'] = cmp.mapping(function(fallback)
-              if cmp.visible() then
-                  if ls.expandable() then
-                      ls.expand()
-                  else
-                      cmp.confirm({ select = true, })
-                  end
-              else
-                  fallback()
-              end
-            end),
 
             ['<C-f>'] = cmp.mapping(function(fallback)
               if ls.jumpable(1) then
@@ -101,7 +89,7 @@ return {
       load_from_lua(load_paths)
       vim.keymap.set('n', '<leader>cs', function ()
         load_from_lua(load_paths)
-      end, {})
+      end, { desc = "Force reload snippets" })
     end}
  }
 }
