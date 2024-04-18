@@ -70,6 +70,19 @@ return {
               end
             end, {'i', 's'}),
 
+            ['<CR>'] = cmp.mapping(function(fallback)
+              if cmp.visible() then
+                  if ls.expandable() then
+                      ls.expand()
+                  else
+                      cmp.confirm({ select = true, })
+                  end
+              else
+                  fallback()
+              end
+            end),
+
+
           }),
 
           sources = cmp.config.sources({
