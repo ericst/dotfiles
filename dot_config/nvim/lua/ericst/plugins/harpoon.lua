@@ -6,8 +6,8 @@ return {
       local harpoon = require("harpoon")
       vim.keymap.set("n", "<leader>8", function() harpoon:list():select(8) end, { desc = "Harpoon file 8" })
 
-      vim.keymap.set("n", "<leader>ha", function() harpoon:list():add() end, { desc = "Harpoon file" })
-      vim.keymap.set("n", "<leader>he", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = "Harpoon edit" })
+      vim.keymap.set("n", "<leader>h", function() harpoon:list():add() end, { desc = "Harpoon file" })
+      vim.keymap.set("n", "<leader>H", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = "Harpoon edit" })
 
       vim.keymap.set("n", "<leader>1", function() harpoon:list():select(1) end, { desc = "Harpoon file 1" })
       vim.keymap.set("n", "<leader>2", function() harpoon:list():select(2) end, { desc = "Harpoon file 2" })
@@ -18,11 +18,6 @@ return {
       vim.keymap.set("n", "<leader>7", function() harpoon:list():select(7) end, { desc = "Harpoon file 7" })
       vim.keymap.set("n", "<leader>8", function() harpoon:list():select(8) end, { desc = "Harpoon file 8" })
       vim.keymap.set("n", "<leader>9", function() harpoon:list():select(9) end, { desc = "Harpoon file 9" })
-
-      -- Toggle previous & next buffers stored within Harpoon list
-      vim.keymap.set("n", "<leader>hn", function() harpoon:list():prev() end, { desc = "Harpoon next file" })
-      vim.keymap.set("n", "<leader>hp", function() harpoon:list():next() end, { desc = "Harpoon previous file" })
-
 
     end
 }

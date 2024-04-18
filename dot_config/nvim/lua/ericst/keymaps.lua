@@ -1,1 +1,1 @@
-vim.keymap.set('n', '-', '@:', { desc = "Repeat last : command", noremap = true })
+vim.keymap.set('n', ',', '@:', { desc = "Repeat last : command", noremap = true })

@@ -14,7 +14,6 @@ return {
       ["<leader>"] = {
         c = { name = "+Change" },
         f = { name = "+Fuzzy find" },
-        h = { name = "+Harpoon" },
         w = { name = "+Workspace" },
       }
     })
