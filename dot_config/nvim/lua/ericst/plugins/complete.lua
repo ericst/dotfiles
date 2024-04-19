@@ -16,6 +16,13 @@ return {
                                                       build = "make install_jsregexp"
                                                     }}
     },
+    {
+       "cosmicboots/unicode_picker.nvim",
+        dependencies = {
+            "uga-rosa/utf8.nvim",
+            "nvim-telescope/telescope.nvim",
+        }
+    },
     { 'hrsh7th/nvim-cmp',
       config = function ()
         vim.opt.completeopt = {'menu', 'menuone', 'noselect'}
@@ -85,7 +92,7 @@ return {
                 if ls.expandable() then
                   ls.expand()
                 else
-                  fallback() -- TODO: Find a way to use Telescope for Unicode characters
+                 require("unicode_picker").unicode_chars() 
                 end 
               end
             end, {'i', 's'}),
