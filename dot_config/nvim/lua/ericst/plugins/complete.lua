@@ -11,7 +11,11 @@ return {
     'hrsh7th/cmp-nvim-lua',
     'hrsh7th/cmp-buffer',
     'hrsh7th/cmp-path',
-    { 'saadparwaiz1/cmp_luasnip', dependencies =  { { 'L3MON4D3/LuaSnip', version = "v2.*" } }},
+    { 'saadparwaiz1/cmp_luasnip', dependencies =  {{ 'L3MON4D3/LuaSnip', 
+                                                      version = "v2.*" ,
+                                                      build = "make install_jsregexp"
+                                                    }}
+    },
     { 'hrsh7th/nvim-cmp',
       config = function ()
         vim.opt.completeopt = {'menu', 'menuone', 'noselect'}
@@ -40,47 +44,51 @@ return {
                   cmp.select_prev_item(select_opts)
                 elseif  ls.choice_active() then
                   ls.change_choice(-1)
-                else
-                  fallback()
                 end
-              end),
+              end, {'i', 's'}),
             ['<C-n>'] = cmp.mapping(function (fallback)
                   if cmp.visible() then
                     cmp.select_next_item(select_opts)
                   elseif  ls.choice_active() then
                     ls.change_choice(1)
-                  else
-                    fallback()
                   end
-                end),
+                end, {'i', 's'}),
             ['<C-u>'] = cmp.mapping.scroll_docs(-4),
             ['<C-d>'] = cmp.mapping.scroll_docs(4),
 
             ['<C-e>'] = cmp.mapping.abort(),
 
-            ['<C-f>'] = cmp.mapping(function(fallback)
+            ['<C-l>'] = cmp.mapping(function(fallback)
               if ls.jumpable(1) then
                 ls.jump(1)
               end
             end, {'i', 's'}),
 
-            ['<C-b>'] = cmp.mapping(function(fallback)
+            ['<C-h>'] = cmp.mapping(function(fallback)
               if ls.jumpable(-1) then
                 ls.jump(-1)
               end
             end, {'i', 's'}),
 
             ['<CR>'] = cmp.mapping(function(fallback)
-              if cmp.visible() then
-                  if ls.expandable() then
-                      ls.expand()
-                  else
-                      cmp.confirm({ select = true, })
-                  end
+              if cmp.get_selected_entry() ~= nil then
+                  cmp.confirm({ select = false, })
               else
                   fallback()
               end
-            end),
+            end, {'i', 's'}),
+
+            ['<C-k>'] = cmp.mapping(function(fallback)
+              if cmp.visible() then
+                      cmp.confirm({ select = true, })
+              else
+                if ls.expandable() then
+                  ls.expand()
+                else
+                  fallback() -- TODO: Find a way to use Telescope for Unicode characters
+                end 
+              end
+            end, {'i', 's'}),
 
 
           }),
@@ -97,7 +105,7 @@ return {
 
       -- Loading the snippets
       local load_from_lua = require("luasnip.loaders.from_lua").load
-      local load_paths = { paths = "~/.config/nvim/lua/ericst/snippets" }
+      local load_paths = { paths = vim.fn.stdpath("config") .. "/snippets" }
 
       load_from_lua(load_paths)
       vim.keymap.set('n', '<leader>cs', function ()

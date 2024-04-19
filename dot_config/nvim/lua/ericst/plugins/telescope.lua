@@ -16,6 +16,7 @@ return {
           vim.keymap.set('n', '<leader>fj', builtin.jumplist,   { desc = "Fuzzy find in jumplist" })
           vim.keymap.set('n', '<leader>fq', builtin.quickfix,   { desc = "Fuzzy find in quickfix" })
           vim.keymap.set('n', '<leader>fm', builtin.man_pages,  { desc = "Fuzzy find man pages" })
+          vim.keymap.set('n', '<leader>ft', builtin.filetypes,  { desc = "Fuzzy find filetype" })
     end
   },
 }

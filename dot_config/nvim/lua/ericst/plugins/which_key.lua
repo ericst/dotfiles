@@ -14,7 +14,7 @@ return {
       ["<leader>"] = {
         c = { name = "+Change" },
         f = { name = "+Fuzzy find" },
-        w = { name = "+Workspace" },
+        w = { name = "+Workspace/Window" },
       }
     })
   end
