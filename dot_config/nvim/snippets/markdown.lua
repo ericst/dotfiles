@@ -17,6 +17,7 @@ return {
   s( "bold-italic",  fmt("***{}***{}", {i(1), i(0)})),
   s( "italic-bold",  fmt("***{}***{}", {i(1), i(0)})),
   s( "quote",  fmt("> {}", {i(0)})),
+  s( "comment",  fmt("<!-- {} -->{}", {i{1}, i(0)})),
   s( "code",  fmt("`{}`{}", {i(1), i(0)})),
   s( "task",  fmt("- [{}] {}", { c(1, { i(nil, " "), i(nil, "x") }), i(0) })),
   s( "code-block",  fmt([[

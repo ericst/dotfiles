@@ -16,6 +16,7 @@ return {
   s( "iso-date-week",  f(date, {}, { user_args = { "%G-W%V" } } )),
   s( "iso-date-minutes",  f(date, {}, { user_args = { "ISO", "minutes" } } )),
   s( "iso-date-seconds",  f(date, {}, { user_args = { "ISO", "seconds" } } )),
+  s( "modline",  fmt("vim: set {} :", {i(1)})),
 }
 
 

@@ -115,9 +115,6 @@ return {
       local load_paths = { paths = vim.fn.stdpath("config") .. "/snippets" }
 
       load_from_lua(load_paths)
-      vim.keymap.set('n', '<leader>cs', function ()
-        load_from_lua(load_paths)
-      end, { desc = "Force reload snippets" })
     end}
  }
 }
