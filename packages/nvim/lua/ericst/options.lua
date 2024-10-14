@@ -70,21 +70,6 @@ vim.opt.foldlevel = 10
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
 vim.o.clipboard = 'unnamedplus'
-{{ if eq .chezmoi.os "linux" }}
-{{   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
-local in_wsl = os.getenv('WSL_DISTRO_NAME') ~= nil
-
-if in_wsl then
-    vim.g.clipboard = {
-        name = 'wsl clipboard',
-        copy =  { ["+"] = { "clip.exe" },   ["*"] = { "clip.exe" } },
-        paste = { ["+"] = { "wsl-nvim-paste" }, ["*"] = { "wsl-nvim-paste" } },
-        cache_enabled = true
-    }
-end
-{{   end }}
-{{ end }}
-
 
 --- NetRW Configuration
 vim.g.netrw_banner = 0

@@ -1,7 +1,7 @@
 # Here are my user configurations.
 [user]
         name = Eric Seuret
-        email = {{ .email }}
+        email = eric@ericst.ch
 
 
 # This is the default behavior, nonetheless, I make sure of it.
