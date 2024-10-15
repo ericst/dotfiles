@@ -3,39 +3,9 @@ set bell-style visible
 
 # inputrc is responsible for a lot interactive parts on the tab completion.
 set completion-ignore-case on 	#Ignore case when completing
-set completion-map-case on 	#Treat '-' as an equivalent to '_'. This simplify typing.
-set match-hidden-files on	#Makes completion work on hidden files without having to supply the .character
+set completion-map-case on 	    #Treat '-' as an equivalent to '_'. This simplify typing.
+set match-hidden-files on	    #Makes completion work on hidden files without having to supply the .character
 set show-all-if-ambiguous on	#Shows possible completions, I don't want to type <Tab> twice.
-
-# I want to be able to use vi-mode in as many programs as possible.
-set editing-mode vi
-$if mode=vi
-
-set keymap vi-command
-# these are for vi-command mode
-Control-l: clear-screen
-
-set keymap vi-insert
-# these are for vi-insert mode
-Control-l: clear-screen 
-
-
-# show the vim mode in the prompt (command or insert)
-set show-mode-in-prompt on
-
-# set the mode string and cursor to indicate the vim mode
-#   for the number after `\e[`:
-#     0: blinking block
-#     1: blinking block (default)
-#     2: steady block
-#     3: blinking underline
-#     4: steady underline
-#     5: blinking bar (xterm)
-#     6: steady bar (xterm)
-set vi-ins-mode-string (i)\1\e[5 q\2
-set vi-cmd-mode-string (n)\1\e[1 q\2
-$endif
 
 # References
 # https://tiswww.case.edu/php/chet/readline/readline.html - GNU Readline Library
-# https://unix.stackexchange.com/questions/104094/is-there-any-way-to-enable-ctrll-to-clear-screen-when-set-o-vi-is-set -enable Ctr-l
