@@ -51,12 +51,12 @@ config.keys = {
   -- splitting
   {
     mods   = "LEADER",
-    key    = "v",
+    key    = "h",
     action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' }
   },
   {
     mods   = "LEADER",
-    key    = "h",
+    key    = "v",
     action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' }
   },
 
