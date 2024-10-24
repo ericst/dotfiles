@@ -46,25 +46,27 @@ local function split_nav(resize_or_move, key)
 end
 
 -- Keyy mapping
+--
+local act = wezterm.action
 config.leader = { key = ' ', mods = 'CTRL', timeout_milliseconds = 1000 }
 config.keys = {
   -- splitting
   {
     mods   = "LEADER",
     key    = "h",
-    action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' }
+    action = act.SplitVertical { domain = 'CurrentPaneDomain' }
   },
   {
     mods   = "LEADER",
     key    = "v",
-    action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' }
+    action = act.SplitHorizontal { domain = 'CurrentPaneDomain' }
   },
 
   -- zoom
   {
     mods = 'LEADER',
     key = 'z',
-    action = wezterm.action.TogglePaneZoomState
+    action = act.TogglePaneZoomState
   },
 
   -- nvim and panes
@@ -79,18 +81,31 @@ config.keys = {
   split_nav('resize', 'k'),
   split_nav('resize', 'l'),
 
-  { key = 'Enter', mods = 'LEADER', action = wezterm.action.ActivateCopyMode },
-  { key = 'x', mods = 'LEADER', action = wezterm.action.ShowLauncher },
-  { key = 'F11', mods = 'NONE', action = wezterm.action.ToggleFullScreen, },
-  { key = '1', mods = 'LEADER', action = wezterm.action.ActivateTab(0) },
-  { key = '2', mods = 'LEADER', action = wezterm.action.ActivateTab(1) },
-  { key = '3', mods = 'LEADER', action = wezterm.action.ActivateTab(2) },
-  { key = '4', mods = 'LEADER', action = wezterm.action.ActivateTab(3) },
-  { key = '5', mods = 'LEADER', action = wezterm.action.ActivateTab(4) },
-  { key = '6', mods = 'LEADER', action = wezterm.action.ActivateTab(5) },
-  { key = '7', mods = 'LEADER', action = wezterm.action.ActivateTab(6) },
-  { key = '8', mods = 'LEADER', action = wezterm.action.ActivateTab(7) },
-  { key = '9', mods = 'LEADER', action = wezterm.action.ActivateTab(-1) },
+  -- generic stuff
+  { key = 'F11', mods = 'NONE', action = act.ToggleFullScreen, },
+  { key = 'c', mods = 'LEADER', action = act.SpawnTab('CurrentPaneDomain') },
+  { key = 'x', mods = 'LEADER', action = act.ShowLauncher },
+
+  -- Tab navigation
+  { key = '1', mods = 'LEADER', action = act.ActivateTab(0) },
+  { key = '2', mods = 'LEADER', action = act.ActivateTab(1) },
+  { key = '3', mods = 'LEADER', action = act.ActivateTab(2) },
+  { key = '4', mods = 'LEADER', action = act.ActivateTab(3) },
+  { key = '5', mods = 'LEADER', action = act.ActivateTab(4) },
+  { key = '6', mods = 'LEADER', action = act.ActivateTab(5) },
+  { key = '7', mods = 'LEADER', action = act.ActivateTab(6) },
+  { key = '8', mods = 'LEADER', action = act.ActivateTab(7) },
+  { key = '9', mods = 'LEADER', action = act.ActivateTab(8) },
+  { key = 'n', mods = 'LEADER', action = act.ActivateTabRelative(1) },
+  { key = 'p', mods = 'LEADER', action = act.ActivateTabRelative(-1) },
+
+  -- Copy and Quickslect
+  { key = 'j', mods = 'LEADER', action = act.ActivateCopyMode },
+  { key = 'k', mods = 'LEADER', action = act.ActivateCopyMode },
+  { key = 'l', mods = 'LEADER', action = act.ActivateCopyMode },
+  { key = 'h', mods = 'LEADER', action = act.ActivateCopyMode },
+  { key = 'q', mods = 'LEADER', action = act.QuickSelect},
+
 }
 
 return config
