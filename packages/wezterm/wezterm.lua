@@ -100,10 +100,7 @@ config.keys = {
   { key = 'p', mods = 'LEADER', action = act.ActivateTabRelative(-1) },
 
   -- Copy and Quickslect
-  { key = 'j', mods = 'LEADER', action = act.ActivateCopyMode },
   { key = 'k', mods = 'LEADER', action = act.ActivateCopyMode },
-  { key = 'l', mods = 'LEADER', action = act.ActivateCopyMode },
-  { key = 'h', mods = 'LEADER', action = act.ActivateCopyMode },
   { key = 'q', mods = 'LEADER', action = act.QuickSelect},
 
 }
