@@ -11,7 +11,7 @@ return {
     'hrsh7th/cmp-nvim-lua',
     'hrsh7th/cmp-buffer',
     'hrsh7th/cmp-path',
-    { 'saadparwaiz1/cmp_luasnip', dependencies =  {{ 'L3MON4D3/LuaSnip', 
+    { 'saadparwaiz1/cmp_luasnip', dependencies =  {{ 'L3MON4D3/LuaSnip',
                                                       version = "v2.*" ,
                                                       build = "make install_jsregexp"
                                                     }}
@@ -92,8 +92,8 @@ return {
                 if ls.expandable() then
                   ls.expand()
                 else
-                 require("unicode_picker").unicode_chars() 
-                end 
+                 require("unicode_picker").unicode_chars()
+                end
               end
             end, {'i', 's'}),
 
