@@ -1,0 +1,17 @@
+# Styling
+theme="Builtin Solarized Light"
+font-family="Fira Code"
+font-size=13
+cursor-style=block
+window-theme=system
+gtk-tabs-location=hidden
+
+# Behaviour
+copy-on-select=true
+shell-integration=bash
+shell-integration-features=no-cursor
+
+
+# Keyboard shortcuts
+
+
