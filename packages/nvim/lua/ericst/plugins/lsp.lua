@@ -48,7 +48,7 @@ return {
           -- Jump to the implementation of the word under your cursor.
           --  Useful when your language has ways of declaring types without an actual implementation.
           map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-          
+
           -- Display signature help
           map('gK', vim.lsp.buf.signature_help, 'Signature Help')
 
@@ -124,8 +124,19 @@ return {
       --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
+      
 
-      -- Enable the following language servers
+
+
+
+      -- Here I just call the configuration for servers I installed outside of Mason...
+      -- See `:help lspconfig-all` for a list of all the pre-configured LSPs
+      -- I don't want to install zls via mason for compability reasons, but it should still be configured.
+      -- The default configuration should do it.
+      require('lspconfig').zls.setup{}
+
+
+      -- Enable the following language servers via Mason
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --
       --  Add any additional override configuration in the following tables. Available keys are:
