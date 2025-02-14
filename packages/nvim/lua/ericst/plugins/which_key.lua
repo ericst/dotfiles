@@ -10,12 +10,10 @@ return {
     local wk = require("which-key")
     wk.setup({})
 
-    wk.register({
-      ["<leader>"] = {
-        c = { name = "+Change" },
-        f = { name = "+Fuzzy find" },
-        w = { name = "+Workspace/Window" },
-      }
+    wk.add({
+      { "<leader>c", group = "Change" },
+      { "<leader>f", group = "Fuzzy find" },
+      { "<leader>w", group = "Workspace/Window" },
     })
   end
 }
