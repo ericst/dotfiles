@@ -4,9 +4,15 @@ if [ -f /etc/bashrc ]; then
 fi
 
 # Add some bin folders.
+
+if ! [[ "$PATH" =~ "$HOME/.local/share/soar/bin" ]]; then
+    PATH="$HOME/.local/share/soar/bin:$PATH"
+fi
+
 if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
     PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 fi
+
 export PATH
 
 
