@@ -39,6 +39,9 @@ shopt -s cmdhist
 shopt -s lithist
 HISTTIMEFORMAT='%F %T '
 
+# This is to make sure I don't loose history. It forces bash to write each command to the history file immediately.
+PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+
 
 
 # Now we only need to make a small alias to search easily into the history.
