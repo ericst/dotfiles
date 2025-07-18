@@ -1,0 +1,34 @@
+## This is taken from: https://fedoramagazine.org/alternative-way-of-saving-toolboxes-for-later-use/
+
+
+function expose(){
+	[ -f "$1" ] || echo -e "#!/bin/sh\nexec /usr/bin/flatpak-spawn --host $(basename $1) \"\$@\"" | sudo tee "$1" 1>/dev/null && sudo chmod +x "$1"
+}
+
+function install_dependencies(){
+	[ -f /.first_run ] || sudo dnf -y install $@
+}
+
+function install_npm(){
+	[ -f /.first_run ] || sudo npm install -g $@
+}
+
+function install_group(){
+	[ -f /.first_run ] || sudo dnf -y group install $@
+}
+
+if [ -f "/run/.toolboxenv" ]
+then
+	TOOLBOX_NAME=$( grep -oP "(?<=name=\")[^\";]+" /run/.containerenv )
+	if [ -f "$HOME/.bashrc.d/toolboxes/${TOOLBOX_NAME}.rc" ]
+	then
+		. "$HOME/.bashrc.d/toolboxes/${TOOLBOX_NAME}.rc"
+	fi
+	
+	if ! [ -f /.first_run ] ; then
+		[[ $(type -t setup) == function ]] && setup
+		sudo touch /.first_run
+	fi
+fi
+
+# vim: set ft=bash:

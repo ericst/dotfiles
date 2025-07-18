@@ -2,6 +2,7 @@
 
 require 'fileutils'
 require 'optparse'
+require 'pathname'
 
 INSTALL_FILE = 'install.rb'
 
@@ -51,6 +52,24 @@ def link(to, from)
     end
   else
     ln_s(to, from)
+  end
+end
+
+# Recursively link all files in a directory structure, preserving the directory structure
+# but linking files instead of directories
+def link_files_recursively(source_dir, target_dir)
+  source_path = File.absolute_path(File.expand_path(source_dir))
+  target_path = File.absolute_path(File.expand_path(target_dir))
+  
+  Dir.glob(File.join(source_path, '**', '*'), File::FNM_DOTMATCH).each do |source_file|
+    next if File.basename(source_file) == '.' || File.basename(source_file) == '..'
+    next if File.directory?(source_file)
+    
+    # Calculate relative path from source directory
+    relative_path = Pathname.new(source_file).relative_path_from(Pathname.new(source_path))
+    target_file = File.join(target_path, relative_path)
+    
+    link(source_file, target_file)
   end
 end
 
