@@ -9,46 +9,140 @@ DESCRIPTION_FILE = 'description.txt'
 
 $options = {}
 
+# Validate that a source file exists and is readable
+def validate_source_file(source_path)
+  unless File.exist?(source_path)
+    fail "Source file does not exist: #{source_path}"
+  end
+  
+  unless File.readable?(source_path)
+    fail "Source file is not readable: #{source_path}"
+  end
+end
+
+# Validate target path for security (prevent directory traversal)
+def validate_target_path(target_path)
+  expanded_target = File.expand_path(target_path)
+  
+  # Check for directory traversal attempts
+  if target_path.include?('../') || target_path.include?('..\\')
+    fail "Directory traversal detected in target path: #{target_path}"
+  end
+  
+  # Ensure target is an absolute path after expansion
+  unless Pathname.new(expanded_target).absolute?
+    fail "Target path must resolve to an absolute path: #{target_path}"
+  end
+  
+  expanded_target
+end
+
+# Prompt for confirmation on destructive operations
+def confirm_destructive_operation(message, auto_yes = false)
+  return true if auto_yes || !$options[:force]
+  
+  print "#{message} (y/n/a/q): "
+  response = STDIN.gets.chomp.downcase
+  
+  case response
+  when 'y', 'yes'
+    true
+  when 'a', 'all'
+    $options[:auto_yes] = true
+    true
+  when 'q', 'quit'
+    puts "Operation cancelled by user"
+    exit 1
+  else
+    false
+  end
+end
+
 # To install a package, we need to cd into the folder, load it's install.rb file and
 def install_package(package) 
   puts "--------------------------------------"
-  puts "Installing package: #{package}"
-  FileUtils.cd(package) do
-    if File.exist?(INSTALL_FILE) && File.readable?(INSTALL_FILE)
+  if $options[:dry_run]
+    puts "[DRY RUN] Installing package: #{package}"
+  else
+    puts "Installing package: #{package}"
+  end
+  
+  # Validate package directory exists
+  packages_dir = File.join(File.dirname(__FILE__), 'packages')
+  package_path = File.join(packages_dir, package)
+  
+  unless Dir.exist?(package_path)
+    fail "Package directory does not exist: #{package_path}\nAvailable packages: #{get_available_packages.join(', ')}"
+  end
+  
+  FileUtils.cd(package_path) do
+    install_file = File.join(package_path, INSTALL_FILE)
+    if File.exist?(install_file) && File.readable?(install_file)
       load INSTALL_FILE
     else
-      puts "Couldn't find #{INSTALL_FILE} for package #{package}. Doing nothing"
+      fail "Couldn't find or read #{INSTALL_FILE} for package #{package}\nMake sure the file exists and is readable"
     end
   end
-  puts "Done installing: #{package}"
+  
+  if $options[:dry_run]
+    puts "[DRY RUN] Done installing: #{package}"
+  else
+    puts "Done installing: #{package}"
+  end
 end
 
 #Create a link and make sure it is possible by checking creating every directory before
 def ln_s(to, from)
-  FileUtils.mkdir_p(File.dirname(File.absolute_path(from)), verbose: true)
-  FileUtils.ln_s(to, from, verbose: true)
+  if $options[:dry_run]
+    puts "[DRY RUN] Would create directory: #{File.dirname(File.absolute_path(from))}"
+    puts "[DRY RUN] Would create symlink: #{from} -> #{to}"
+  else
+    FileUtils.mkdir_p(File.dirname(File.absolute_path(from)), verbose: true)
+    FileUtils.ln_s(to, from, verbose: true)
+  end
 end
 
 # This is a utility function used to create a 
 def link(to, from)
+  # Validate source file exists
+  validate_source_file(to)
+  
+  # Validate and expand target path
+  from = validate_target_path(from)
   to = File.absolute_path(File.expand_path(to))
-  from = File.absolute_path(File.expand_path(from))
+  
   if File.exist?(from)
     if File.symlink?(from)
       if File.absolute_path(File.readlink(from)) == to
         puts "#{from} already links to #{to}, nothing to do"
       else
-        puts "Unlinking #{from}"
-        FileUtils.safe_unlink(from, verbose: true)
-        ln_s(to, from)
+        if $options[:dry_run]
+          puts "[DRY RUN] Would replace existing symlink #{from} -> #{to}"
+        elsif confirm_destructive_operation("Replace existing symlink #{from}?", $options[:auto_yes])
+          puts "Unlinking #{from}"
+          FileUtils.safe_unlink(from, verbose: true)
+          ln_s(to, from)
+        else
+          puts "Skipping #{from}"
+        end
       end
     else
       if $options[:force]
-        puts "#{from} exists, forcing install, deleting it"
-        FileUtils.rm_rf(from, verbose: true)
-        ln_s(to, from) 
+        if $options[:dry_run]
+          puts "[DRY RUN] Would delete existing file #{from} and create symlink -> #{to}"
+        elsif confirm_destructive_operation("#{from} exists and is not a symlink. Delete it?", $options[:auto_yes])
+          puts "#{from} exists, forcing install, deleting it"
+          FileUtils.rm_rf(from, verbose: true)
+          ln_s(to, from)
+        else
+          puts "Skipping #{from}"
+        end
       else
-        fail "#{from} exists and force was not set"
+        if $options[:dry_run]
+          puts "[DRY RUN] Would fail: #{from} exists and is not a symlink"
+        else
+          fail "#{from} exists and is not a symlink. Use --force to overwrite, or remove it manually"
+        end
       end
     end
   else
@@ -60,7 +154,14 @@ end
 # but linking files instead of directories
 def link_files_recursively(source_dir, target_dir)
   source_path = File.absolute_path(File.expand_path(source_dir))
-  target_path = File.absolute_path(File.expand_path(target_dir))
+  
+  # Validate source directory exists
+  unless Dir.exist?(source_path)
+    fail "Source directory does not exist: #{source_path}"
+  end
+  
+  # Validate and expand target path
+  target_path = validate_target_path(target_dir)
   
   Dir.glob(File.join(source_path, '**', '*'), File::FNM_DOTMATCH).each do |source_file|
     next if File.basename(source_file) == '.' || File.basename(source_file) == '..'
@@ -287,6 +388,14 @@ parser = OptionParser.new do |opts|
   
   opts.on("-s", "--status", "Show installation status of packages") do |v|
     $options[:status] = v
+  end
+  
+  opts.on("-y", "--yes", "Automatically answer yes to all prompts") do |v|
+    $options[:auto_yes] = v
+  end
+  
+  opts.on("-n", "--dry-run", "Show what would be done without executing") do |v|
+    $options[:dry_run] = v
   end
 end
 
