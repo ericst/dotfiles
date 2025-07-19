@@ -89,6 +89,88 @@ def install_package(package)
   end
 end
 
+# Uninstall a package by removing its symlinks
+def uninstall_package(package)
+  puts "--------------------------------------"
+  if $options[:dry_run]
+    puts "[DRY RUN] Uninstalling package: #{package}"
+  else
+    puts "Uninstalling package: #{package}"
+  end
+  
+  # Validate package directory exists
+  package_path = File.join('packages', package)
+  
+  unless Dir.exist?(package_path)
+    fail "Package directory does not exist: #{package_path}\nAvailable packages: #{get_available_packages.join(', ')}"
+  end
+  
+  # Get all links for this package
+  links = get_package_links(package)
+  
+  if links.empty?
+    puts "No links found for package #{package}"
+    return
+  end
+  
+  removed_count = 0
+  skipped_count = 0
+  
+  links.each do |link|
+    target_path = link[:target]
+    
+    if link[:type] == :recursive
+      # For recursive links, remove the entire target directory if it exists
+      if Dir.exist?(target_path)
+        if $options[:dry_run]
+          puts "[DRY RUN] Would remove directory: #{target_path}"
+          removed_count += 1
+        elsif confirm_destructive_operation("Remove directory #{target_path}?", $options[:auto_yes])
+          puts "Removing directory: #{target_path}"
+          FileUtils.rm_rf(target_path, verbose: true)
+          removed_count += 1
+        else
+          puts "Skipping directory: #{target_path}"
+          skipped_count += 1
+        end
+      else
+        puts "Directory already missing: #{target_path}"
+      end
+    else
+      # For regular links, check if it's a symlink pointing to our source
+      if File.exist?(target_path)
+        if File.symlink?(target_path)
+          actual_target = File.readlink(target_path)
+          if File.absolute_path(actual_target) == link[:source]
+            if $options[:dry_run]
+              puts "[DRY RUN] Would remove symlink: #{target_path}"
+              removed_count += 1
+            else
+              puts "Removing symlink: #{target_path}"
+              FileUtils.safe_unlink(target_path, verbose: true)
+              removed_count += 1
+            end
+          else
+            puts "Skipping #{target_path} (points to different target: #{actual_target})"
+            skipped_count += 1
+          end
+        else
+          puts "Skipping #{target_path} (not a symlink)"
+          skipped_count += 1
+        end
+      else
+        puts "File already missing: #{target_path}"
+      end
+    end
+  end
+  
+  if $options[:dry_run]
+    puts "[DRY RUN] Done uninstalling: #{package} (would remove #{removed_count}, skip #{skipped_count})"
+  else
+    puts "Done uninstalling: #{package} (removed #{removed_count}, skipped #{skipped_count})"
+  end
+end
+
 #Create a link and make sure it is possible by checking creating every directory before
 def ln_s(to, from)
   if $options[:dry_run]
@@ -374,7 +456,7 @@ end
 
 ## Parse and execute based on arguments
 parser = OptionParser.new do |opts|
-  opts.banner = "Usage: ./dotfiles.rb [options] packages..."
+  opts.banner = "Usage: ./dotfiles.rb [options] packages...\n\nInstall or uninstall dotfile packages by creating/removing symlinks."
 
   opts.on("-f", "--force", "Force the installation") do |v|
     $options[:force] = v
@@ -395,6 +477,10 @@ parser = OptionParser.new do |opts|
   opts.on("-n", "--dry-run", "Show what would be done without executing") do |v|
     $options[:dry_run] = v
   end
+  
+  opts.on("-u", "--uninstall", "Uninstall packages instead of installing them") do |v|
+    $options[:uninstall] = v
+  end
 end
 
 parser.parse!
@@ -410,9 +496,13 @@ if $options[:status]
   exit 0
 end
 
-# Regular package installation
+# Regular package installation or uninstallation
 if ARGV.length < 1 then
   fail "You need to specify at least one package"
 else
-  ARGV.map { |package| install_package package }
+  if $options[:uninstall]
+    ARGV.map { |package| uninstall_package package }
+  else
+    ARGV.map { |package| install_package package }
+  end
 end
