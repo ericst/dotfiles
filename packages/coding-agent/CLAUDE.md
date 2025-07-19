@@ -8,6 +8,12 @@ This file provides guidance to Claude Code when working on projects.
 - Keep commit messages concise and descriptive
 - Focus on what changed and why, not how
 
+## OpenCode Configuration
+
+- Never add "🤖 Generated with [opencode](https://opencode.ai)" to git commits
+- Never add "Co-Authored-By: opencode <noreply@opencode.ai>" to git commits
+- The AGENTS.md file presence is sufficient attribution
+
 ## General Development Practices
 
 - Always read existing code patterns before making changes

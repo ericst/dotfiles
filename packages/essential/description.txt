@@ -1,0 +1,1 @@
+Core shell configuration including enhanced bashrc with better history, safety aliases, navigation helpers, inputrc for readline, and modular bashrc.d directory with toolbox support

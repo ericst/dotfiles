@@ -1,0 +1,1 @@
+Neovim configuration with Lua plugins, custom keybindings, snippets, and lazy.nvim plugin management
