@@ -75,9 +75,8 @@ def install_package(package)
     fail "Package directory does not exist: #{package_path}\nAvailable packages: #{get_available_packages.join(', ')}"
   end
   
-  FileUtils.cd(package_path) do
-    install_file = File.join(package_path, INSTALL_FILE)
-    if File.exist?(install_file) && File.readable?(install_file)
+  FileUtils.cd(File.join('packages', package)) do
+    if File.exist?(INSTALL_FILE) && File.readable?(INSTALL_FILE)
       load INSTALL_FILE
     else
       fail "Couldn't find or read #{INSTALL_FILE} for package #{package}\nMake sure the file exists and is readable"
@@ -238,15 +237,15 @@ def get_package_links(package)
   # Read the install.rb file and extract link calls
   content = File.read(install_file)
   content.scan(/link\s+['"]([^'"]+)['"]\s*,\s*['"]([^'"]+)['"]/) do |source, target|
-    # Convert relative paths to absolute for source
-    source_path = File.join(packages_dir, package, source)
+    # Convert relative paths to absolute for source (relative to package directory)
+    source_path = File.absolute_path(File.expand_path(source, File.join(packages_dir, package)))
     target_path = File.expand_path(target)
     links << { source: source_path, target: target_path, type: :file }
   end
   
   # Also check for link_files_recursively calls
   content.scan(/link_files_recursively\s+['"]([^'"]+)['"]\s*,\s*['"]([^'"]+)['"]/) do |source, target|
-    source_path = File.join(packages_dir, package, source)
+    source_path = File.absolute_path(File.expand_path(source, File.join(packages_dir, package)))
     target_path = File.expand_path(target)
     links << { source: source_path, target: target_path, type: :recursive }
   end
