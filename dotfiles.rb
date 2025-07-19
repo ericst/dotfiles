@@ -68,14 +68,13 @@ def install_package(package)
   end
   
   # Validate package directory exists
-  packages_dir = File.join(File.dirname(__FILE__), 'packages')
-  package_path = File.join(packages_dir, package)
+  package_path = File.join('packages', package)
   
   unless Dir.exist?(package_path)
     fail "Package directory does not exist: #{package_path}\nAvailable packages: #{get_available_packages.join(', ')}"
   end
   
-  FileUtils.cd(File.join('packages', package)) do
+  FileUtils.cd(package_path) do
     if File.exist?(INSTALL_FILE) && File.readable?(INSTALL_FILE)
       load INSTALL_FILE
     else

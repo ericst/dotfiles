@@ -76,6 +76,18 @@ AI coding assistant configuration:
 # Force overwrite existing configurations
 ./dotfiles.rb -f nvim
 
+# Preview changes without executing
+./dotfiles.rb --dry-run essential
+
+# Check what's installed
+./dotfiles.rb --status
+
+# List available packages
+./dotfiles.rb --list
+
+# Install with automatic yes to prompts
+./dotfiles.rb -f -y essential
+
 # Install everything
 ./dotfiles.rb essential git nvim ghostty wezterm coding-agent
 ```
@@ -83,6 +95,10 @@ AI coding assistant configuration:
 ## Command Line Options
 
 - `-f, --force` - Force installation, overwriting existing files
+- `-l, --list` - List available packages with descriptions
+- `-s, --status` - Show installation status of all packages
+- `-n, --dry-run` - Preview changes without executing them
+- `-y, --yes` - Automatically answer yes to all prompts (for automation)
 - `-h, --help` - Show help message
 
 ## How It Works
@@ -119,8 +135,11 @@ rm ~/.bashrc
 
 ### Package Not Found
 ```bash
-# Check available packages
-ls packages/
+# List available packages
+./dotfiles.rb --list
+
+# Check installation status
+./dotfiles.rb --status
 
 # Make sure you're in the dotfiles directory
 cd /path/to/dotfiles
