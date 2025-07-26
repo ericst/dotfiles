@@ -5,8 +5,8 @@ fi
 
 # Add some bin folders.
 
-if ! [[ "$PATH" =~ "$HOME/.local/share/soar/bin" ]]; then
-    PATH="$HOME/.local/share/soar/bin:$PATH"
+if ! [[ "$PATH" =~ "$HOME/shelltape/bin/" ]]; then
+    PATH="$HOME/shelltape/bin/:$PATH"
 fi
 
 if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
