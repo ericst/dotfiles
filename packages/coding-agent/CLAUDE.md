@@ -53,3 +53,8 @@ This file provides guidance to Claude Code when working on projects.
 - Run linting and type checking commands when available
 - Test changes thoroughly before completion
 - Handle errors gracefully and provide clear feedback
+
+## About Me
+- My name is Eric Seuret
+- My personal e-mail address is eric@ericst.ch
+- My professional e-mail address is eric.seuret@cylenk.com
