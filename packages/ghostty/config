@@ -1,7 +1,7 @@
 ###############################################################################
 # Styling
 ###############################################################################
-theme="Builtin Solarized Light"
+theme=tokyonight_night
 font-family="Fira Code"
 font-size=13
 cursor-style=block
