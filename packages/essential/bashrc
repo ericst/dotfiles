@@ -5,11 +5,11 @@ fi
 
 # Add some bin folders.
 
-if ! [[ "$PATH" =~ "$HOME/shelltape/bin/" ]]; then
+if ! [[ "$PATH" =~ $HOME/shelltape/bin/ ]]; then
     PATH="$HOME/shelltape/bin/:$PATH"
 fi
 
-if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
+if ! [[ "$PATH" =~ $HOME/.local/bin:$HOME/bin ]]; then
     PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 fi
 
@@ -110,18 +110,65 @@ alias mkdir="mkdir -pv"
 # The function ~mkcd~ is extremely useful, to create a directory and immediately
 # change to it.
 mcd () {
-    mkdir -p $1
-    cd $1
+    mkdir -p "$1"
+    cd "$1" 
 }
 
-# Raku configuration
-if [ -d "$HOME/.raku/bin" ]; then
-    PATH="$HOME/.raku/bin:$PATH"
-fi
-export PATH
+# Git status checker function
+check_git_status() {
+    local original_pwd="$PWD"
+    local repos=("$HOME/dotfiles" "$HOME/shelltape")
+    local has_issues=false
+    
+    for repo in "${repos[@]}"; do
+        if [[ -d "$repo/.git" ]]; then
+            cd "$repo" || continue
+            
+            local repo_name
+            repo_name=$(basename "$repo")
+            
+            # Check for uncommitted changes
+            if ! git diff-index --quiet HEAD --; then
+                echo "⚠️  $repo_name: You have uncommitted changes"
+                has_issues=true
+            fi
+            
+            # Check for untracked files
+            if [[ -n $(git ls-files --others --exclude-standard) ]]; then
+                echo "📄 $repo_name: You have untracked files"
+                has_issues=true
+            fi
+            
+            # Fetch remote updates (quietly) and check if we're behind
+            git fetch --quiet 2>/dev/null
+            local behind=$(git rev-list --count HEAD..@{u} 2>/dev/null)
+            if [[ -n "$behind" && "$behind" -gt 0 ]]; then
+                echo "⬇️  $repo_name: $behind commit(s) available to pull"
+                has_issues=true
+            fi
+            
+            # Check if we're ahead (have unpushed commits)
+            local ahead=$(git rev-list --count @{u}..HEAD 2>/dev/null)
+            if [[ -n "$ahead" && "$ahead" -gt 0 ]]; then
+                echo "⬆️  $repo_name: $ahead commit(s) ready to push"
+                has_issues=true
+            fi
+        fi
+    done
+    
+    if $has_issues; then
+        echo ""
+    fi
+    
+    # Return to original directory
+    cd "$original_pwd" || true
+}
 
-ZEF_INSTALL_TO=home
-export ZEF_INSTALL_TO
+# Run the check when bash starts (but not for non-interactive shells)
+if [[ $- == *i* ]]; then
+    check_git_status
+fi
+
 
 # Source everything into a ~/.bashrc.d.
 # TODO move configuration there, to make it nicer
