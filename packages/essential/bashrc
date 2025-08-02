@@ -114,8 +114,32 @@ mcd () {
     cd "$1" 
 }
 
-# Git status checker function
+# Git status checker function with daily caching
 check_git_status() {
+    local force_check=false
+    local cache_file="$HOME/.cache/dotfiles_git_check"
+    local cache_duration=86400  # 24 hours in seconds
+    
+    # Check for --force flag
+    if [[ "$1" == "--force" ]]; then
+        force_check=true
+    fi
+    
+    # Create cache directory if it doesn't exist
+    mkdir -p "$(dirname "$cache_file")"
+    
+    # Check if we need to run the full check
+    local should_run_full_check=true
+    if [[ -f "$cache_file" ]] && [[ "$force_check" != true ]]; then
+        local last_check=$(cat "$cache_file" 2>/dev/null || echo "0")
+        local current_time=$(date +%s)
+        local time_diff=$((current_time - last_check))
+        
+        if [[ "$time_diff" -lt "$cache_duration" ]]; then
+            should_run_full_check=false
+        fi
+    fi
+    
     local original_pwd="$PWD"
     local repos=("$HOME/dotfiles" "$HOME/shelltape")
     local has_issues=false
@@ -127,41 +151,55 @@ check_git_status() {
             local repo_name
             repo_name=$(basename "$repo")
             
+            # Always check for local changes (fast operations)
             # Check for uncommitted changes
             if ! git diff-index --quiet HEAD --; then
-                echo "⚠️  $repo_name: You have uncommitted changes"
+                echo "$repo_name: You have uncommitted changes"
                 has_issues=true
             fi
             
             # Check for untracked files
             if [[ -n $(git ls-files --others --exclude-standard) ]]; then
-                echo "📄 $repo_name: You have untracked files"
+                echo "$repo_name: You have untracked files"
                 has_issues=true
             fi
             
-            # Fetch remote updates (quietly) and check if we're behind
-            git fetch --quiet 2>/dev/null
-            local behind=$(git rev-list --count HEAD..@{u} 2>/dev/null)
-            if [[ -n "$behind" && "$behind" -gt 0 ]]; then
-                echo "⬇️  $repo_name: $behind commit(s) available to pull"
-                has_issues=true
-            fi
-            
-            # Check if we're ahead (have unpushed commits)
-            local ahead=$(git rev-list --count @{u}..HEAD 2>/dev/null)
-            if [[ -n "$ahead" && "$ahead" -gt 0 ]]; then
-                echo "⬆️  $repo_name: $ahead commit(s) ready to push"
-                has_issues=true
+            # Only do expensive remote operations if cache is stale or forced
+            if [[ "$should_run_full_check" == true ]]; then
+                # Fetch remote updates (quietly) and check if we're behind
+                git fetch --quiet 2>/dev/null
+                local behind=$(git rev-list --count HEAD..@{u} 2>/dev/null)
+                if [[ -n "$behind" && "$behind" -gt 0 ]]; then
+                    echo "$repo_name: $behind commit(s) available to pull"
+                    has_issues=true
+                fi
+                
+                # Check if we're ahead (have unpushed commits)
+                local ahead=$(git rev-list --count @{u}..HEAD 2>/dev/null)
+                if [[ -n "$ahead" && "$ahead" -gt 0 ]]; then
+                    echo "$repo_name: $ahead commit(s) ready to push"
+                    has_issues=true
+                fi
             fi
         fi
     done
     
+    # Update cache timestamp if we ran the full check
+    if [[ "$should_run_full_check" == true ]]; then
+        date +%s > "$cache_file"
+    fi
+    
     if $has_issues; then
-        echo ""
+        echo "----WARNING----"
     fi
     
     # Return to original directory
     cd "$original_pwd" || true
+}
+
+# Helper function to force a git status check
+force_git_check() {
+    check_git_status --force
 }
 
 # Run the check when bash starts (but not for non-interactive shells)
