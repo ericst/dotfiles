@@ -1,3 +1,4 @@
 link 'init.lua', '~/.config/nvim/init.lua'
 link 'lua', '~/.config/nvim/lua' 
-link 'snippets', '~/.config/nvim/snippets'
+link 'ftplugin', '~/.config/nvim/ftplugin'
+link 'README.md', '~/.config/nvim/README.md'
