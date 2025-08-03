@@ -1,49 +1,75 @@
 -- Configuration bootstraped with https://github.com/nvim-lua/kickstart.nvim
+-- Improved with: https://github.com/radleylewis/nvim-lite/blob/youtube_demo/init.lua
 
 -- Set <space> as the leader key
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- Configure nvim itself
--- Tabs if sleuth doesn't work (see plugins/diverse.lua for more info)
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
+-- Basic Settings
+vim.opt.number = true                               -- Line numbers
+vim.opt.relativenumber = true                       -- Relative line numbers
+vim.opt.cursorline = true                           -- Highlight current line
+vim.opt.wrap = false                                -- Don't wrap lines
+vim.opt.scrolloff = 5                               -- Keep x lines above/below cursor 
+vim.opt.sidescrolloff = 5                           -- Keep x columns left/right of cursor
 
--- Set highlight on search
-vim.o.hlsearch = false
+-- Indentation
+vim.opt.tabstop = 4                                 -- Tab width
+vim.opt.shiftwidth = 4                              -- Indent width
+vim.opt.softtabstop = 4                             -- Soft tab stop
+vim.opt.expandtab = true                            -- Use spaces instead of tabs
+vim.opt.smartindent = true                          -- Smart auto-indenting
+vim.opt.autoindent = true                           -- Copy indent from current line
+vim.g.editorconfig = true                           -- Follow editor config file if present
 
--- Make line numbers default
-vim.wo.number = true
-vim.wo.relativenumber = true
+-- Search settings
+vim.opt.ignorecase = true                           -- Case insensitive search
+vim.opt.smartcase = true                            -- Case sensitive if uppercase or \C in search
+vim.opt.hlsearch = false                            -- Don't highlight search results 
+vim.opt.incsearch = true                            -- Show matches as you type
 
--- Highlight cursorline
-vim.o.cursorline = true
+-- Visual settings
+vim.opt.termguicolors = true                        -- Enable 24-bit colors
+vim.opt.signcolumn = "yes"                          -- Always show sign column
+vim.opt.showmatch = true                            -- Highlight matching brackets
+vim.opt.cmdheight = 1                               -- Command line height
+vim.opt.completeopt = "menuone,noselect,fuzzy"      -- Completion options 
+vim.opt.pumheight = 0                               -- Popup menu height, as heigh as possible
 
--- Enable mouse mode
-vim.o.mouse = 'a'
+-- File handling
+vim.opt.backup = false                              -- Don't create backup files
+vim.opt.writebackup = false                         -- Don't create backup before writing
+vim.opt.swapfile = false                            -- Don't create swap files
+vim.opt.undofile = true                             -- Persistent undo
+vim.opt.undodir = vim.fn.expand("~/.vim/undodir")   -- Undo directory
+vim.opt.autoread = true                             -- Auto reload files changed outside vim
+vim.opt.autowrite = false                           -- Don't auto save
+vim.opt.path:append("**")                           -- include subdirectories in search
 
--- History and swap files
-vim.opt.swapfile = false
-vim.opt.backup = false
-vim.opt.undodir = vim.fn.stdpath("data") .. "/undodir"
-vim.opt.undofile = true
+-- Behavior settings
+vim.opt.hidden = true                               -- Allow hidden buffers
+vim.opt.errorbells = false                          -- No error bells
+vim.opt.iskeyword:append("-")                       -- Treat dash as part of word
+vim.opt.mouse = "a"                                 -- Enable mouse support
+vim.opt.clipboard:append("unnamedplus")             -- Use system clipboard
+vim.opt.timeoutlen = 5000                           -- Key timeout duration
 
--- Case-insensitive searching UNLESS \C or capital in search
-vim.o.ignorecase = true
-vim.o.smartcase = true
+-- Command-line completion
+vim.opt.wildmenu = true                             -- I want the wildmenu in command line
+vim.opt.wildmode = "noselect:full"                  -- No select, keep my command as is for the moment.
 
+-- Folding settings
+vim.opt.foldmethod = 'indent'                       -- Use indent, local settings still possible
+vim.opt.foldlevel = 99                              -- Start with folds open
 
--- Decrease update time
-vim.o.updatetime = 250
+-- Split behavior
+vim.opt.splitbelow = true                           -- Horizontal splits go below
+vim.opt.splitright = true                           -- Vertical splits go right
 
--- Explicitly set wait time for key sequences
-vim.o.timeoutlen = 5000
-
--- NOTE: You should make sure your terminal supports this
-vim.o.termguicolors = true
-
+--- NetRW Configuration
+vim.g.netrw_banner = 0                              -- Suppress the banner
+vim.g.netrw_liststyle = 3                           -- Tree style listing
+vim.g.netrw_browse_split = 4                        -- When browsing <cr> opens in prev. window.
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -56,26 +82,4 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
--- Indentation should follow synthax
-vim.opt.smartindent = true
 
--- Always keep a little bit of context top and bottom
-vim.opt.scrolloff = 10
-
--- Set foldmethod by defaut to indent 
-vim.opt.foldmethod = 'indent'
-vim.opt.foldlevel = 10
-
--- Sync clipboard between OS and Neovim.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
-vim.o.clipboard = 'unnamedplus'
-
---- NetRW Configuration
-vim.g.netrw_banner = 0
-vim.g.netrw_liststyle = 3
-vim.g.netrw_browse_split = 4
-vim.g.netrw_altv = 1
-vim.g.netrw_winsize = 25
-
--- vim: ts=2 sts=2 sw=2 et ft=lua

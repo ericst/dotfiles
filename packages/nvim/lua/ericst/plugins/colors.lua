@@ -1,5 +1,4 @@
 --  Color Scheme
-
 return {
    {
       'folke/tokyonight.nvim',

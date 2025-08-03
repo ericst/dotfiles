@@ -3,6 +3,7 @@ install_group "rpm-development-tools" "c-development"
 
 # Development tools
 install_dependencies git neovim nodejs nodejs-npm ruby-devel rubygem-bundler rubygem-sqlite3
+install_dependencies ctags
 
 # Documentation and manual pages
 install_dependencies man-db man-pages

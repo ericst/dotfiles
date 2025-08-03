@@ -37,6 +37,3 @@ local function edit_file(filepath)
   vim.cmd("edit " .. filepath)
 end
 
--- Let's set the keybindings
-vim.keymap.set("n", "<leader>0", function() create_or_switch_scratch_buffer("*scratch*") end, { desc = "Open the *scratch* buffer" })
-vim.keymap.set("n", "<leader>9", function() create_or_switch_autosave_buffer("~/journal.md") end , { desc = "Open global journal" })
