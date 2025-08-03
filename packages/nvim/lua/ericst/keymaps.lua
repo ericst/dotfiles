@@ -27,8 +27,8 @@ vim.keymap.set("v", ">", ">gv", { desc = "Indent right and reselect" })
 vim.keymap.set("n", "<LEADER>bn", "<CMD>bnext<CR>", { desc = "Next buffer" })
 vim.keymap.set("n", "<LEADER>bp", "<CMD>bprevious<CR>", { desc = "Previous buffer" })
 vim.keymap.set("n", "<LEADER>bb", "<CMD>buffers<CR>:b ", { desc = "Previous buffer" })
-vim.keymap.set("n", "<LEADER>bs", function() create_or_switch_scratch_buffer("*scratch*") end, { desc = "Open the *scratch* buffer" })
-vim.keymap.set("n", "<LEADER>bj", function() create_or_switch_autosave_buffer("~/journal.md") end , { desc = "Open global journal" })
+vim.keymap.set("n", "<LEADER>bs", function() ese_create_or_switch_scratch_buffer("*scratch*") end, { desc = "Open the *scratch* buffer" })
+vim.keymap.set("n", "<LEADER>bj", function() ese_create_or_switch_autosave_buffer("~/journal.md") end , { desc = "Open global journal" })
 
 -- Center screen when jumping
 vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result (centered)" })

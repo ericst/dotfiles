@@ -1,7 +1,4 @@
--- Plugins which don't need lot of config for the moment...
-
+-- Diverse plugins that are useful.
 return {
-  {'tpope/vim-fugitive'}, -- For git usage
   {'tpope/vim-sleuth'},   -- Heuristically sets tabs...
-  {'jubnzv/IEC.vim'},   -- IEC language support
 }
