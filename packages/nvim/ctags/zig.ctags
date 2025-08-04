@@ -1,0 +1,15 @@
+--exclude=.zig-cache
+
+--langdef=zig
+--map-zig=.zig
+
+--kinddef-zig=f,function,functions
+--kinddef-zig=m,method,methods
+--kinddef-zig=t,type,types
+--kinddef-zig=v,field,fields
+
+--regex-zig=/^(export +)?(pub +)?(inline +)?fn +([a-zA-Z0-9_]+)/\4/f/{exclusive}
+--regex-zig=/^(export +)?(pub +)?[\t ]*const +([a-zA-Z0-9_]+) = (struct|enum|union)/\3/t/{exclusive}{scope=push}
+--regex-zig=/^}///{exclusive}{scope=pop}{placeholder}
+--regex-zig=/^[\t ]+(pub +)?(inline +)?fn +([a-zA-Z0-9_]+)/\3/m/{exclusive}{scope=ref}
+--regex-zig=/^(export +)?pub +const +([a-zA-Z0-9_]+)(:.*)? = .*/\2/v/{exclusive}

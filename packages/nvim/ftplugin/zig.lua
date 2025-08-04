@@ -1,0 +1,3 @@
+-- Please don't forget to that this filetype is also part of the ctags updates
+
+vim.cmd [[ setlocal tags+=~/.zvm/bin/lib/std/tags ]] -- Somehow vim.opt_local doesntwork...
