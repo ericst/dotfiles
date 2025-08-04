@@ -90,6 +90,7 @@ alias e="$VISUAL"
 # Also, if I type vim, i meant nvim... If it is installed of course.
 if type nvim &> /dev/null; then
     alias vim='nvim'
+    export MANPAGER='nvim +Man!'
 fi
 
 
