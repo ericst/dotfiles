@@ -1,10 +1,54 @@
+# Ghostty shell integration for Bash with full resources caching
+GHOSTTY_CACHE_DIR="$HOME/.cache/ghostty"
+GHOSTTY_RESOURCES_CACHE="$GHOSTTY_CACHE_DIR/resources-copy"
+
+if [ -n "${GHOSTTY_RESOURCES_DIR}" ]; then
+    # Create cache directory if it doesn't exist
+    if [ ! -d "$GHOSTTY_CACHE_DIR" ]; then
+        mkdir -p "$GHOSTTY_CACHE_DIR"
+    fi
+    
+    # Copy entire resources directory if source is newer or cache doesn't exist
+    if [ -d "$GHOSTTY_RESOURCES_DIR" ]; then
+        # Check if we need to update the cache
+        # We'll use a timestamp file to track when we last synced
+        GHOSTTY_SYNC_TIMESTAMP="$GHOSTTY_CACHE_DIR/last-resource-sync"
+        NEEDS_SYNC=false
+        
+        # Check if cache doesn't exist or if source is newer than our last sync
+        if [ ! -d "$GHOSTTY_RESOURCES_CACHE" ] || [ ! -f "$GHOSTTY_SYNC_TIMESTAMP" ]; then
+            NEEDS_SYNC=true
+        elif [ -n "$(find "$GHOSTTY_RESOURCES_DIR" -newer "$GHOSTTY_SYNC_TIMESTAMP" -print -quit 2>/dev/null)" ]; then
+            NEEDS_SYNC=true
+        fi
+        
+        if [ "$NEEDS_SYNC" = true ]; then
+            # Remove old cache and copy fresh
+            rm -rf "$GHOSTTY_RESOURCES_CACHE"
+            cp -r "$GHOSTTY_RESOURCES_DIR" "$GHOSTTY_RESOURCES_CACHE"
+            # Update sync timestamp
+            touch "$GHOSTTY_SYNC_TIMESTAMP"
+        fi
+    fi
+    
+    # Clean up variables
+    unset GHOSTTY_SYNC_TIMESTAMP NEEDS_SYNC
+fi
+
+# Source the cached integration script if it exists, using cached resources
+if [ -f "$GHOSTTY_RESOURCES_CACHE/shell-integration/bash/ghostty.bash" ]; then
+    export GHOSTTY_RESOURCES_DIR="$GHOSTTY_RESOURCES_CACHE"
+    builtin source "$GHOSTTY_RESOURCES_CACHE/shell-integration/bash/ghostty.bash"
+fi
+
+unset GHOSTTY_CACHE_DIR GHOSTTY_RESOURCES_CACHE
+
 # Source global definitions
 if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
-# Add some bin folders.
-
+# Add some bin folders for my dotfiles
 if ! [[ "$PATH" =~ $HOME/shelltape/bin/ ]]; then
     PATH="$HOME/shelltape/bin/:$PATH"
 fi
@@ -39,7 +83,8 @@ shopt -s cmdhist
 shopt -s lithist
 HISTTIMEFORMAT='%F %T '
 
-# This is to make sure I don't loose history. It forces bash to write each command to the history file immediately.
+# This is to make sure I don't loose history. It forces bash to write each
+# command to the history file immediately.
 PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
 
@@ -53,13 +98,10 @@ alias hs="history | grep"
 # We want bash to help us as much as possible. ~autocd~ allows us to change
 # directory by only typing its name without even issuing the ~cd~
 # command. ~cdspell~ and ~dirspell~ will auto correct types.
-# TODO: Work set a CDPATH variable
 shopt -s autocd
 shopt -s dirspell
 shopt -s cdspell
-
-
-
+CDPATH="${HOME}/Projects/"
 
 # Here are some safety nets. 
 
@@ -90,7 +132,7 @@ alias e="$VISUAL"
 # Also, if I type vim, i meant nvim... If it is installed of course.
 if type nvim &> /dev/null; then
     alias vim='nvim'
-    export MANPAGER='nvim +Man!'
+    export MANPAGER='nvim +Man!' # links man....
 fi
 
 
@@ -207,6 +249,27 @@ force_git_check() {
 if [[ $- == *i* ]]; then
     check_git_status
 fi
+
+#Distrobox integration
+workbox() {
+    local fedora_version=$(grep -oP 'VERSION_ID=\K\d+' /etc/os-release)
+    local image="fedora-toolbox:${fedora_version}"
+    
+    # Check if container exists without trying to enter it
+    if distrobox list | grep -q "workbox"; then
+        distrobox enter workbox
+    else
+        echo "Creating workbox from ${image}..."
+        if distrobox create --pull --name workbox --image "${image}"; then
+            echo "Container created successfully. Entering workbox..."
+            distrobox enter workbox
+        else
+            echo "Failed to create container"
+            return 1
+        fi
+    fi
+}
+alias wb='workbox'
 
 
 # Source everything into a ~/.bashrc.d.

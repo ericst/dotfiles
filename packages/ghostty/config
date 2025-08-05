@@ -15,8 +15,8 @@ gtk-single-instance=false
 copy-on-select=true
 scrollback-limit=5000000
 
-# TODO: Check how to make it work within a distrobox and ssh
-shell-integration=none 
+# Shell integration is made via my bashrc
+shell-integration=none
 
 
 
