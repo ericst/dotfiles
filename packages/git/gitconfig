@@ -3,7 +3,6 @@
         name = Eric Seuret
         email = eric@ericst.ch
 
-
 # This is the default behavior, nonetheless, I make sure of it.
 [push]
         default = simple
@@ -11,3 +10,11 @@
 # Default for new branches.
 [init]
 	defaultBranch = main
+
+# Using nvim as diff tool
+[difftool]
+    prompt = true
+[diff]
+    tool = nvimdiff
+[difftool "nvimdiff"]
+    cmd = "nvim -d \"$REMOTE\" \"$LOCAL\""
