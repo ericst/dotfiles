@@ -1,13 +1,13 @@
 zigtags() {
     local original_dir=$(pwd)
     
-    # Check if ~/.zvm/bin/lib/std/ exists
-    if [ -d "$HOME/.zvm/bin/lib/std/" ]; then
-        echo "Running ctags -R in ~/.zvm/bin/lib/std/"
-        cd "$HOME/.zvm/bin/lib/std/" && ctags -R
+    # Check if zig is checked out
+    if [ -d "$HOME/Projects/zig/lib/std/" ]; then
+        echo "Running ctags -R in ~/Projects/zig/lib/std/"
+        cd "$HOME/Projects/zig/lib/std/" && ctags -R
         echo "ctags completed."
     else
-        echo "Directory ~/.zvm/bin/lib/std/ does not exist."
+        echo "Directory ~/Projects/zig/lib/std/ does not exist."
     fi
     
     # Return to original directory
