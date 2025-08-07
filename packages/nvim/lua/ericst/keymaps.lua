@@ -4,12 +4,13 @@ vim.keymap.set('n', ',', '@:', { desc = "Repeat last : command", noremap = true 
 -- Window management
 vim.keymap.set("n", "<LEADER>ws", "<CMD>split<CR>", { desc = "Create an horizontal split" })
 vim.keymap.set("n", "<LEADER>wv", "<CMD>vsplit<CR>", { desc = "Create a vertical split" })
-vim.keymap.set("n", "<LEADER>wo", "<CMD>only<CR>", { desc = "Keep only this window" })
+vim.keymap.set("n", "<LEADER>wf", "<CMD>only<CR>", { desc = "Focus on this window" })
 vim.keymap.set("n", "<LEADER>wc", "<CMD>close<CR>", { desc = "Close this window" })
 vim.keymap.set("n", "<LEADER>wh", "<C-w>h", { desc = "Move to left window" })
 vim.keymap.set("n", "<LEADER>wj", "<C-w>j", { desc = "Move to bottom window" })
 vim.keymap.set("n", "<LEADER>wk", "<C-w>k", { desc = "Move to top window" })
 vim.keymap.set("n", "<LEADER>wl", "<C-w>l", { desc = "Move to right window" })
+vim.keymap.set("n", "<LEADER>wo", "<C-w>w", { desc = "Move to to other window" })
 --TODO: Improve netrw opening, maybe give it 15 cols right or something
 
 -- Move lines up/down
@@ -35,3 +36,8 @@ vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result (centered)" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result (centered)" })
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
+
+-- Find stuff
+vim.keymap.set("n", "<LEADER>ff", ":find ", { desc = "Find files by name" })
+vim.keymap.set("n", "<LEADER>fg", ":grep ", { desc = "Grep files" })
+

@@ -101,7 +101,7 @@ alias hs="history | grep"
 shopt -s autocd
 shopt -s dirspell
 shopt -s cdspell
-CDPATH="${HOME}/Projects/"
+CDPATH=":${HOME}:${HOME}/Projects/"
 
 # Here are some safety nets. 
 
@@ -269,7 +269,11 @@ workbox() {
         fi
     fi
 }
+
+
+# Nice aliases
 alias wb='workbox'
+alias o='xdg-open'
 
 
 # Source everything into a ~/.bashrc.d.
