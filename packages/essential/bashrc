@@ -275,6 +275,10 @@ workbox() {
 alias wb='workbox'
 alias o='xdg-open'
 
+cdtmp(){
+    pushd $(mktemp -d)
+}
+
 
 # Source everything into a ~/.bashrc.d.
 # TODO move configuration there, to make it nicer

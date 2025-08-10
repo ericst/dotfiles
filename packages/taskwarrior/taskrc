@@ -1,0 +1,7 @@
+# Data locations
+data.location= ~/Documents/taskwarrior-data
+
+# Calendar
+weekstart=Monday
+
+news.version=3.4.1
