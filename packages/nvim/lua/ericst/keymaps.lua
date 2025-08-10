@@ -27,7 +27,7 @@ vim.keymap.set("v", ">", ">gv", { desc = "Indent right and reselect" })
 -- The first two are redundant with ]b and [b but are here for consistancy
 vim.keymap.set("n", "<Leader>bn", "<Cmd>bnext<CR>", { desc = "Next buffer" })
 vim.keymap.set("n", "<Leader>bp", "<Cmd>bprevious<CR>", { desc = "Previous buffer" })
-vim.keymap.set("n", "<Leader>bb", "<Cmd>buffers<CR>:b ", { desc = "Previous buffer" })
+vim.keymap.set("n", "<Leader>bb", ":Pick buffers<CR>", { desc = "Find buffer by name" })
 vim.keymap.set("n", "<Leader>bs", function() ese_create_or_switch_scratch_buffer("*scratch*") end, { desc = "Open the *scratch* buffer" })
 vim.keymap.set("n", "<Leader>bj", function() ese_create_or_switch_autosave_buffer("~/journal.md") end , { desc = "Open global journal" })
 
@@ -38,7 +38,9 @@ vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
 
 -- Find stuff
-vim.keymap.set("n", "<Leader>ff", ":find ", { desc = "Find files by name" })
+vim.keymap.set("n", "<Leader>ff", ":Pick files<CR>", { desc = "Find files by name" })
+vim.keymap.set("n", "<Leader>fh", ":Pick help<CR>", { desc = "Find files by name" })
+vim.keymap.set("n", "<Leader>fb", ":Pick buffers<CR>", { desc = "Find buffer by name" })
 vim.keymap.set("n", "<Leader>fg", ":grep ", { desc = "Grep files" })
 vim.keymap.set("n", "<Leader>fw", ":grep <cword>", { desc = "Grep files for word under the cursor" })
 
