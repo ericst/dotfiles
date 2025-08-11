@@ -1,5 +1,5 @@
 
-vim.cmd [[set tags="./tags,tags" ]] -- TODO: Somehow it doesn't work...
+-- vim.cmd [[set tags="./tags,tags" ]] -- TODO: Somehow it doesn't work...
 
 
 -- function to call ctags in the background to update the ctags file

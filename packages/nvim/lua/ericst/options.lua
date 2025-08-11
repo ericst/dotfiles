@@ -33,7 +33,7 @@ vim.opt.termguicolors = true                        -- Enable 24-bit colors
 vim.opt.signcolumn = "yes"                          -- Always show sign column
 vim.opt.showmatch = true                            -- Highlight matching brackets
 vim.opt.cmdheight = 1                               -- Command line height
-vim.opt.completeopt = "menuone,noselect,fuzzy"      -- Completion options 
+vim.opt.completeopt = "menuone,popup,fuzzy"         -- Completion options 
 vim.opt.pumheight = 0                               -- Popup menu height, as heigh as possible
 vim.opt.winborder = "rounded"                       -- Nice windows for the menus
 
@@ -52,12 +52,11 @@ vim.opt.hidden = true                               -- Allow hidden buffers
 vim.opt.errorbells = false                          -- No error bells
 vim.opt.iskeyword:append("-")                       -- Treat dash as part of word
 vim.opt.mouse = "a"                                 -- Enable mouse support
-vim.opt.clipboard:append("unnamedplus")             -- Use system clipboard
 vim.opt.timeoutlen = 5000                           -- Key timeout duration
 
 -- Command-line completion
 vim.opt.wildmenu = true                             -- I want the wildmenu in command line
-vim.opt.wildmode = "noselect:full"                  -- No select, keep my command as is for the moment.
+vim.opt.wildmode = "full"                           -- No select, keep my command as is for the moment.
 
 -- Folding settings
 vim.opt.foldmethod = 'indent'                       -- Use indent, local settings still possible
@@ -72,7 +71,7 @@ vim.g.netrw_banner = 0                              -- Suppress the banner
 vim.g.netrw_liststyle = 3                           -- Tree style listing
 vim.g.netrw_browse_split = 4                        -- When browsing <cr> opens in prev. window.
 
--- [[ Highlight on yank ]]
+-- Highlight on yank
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
 vim.api.nvim_create_autocmd('TextYankPost', {

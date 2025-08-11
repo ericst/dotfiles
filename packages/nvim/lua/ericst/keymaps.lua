@@ -44,3 +44,5 @@ vim.keymap.set("n", "<Leader>fb", ":Pick buffers<CR>", { desc = "Find buffer by 
 vim.keymap.set("n", "<Leader>fg", ":grep ", { desc = "Grep files" })
 vim.keymap.set("n", "<Leader>fw", ":grep <cword>", { desc = "Grep files for word under the cursor" })
 
+-- Auto complete
+vim.keymap.set("i", "<C-l>", "<C-x><C-l>", { desc = "Line completion" })
