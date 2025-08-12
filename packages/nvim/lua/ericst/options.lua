@@ -82,4 +82,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
+-- Setting the rg as grep program
+vim.opt.grepprg="rg --vimgrep"
+
 
