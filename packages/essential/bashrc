@@ -270,6 +270,8 @@ workbox() {
     fi
 }
 
+# Docker is podman
+alias docker='podman'
 
 # Nice aliases
 alias wb='workbox'
