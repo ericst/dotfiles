@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Weechat
+Comment=IRC Client
+Exec=ghostty --title=Weechat --class=org.weechat.Weechat -e weechat
+Icon=weechat
+Type=Application
+Categories=Network;InstantMessaging;
+StartupWMClass=org.weechat.Weechat
