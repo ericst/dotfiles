@@ -149,6 +149,9 @@ alias psg="ps aux | grep -v grep | \grep -i -e VSZ -e"
 # Per default I want to create any missing directory.
 alias mkdir="mkdir -pv"
 
+# I want grep to work in Perl mode per default
+alias grep="grep -P"
+
 
 # The function ~mkcd~ is extremely useful, to create a directory and immediately
 # change to it.
