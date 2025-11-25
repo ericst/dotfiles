@@ -7,6 +7,8 @@ font-size=17
 cursor-style=block
 cursor-style-blink=true
 window-theme=system
+window-width=130
+window-height=42
 
 ###############################################################################
 # Behaviour
