@@ -85,4 +85,12 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- Setting the rg as grep program
 vim.opt.grepprg="rg --vimgrep"
 
+-- Open the quickfix list after running a grep comand
+vim.api.nvim_create_autocmd("QuickFixCmdPost", {
+  pattern = "*grep*",
+  callback = function()
+    vim.cmd("cwindow")
+  end,
+})
+
 
