@@ -33,7 +33,7 @@ vim.opt.termguicolors = true                        -- Enable 24-bit colors
 vim.opt.signcolumn = "yes"                          -- Always show sign column
 vim.opt.showmatch = true                            -- Highlight matching brackets
 vim.opt.cmdheight = 1                               -- Command line height
-vim.opt.completeopt = "menuone,popup,fuzzy"         -- Completion options 
+vim.opt.completeopt = "menuone,noinsert,popup,fuzzy"-- Completion options 
 vim.opt.pumheight = 0                               -- Popup menu height, as heigh as possible
 vim.opt.winborder = "rounded"                       -- Nice windows for the menus
 
