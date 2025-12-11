@@ -46,3 +46,4 @@ vim.keymap.set("n", "<Leader>fw", ":grep <cword>", { desc = "Grep files for word
 
 -- Auto complete
 vim.keymap.set("i", "<C-l>", "<C-x><C-l>", { desc = "Line completion" })
+vim.keymap.set('i', "<C-/>", '<C-y><C-x><C-f>', { desc = 'Accept path and restart completion' })
