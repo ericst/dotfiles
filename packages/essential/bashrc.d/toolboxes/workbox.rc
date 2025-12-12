@@ -1,5 +1,5 @@
 # Development group packages
-install_group "rpm-development-tools" "c-development"
+install_group "rpm-development-tools" "c-development" "development-tools"
 
 # Development tools
 install_dependencies git neovim nodejs nodejs-npm ruby-devel rubygem-bundler rubygem-sqlite3
@@ -15,7 +15,7 @@ install_dependencies nmap nmap-ncat traceroute
 install_dependencies openssl pwgen qrencode
 
 # File and data processing
-install_dependencies pandoc rsync
+install_dependencies pandoc rsync sqlite
 
 # General tools
 install_dependencies task 
@@ -23,5 +23,3 @@ install_dependencies task
 # fonts
 install_dependencies fontawesome-fonts-all fira-code-fonts
 
-# NPM packages
-install_npm @anthropic-ai/claude-code
