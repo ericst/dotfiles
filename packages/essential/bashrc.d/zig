@@ -1,13 +1,26 @@
+# Set ZIG_STD_DIR environment variable for use by other tools
+if ! [[ "$ZIG_STD_DIR" =~ ^/ ]]; then
+    # Get std_dir from zig env
+    std_dir=$(zig env 2>/dev/null | grep std_dir | sed 's/.*= "\(.*\)",/\1/')
+    
+    # Check if we successfully got a std_dir and it exists
+    if [ -n "$std_dir" ] && [ -d "$std_dir" ]; then
+        export ZIG_STD_DIR="$std_dir"
+    fi
+    unset std_dir
+fi
+
 zigtags() {
     local original_dir=$(pwd)
     
-    # Check if zig is checked out
-    if [ -d "$HOME/Projects/zig/lib/std/" ]; then
-        echo "Running ctags -R in ~/Projects/zig/lib/std/"
-        cd "$HOME/Projects/zig/lib/std/" && ctags -R
+    # Use the ZIG_STD_DIR environment variable
+    if [ -n "$ZIG_STD_DIR" ] && [ -d "$ZIG_STD_DIR" ]; then
+        echo "Running ctags -R in $ZIG_STD_DIR"
+        cd "$ZIG_STD_DIR" && ctags -R
         echo "ctags completed."
     else
-        echo "Directory ~/Projects/zig/lib/std/ does not exist."
+        echo "Could not find Zig standard library directory."
+        echo "Make sure zig is installed and in your PATH."
     fi
     
     # Return to original directory
