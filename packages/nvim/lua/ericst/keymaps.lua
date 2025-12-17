@@ -31,6 +31,23 @@ vim.keymap.set("n", "<Leader>bb", ":Pick buffers<CR>", { desc = "Find buffer by 
 vim.keymap.set("n", "<Leader>bs", function() ese_create_or_switch_scratch_buffer("*scratch*") end, { desc = "Open the *scratch* buffer" })
 vim.keymap.set("n", "<Leader>bj", function() ese_create_or_switch_autosave_buffer("~/journal.md") end , { desc = "Open global journal" })
 
+-- Harpoon
+-- It actually is a really good way of working with buffers...
+local harpoon = require("harpoon")
+harpoon:setup()
+vim.keymap.set("n", "<Leader>H", function() harpoon:list():add()  end , { desc = "Add the buffer to the harpoon list" })
+vim.keymap.set("n", "<Leader>h", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end , { desc = "Open the harpoon list" })
+vim.keymap.set("n", "<Leader>1", function() harpoon:list():select(1) end , { desc = "Open buffer 1 in harpoon list" })
+vim.keymap.set("n", "<Leader>2", function() harpoon:list():select(2) end , { desc = "Open buffer 2 in harpoon list" })
+vim.keymap.set("n", "<Leader>3", function() harpoon:list():select(3) end , { desc = "Open buffer 3 in harpoon list" })
+vim.keymap.set("n", "<Leader>4", function() harpoon:list():select(4) end , { desc = "Open buffer 4 in harpoon list" })
+vim.keymap.set("n", "<Leader>5", function() harpoon:list():select(5) end , { desc = "Open buffer 5 in harpoon list" })
+vim.keymap.set("n", "<Leader>6", function() harpoon:list():select(6) end , { desc = "Open buffer 6 in harpoon list" })
+vim.keymap.set("n", "<Leader>7", function() harpoon:list():select(7) end , { desc = "Open buffer 7 in harpoon list" })
+vim.keymap.set("n", "<Leader>8", function() harpoon:list():select(8) end , { desc = "Open buffer 8 in harpoon list" })
+vim.keymap.set("n", "<Leader>9", function() harpoon:list():select(9) end , { desc = "Open buffer 9 in harpoon list" })
+
+
 -- Center screen when jumping
 vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result (centered)" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result (centered)" })
