@@ -69,6 +69,8 @@ keybind=ctrl+shift+home=scroll_to_top
 keybind=ctrl+shift+plus=increase_font_size:1
 keybind=ctrl+shift+minus=decrease_font_size:1
 
+keybind=f11=toggle_fullscreen
+
 #TODO: Adding working with scrollback
 #TODO: Adding working with terminal inspector
 
