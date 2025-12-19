@@ -36,6 +36,7 @@ keybind=ctrl+space>o=goto_split:next
 keybind=ctrl+space>s=new_split:down
 keybind=ctrl+space>v=new_split:right
 keybind=ctrl+space>f=toggle_split_zoom
+keybind=ctrl+space>c=close_surface
 
 keybind=ctrl+space>n=new_tab
 keybind=ctrl+space>right_bracket=next_tab
