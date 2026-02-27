@@ -1,0 +1,22 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "llamacpp": {
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://127.0.0.1:9100/v1",
+        "timeout": false
+      },
+      "models": {
+        "qwen3-30b-a3b": {
+          "name": "qwen3-30b-a3b",
+          "limit": { "context": 65536, "output": 8192 }
+        },
+        "qwen3-coder-next": {
+          "name": "qwen3-coder-next",
+          "limit": { "context": 65536, "output": 8192 }}
+      }
+    }
+  },
+  "default_agent": "plan"
+}
