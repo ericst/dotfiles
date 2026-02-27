@@ -13,5 +13,17 @@ return {
       config = function()
 	 vim.g.zig_fmt_autosave = 1
       end 
-   }
+   },
+   {
+      "stevearc/conform.nvim",  -- Formatter
+      opts = {
+         formatters_by_ft = {
+            python = { "ruff_format" },
+         },
+         format_on_save = {
+            timeout_ms = 500,
+            lsp_fallback = true,
+         },
+      },
+   },
 }

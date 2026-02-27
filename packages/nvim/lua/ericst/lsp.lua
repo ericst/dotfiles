@@ -7,3 +7,19 @@ vim.lsp.config("zls", {
 })
 
 vim.lsp.enable("zls")
+
+vim.lsp.config("basedpyright", {
+    cmd = { "basedpyright-langserver", "--stdio" },
+    root_markers = { "pyproject.toml", "setup.py", "setup.cfg", ".git" },
+    filetypes = { "python" },
+    settings = {
+        basedpyright = {
+            analysis = {
+                autoSearchPaths = true,
+                useLibraryCodeForTypes = true,
+            },
+        },
+    },
+})
+
+vim.lsp.enable("basedpyright")
