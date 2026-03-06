@@ -1,0 +1,13 @@
+[project]
+name = "dotfiles"
+version = "0.1.0"
+description = "Personal dotfiles manager"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+dotfiles = "dotfiles:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

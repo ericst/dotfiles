@@ -1,0 +1,3 @@
+[[links]]
+source = "config"
+target = "~/.config/ghostty/config"

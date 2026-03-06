@@ -1,0 +1,12 @@
+[[links]]
+source = "bashrc"
+target = "~/.bashrc"
+
+[[links]]
+source = "inputrc"
+target = "~/.inputrc"
+
+[[links]]
+source = "bashrc.d"
+target = "~/.bashrc.d"
+recursive = true

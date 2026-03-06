@@ -1,0 +1,3 @@
+[[links]]
+source = "weechat.desktop"
+target = "~/.local/share/applications/weechat.desktop"

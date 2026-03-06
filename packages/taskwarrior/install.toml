@@ -1,0 +1,3 @@
+[[links]]
+source = "taskrc"
+target = "~/.config/task/taskrc"

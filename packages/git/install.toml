@@ -1,0 +1,7 @@
+[[links]]
+source = "gitconfig"
+target = "~/.gitconfig"
+
+[[links]]
+source = "gitignore"
+target = "~/.config/git/ignore"

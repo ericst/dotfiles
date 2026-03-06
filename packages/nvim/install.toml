@@ -1,0 +1,26 @@
+[[links]]
+source = "init.lua"
+target = "~/.config/nvim/init.lua"
+
+[[links]]
+source = "lua"
+target = "~/.config/nvim/lua"
+recursive = true
+
+[[links]]
+source = "ftplugin"
+target = "~/.config/nvim/ftplugin"
+recursive = true
+
+[[links]]
+source = "README.md"
+target = "~/.config/nvim/README.md"
+
+[[links]]
+source = "ctags"
+target = "~/.config/ctags"
+recursive = true
+
+[[links]]
+source = "nvim.desktop"
+target = "~/.local/share/applications/nvim.desktop"

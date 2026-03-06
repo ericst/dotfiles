@@ -1,0 +1,8 @@
+[[links]]
+source = "opencode.json"
+target = "~/.config/opencode/opencode.json"
+
+[[links]]
+source = "agents"
+target = "~/.config/opencode/agents"
+recursive = true
