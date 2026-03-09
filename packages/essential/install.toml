@@ -3,10 +3,15 @@ source = "bashrc"
 target = "~/.bashrc"
 
 [[links]]
+source = "bashrc.d"
+target = "~/.bashrc.d"
+recursive = true
+
+[[links]]
 source = "inputrc"
 target = "~/.inputrc"
 
 [[links]]
-source = "bashrc.d"
-target = "~/.bashrc.d"
-recursive = true
+source = "dotfiles-git-check"
+target = "~/.local/bin/dotfiles-git-check"
+
