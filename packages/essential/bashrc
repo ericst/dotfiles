@@ -196,6 +196,26 @@ cdtmp(){
     pushd $(mktemp -d)
 }
 
+#PROMPT
+_git_prompt=/usr/share/git-core/contrib/completion/git-prompt.sh
+[ -f "$_git_prompt" ] && source "$_git_prompt"
+GIT_PS1_SHOWDIRTYSTATE=1
+GIT_PS1_SHOWUNTRACKEDFILES=1
+
+_build_ps1() {
+    local G='\[\e[1;32m\]' R='\[\e[0m\]'
+    local container=""
+    [ -n "$CONTAINER_ID" ] && container="[${CONTAINER_ID}]"
+    local git=""
+    declare -f __git_ps1 &>/dev/null && {
+        local b; b=$(__git_ps1 "%s")
+        [ -n "$b" ] && git=" (${b})"
+    }
+    PS1="${G}\u@\h${container} \w${git} ${R}\n\$ "
+}
+
+PROMPT_COMMAND="${PROMPT_COMMAND:+${PROMPT_COMMAND}; }_build_ps1"
+
 
 # Source everything into a ~/.bashrc.d.
 # TODO move configuration there, to make it nicer
