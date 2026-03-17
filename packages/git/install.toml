@@ -5,3 +5,7 @@ target = "~/.gitconfig"
 [[links]]
 source = "gitignore"
 target = "~/.config/git/ignore"
+
+[[links]]
+source = "shell.sh"
+target = "~/.bashrc.d/git"
