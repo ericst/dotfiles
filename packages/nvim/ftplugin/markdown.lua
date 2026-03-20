@@ -1,3 +1,7 @@
+-- Text wrapping settings
+vim.opt.textwidth = 80                              -- Wrap text at 80 characters
+vim.opt.formatoptions:append("t")                 -- Enable auto-formatting that respects textwidth
+
 -- Snippets for the mode.
 vim.snippet.add("h1", "# $1", { buffer = true })
 vim.snippet.add("h2", "## $1", { buffer = true})
