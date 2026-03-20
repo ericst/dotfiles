@@ -1,23 +1,47 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["opencode-gemini-auth@latest"],
+  "plugin": ["opencode-gemini-auth@latest", "opencode-anthropic-user-agent-plugin"],
+  "keybinds": {
+    "editor_open": "<leader>e,<leader>ctrl+e"
+  },
+  "default_agent": "plan",
   "provider": {
-    "llamacpp": {
-      "npm": "@ai-sdk/openai-compatible",
-      "options": {
-        "baseURL": "http://127.0.0.1:9100/v1",
-        "timeout": false
-      },
+    "mistral": {
       "models": {
-        "qwen3-30b-a3b": {
-          "name": "qwen3-30b-a3b",
-          "limit": { "context": 65536, "output": 8192 }
+        "magistral-medium-latest": {
+          "options": {
+            "reasoning_effort": "high",
+            "temperature": 0.5
+          },
+          "variants": {
+            "high": {
+              "reasoning_effort": "high"
+            },
+            "medium": {
+              "reasoning_effort": "medium"
+            },
+            "low": {
+              "reasoning_effort": "low"
+            },
+            "none": {
+              "reasoning_effort": "none"
+            }
+          }
         },
-        "qwen3-coder-next": {
-          "name": "qwen3-coder-next",
-          "limit": { "context": 65536, "output": 8192 }}
+        "devstral-medium-latest": {
+          "options": {
+            "temperature": 0
+          }
+        }
       }
     }
   },
-  "default_agent": "plan"
+  "agent": {
+    "plan": {
+      "model": "mistral/magistral-medium-latest"
+    },
+    "build": {
+      "model": "mistral/devstral-medium-latest"
+    }
+  }
 }

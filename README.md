@@ -1,10 +1,10 @@
 # ericst's dotfiles
 
-A Ruby-based dotfiles management system that creates symlinks from configuration files in this repository to their expected locations in your home directory.
+A Python-based dotfiles management system that creates symlinks from configuration files in this repository to their expected locations in your home directory.
 
 ## Prerequisites
 
-- Ruby (any recent version)
+- Python 3 (any recent version)
 - Unix-like system (Linux, macOS)
 - Write permissions to your home directory
 
@@ -12,16 +12,16 @@ A Ruby-based dotfiles management system that creates symlinks from configuration
 
 ```bash
 # Install essential shell configuration
-./dotfiles.rb essential
+./dotfiles.py essential
 
 # Install multiple packages
-./dotfiles.rb git nvim essential
+./dotfiles.py git nvim essential
 
 # Force installation (overwrite existing files)
-./dotfiles.rb -f essential
+./dotfiles.py -f essential
 
 # Get help
-./dotfiles.rb -h
+./dotfiles.py -h
 ```
 
 ## Available Packages
@@ -62,34 +62,34 @@ AI coding assistant configuration:
 ### Basic Installation
 ```bash
 # Install just the essentials
-./dotfiles.rb essential
+./dotfiles.py essential
 
 # Add git configuration
-./dotfiles.rb git
+./dotfiles.py git
 
 # Set up complete development environment
-./dotfiles.rb essential git nvim
+./dotfiles.py essential git nvim
 ```
 
 ### Advanced Usage
 ```bash
 # Force overwrite existing configurations
-./dotfiles.rb -f nvim
+./dotfiles.py -f nvim
 
 # Preview changes without executing
-./dotfiles.rb --dry-run essential
+./dotfiles.py --dry-run essential
 
 # Check what's installed
-./dotfiles.rb --status
+./dotfiles.py --status
 
 # List available packages
-./dotfiles.rb --list
+./dotfiles.py --list
 
 # Install with automatic yes to prompts
-./dotfiles.rb -f -y essential
+./dotfiles.py -f -y essential
 
 # Install everything
-./dotfiles.rb essential git nvim ghostty wezterm coding-agent
+./dotfiles.py essential git nvim ghostty wezterm coding-agent
 ```
 
 ## Command Line Options
@@ -103,11 +103,11 @@ AI coding assistant configuration:
 
 ## How It Works
 
-The system uses Ruby scripts to create symlinks from files in this repository to their target locations:
+The system uses Python scripts to create symlinks from files in this repository to their target locations:
 
 1. Each package is a directory under `packages/`
-2. Each package contains an `install.rb` script that defines what to link
-3. The main `dotfiles.rb` script processes packages and creates symlinks
+2. Each package contains an `install.toml` file that defines what to link using TOML format
+3. The main `dotfiles.py` script processes packages and creates symlinks
 4. Existing files are protected unless `--force` is used
 
 ### Link Functions
@@ -120,30 +120,30 @@ The system uses Ruby scripts to create symlinks from files in this repository to
 ### Permission Denied
 ```bash
 # Make sure the script is executable
-chmod +x dotfiles.rb
+chmod +x dotfiles.py
 ```
 
 ### File Already Exists
 ```bash
 # Use force mode to overwrite
-./dotfiles.rb -f package_name
+./dotfiles.py -f package_name
 
 # Or manually remove the conflicting file
 rm ~/.bashrc
-./dotfiles.rb essential
+./dotfiles.py essential
 ```
 
 ### Package Not Found
 ```bash
 # List available packages
-./dotfiles.rb --list
+./dotfiles.py --list
 
 # Check installation status
-./dotfiles.rb --status
+./dotfiles.py --status
 
 # Make sure you're in the dotfiles directory
 cd /path/to/dotfiles
-./dotfiles.rb package_name
+./dotfiles.py package_name
 ```
 
 ## Inspiration
