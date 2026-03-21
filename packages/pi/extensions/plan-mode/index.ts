@@ -291,54 +291,81 @@ After completing a step, include a [DONE:n] tag in your response.`,
 		}
 	});
 
-	// Restore state on session start/resume
-	pi.on("session_start", async (_event, ctx) => {
-		if (pi.getFlag("plan") === true) {
-			planModeEnabled = true;
-		}
+	// Shared initialisation logic for both session_start and session_switch.
+	// - forNewSession: true  → reset everything and apply the --plan flag (no entries to restore)
+	//                  false → restore persisted state from the session's entries
+	function initializeState(ctx: ExtensionContext, forNewSession: boolean): void {
+		// Reset in-memory state first
+		planModeEnabled = false;
+		executionMode = false;
+		todoItems = [];
 
-		const entries = ctx.sessionManager.getEntries();
+		if (forNewSession) {
+			// Brand-new session: honour the --plan flag (default: true)
+			if (pi.getFlag("plan") !== false) {
+				planModeEnabled = true;
+			}
+		} else {
+			// Process start or /resume: restore from persisted entries
+			const entries = ctx.sessionManager.getEntries();
 
-		// Restore persisted state
-		const planModeEntry = entries
-			.filter((e: { type: string; customType?: string }) => e.type === "custom" && e.customType === "plan-mode")
-			.pop() as { data?: { enabled: boolean; todos?: TodoItem[]; executing?: boolean } } | undefined;
-
-		if (planModeEntry?.data) {
-			planModeEnabled = planModeEntry.data.enabled ?? planModeEnabled;
-			todoItems = planModeEntry.data.todos ?? todoItems;
-			executionMode = planModeEntry.data.executing ?? executionMode;
-		}
-
-		// On resume: re-scan messages to rebuild completion state
-		// Only scan messages AFTER the last "plan-mode-execute" to avoid picking up [DONE:n] from previous plans
-		const isResume = planModeEntry !== undefined;
-		if (isResume && executionMode && todoItems.length > 0) {
-			// Find the index of the last plan-mode-execute entry (marks when current execution started)
-			let executeIndex = -1;
-			for (let i = entries.length - 1; i >= 0; i--) {
-				const entry = entries[i] as { type: string; customType?: string };
-				if (entry.customType === "plan-mode-execute") {
-					executeIndex = i;
-					break;
-				}
+			// Apply --plan flag baseline before consulting persisted state
+			if (pi.getFlag("plan") !== false) {
+				planModeEnabled = true;
 			}
 
-			// Only scan messages after the execute marker
-			const messages: AssistantMessage[] = [];
-			for (let i = executeIndex + 1; i < entries.length; i++) {
-				const entry = entries[i];
-				if (entry.type === "message" && "message" in entry && isAssistantMessage(entry.message as AgentMessage)) {
-					messages.push(entry.message as AssistantMessage);
-				}
+			// Restore persisted state (overrides the flag baseline)
+			const planModeEntry = entries
+				.filter((e: { type: string; customType?: string }) => e.type === "custom" && e.customType === "plan-mode")
+				.pop() as { data?: { enabled: boolean; todos?: TodoItem[]; executing?: boolean } } | undefined;
+
+			if (planModeEntry?.data) {
+				planModeEnabled = planModeEntry.data.enabled ?? planModeEnabled;
+				todoItems = planModeEntry.data.todos ?? todoItems;
+				executionMode = planModeEntry.data.executing ?? executionMode;
 			}
-			const allText = messages.map(getTextContent).join("\n");
-			markCompletedSteps(allText, todoItems);
+
+			// On resume: re-scan messages to rebuild completion state.
+			// Only scan messages AFTER the last "plan-mode-execute" to avoid
+			// picking up [DONE:n] markers from previous plans.
+			const isResume = planModeEntry !== undefined;
+			if (isResume && executionMode && todoItems.length > 0) {
+				let executeIndex = -1;
+				for (let i = entries.length - 1; i >= 0; i--) {
+					const entry = entries[i] as { type: string; customType?: string };
+					if (entry.customType === "plan-mode-execute") {
+						executeIndex = i;
+						break;
+					}
+				}
+
+				const messages: AssistantMessage[] = [];
+				for (let i = executeIndex + 1; i < entries.length; i++) {
+					const entry = entries[i];
+					if (entry.type === "message" && "message" in entry && isAssistantMessage(entry.message as AgentMessage)) {
+						messages.push(entry.message as AssistantMessage);
+					}
+				}
+				const allText = messages.map(getTextContent).join("\n");
+				markCompletedSteps(allText, todoItems);
+			}
 		}
 
 		if (planModeEnabled) {
 			pi.setActiveTools(PLAN_MODE_TOOLS);
+		} else {
+			pi.setActiveTools(NORMAL_MODE_TOOLS);
 		}
 		updateStatus(ctx);
+	}
+
+	// Initial process start
+	pi.on("session_start", async (_event, ctx) => {
+		initializeState(ctx, false);
+	});
+
+	// /new → reset to plan mode; /resume → restore persisted state
+	pi.on("session_switch", async (event, ctx) => {
+		initializeState(ctx, event.reason === "new");
 	});
 }
