@@ -207,11 +207,11 @@ GIT_PS1_SHOWUNTRACKEDFILES=1
 
 _build_ps1() {
     local exit_code=$?  # Must be first
-    local G='\[\e[1;32m\]' P='\[\e[38;5;63m\]' R='\[\e[0m\]' E='\[\e[1;31m\]'
+    local G='\[\e[1;32m\]' R='\[\e[0m\]' E='\[\e[1;31m\]'
 
     # Container (purple, only when set)
     local container=""
-    [ -n "$CONTAINER_ID" ] && container="${P}[${CONTAINER_ID}]${G} "
+    [ -n "$CONTAINER_ID" ] && container="[${CONTAINER_ID}] "
 
     # Jobs (only shown when there is at least one)
     local running stopped jobs_str=""

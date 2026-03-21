@@ -1,0 +1,55 @@
+# tmux configuration
+
+# Set prefix key to M-Space
+unbind C-b
+set -g prefix M-Space
+bind M-Space send-prefix
+
+# Start pane numbering at 1 instead of 0
+set -g base-index 1
+setw -g pane-base-index 1
+
+# Move status bar to the top
+set -g status-position top
+
+# Pane navigation keybindings
+# Use M-Space + h/j/k/l for pane navigation
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# Use M-Space + o to switch between panes (cycle through panes)
+bind o select-pane -t :.+
+
+# Pane creation keybindings
+# Use M-Space + s for new split below (horizontal split)
+bind s split-window -v
+
+# Use M-Space + v for new split to the right (vertical split)
+bind v split-window -h
+
+# Use M-Space + f to toggle pane zoom
+bind f resize-pane -Z
+
+# Use M-Space + c to close pane
+bind c kill-pane
+
+# Use M-Space + n to create a new pane
+bind n new-window
+
+# Additional useful configurations
+# Enable mouse support for pane selection and resizing
+set -g mouse on
+
+# Set default terminal to screen-256color
+set -g default-terminal "screen-256color"
+
+# Enable focus events for applications that need them
+set -g focus-events on
+
+# Set history limit
+set -g history-limit 10000
+
+# Status bar customization with purple color to match terminal prompt
+set -g status-style bg=color56,fg=white

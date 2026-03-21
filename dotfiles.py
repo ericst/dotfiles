@@ -9,6 +9,7 @@ from pathlib import Path
 
 INSTALL_FILE = "install.toml"
 DESCRIPTION_FILE = "description.txt"
+NOTES_FILE = "notes.txt"
 
 # Global options (mirrors Ruby's $options)
 options: dict = {}
@@ -174,6 +175,13 @@ def get_package_description(package: str) -> str:
     return "No description available"
 
 
+def display_package_notes(package: str) -> None:
+    notes_file = REPO_ROOT / "packages" / package / NOTES_FILE
+    if notes_file.exists() and os.access(notes_file, os.R_OK):
+        print("[NOTES]")
+        print(notes_file.read_text())
+
+
 def package_has_installer(package: str) -> bool:
     install_file = REPO_ROOT / "packages" / package / INSTALL_FILE
     return install_file.exists() and os.access(install_file, os.R_OK)
@@ -241,6 +249,7 @@ def install_package(package: str) -> None:
             link(str(entry["source"]), str(entry["target"]))
 
     print(f"{prefix}Done installing: {package}")
+    display_package_notes(package)
 
 
 def uninstall_package(package: str) -> None:
