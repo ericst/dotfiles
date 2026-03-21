@@ -1,0 +1,20 @@
+[[links]]
+source = "extensions"
+target = "~/.pi/agent/extensions"
+
+
+[[links]]
+source = "keybindings.json"
+target = "~/.pi/agent/keybindings.json"
+
+
+[[links]]
+source = "prompts"
+target = "~/.pi/agent/prompts"
+
+
+[[links]]
+source = "settings.json"
+target = "~/.pi/agent/settings.json"
+
+
