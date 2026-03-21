@@ -170,6 +170,10 @@ Restrictions:
 - You CANNOT use: edit, write (file modifications are disabled)
 - Bash is restricted to an allowlist of read-only commands
 
+Safe alternatives for commonly blocked commands:
+- awk        → use 'gawk --sandbox' (disables all file writes, pipes and system() at runtime)
+- vim/nano/emacs/code → use the 'read' tool instead to inspect file contents
+
 Ask clarifying questions using the questionnaire tool.
 
 Create a detailed numbered plan under a "Plan:" header:

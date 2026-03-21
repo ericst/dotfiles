@@ -27,6 +27,9 @@ const DESTRUCTIVE_PATTERNS = [
 	/\bpip\s+(install|uninstall)/i,
 	/\bapt(-get)?\s+(install|remove|purge|update|upgrade)/i,
 	/\bbrew\s+(install|uninstall|upgrade)/i,
+	/\bdnf5?\s+(install|remove|erase|update|upgrade|downgrade|autoremove|reinstall|distro-sync|swap|group\s+(install|remove))/i,
+	/\brpm\s+(-[iUe]\b|--install|--upgrade|--erase)/i,
+	/\bsed\b[^;|&\n]*-i/,
 	/\bgit\s+(add|commit|push|pull|merge|rebase|reset|checkout|branch\s+-[dD]|stash|cherry-pick|revert|tag|init|clone)/i,
 	/\bsudo\b/i,
 	/\bsu\b/i,
@@ -79,15 +82,33 @@ const SAFE_PATTERNS = [
 	/^\s*free\b/,
 	/^\s*git\s+(status|log|diff|show|branch|remote|config\s+--get)/i,
 	/^\s*git\s+ls-/i,
+	// Node / JS package managers — read-only subcommands only
 	/^\s*npm\s+(list|ls|view|info|search|outdated|audit)/i,
 	/^\s*yarn\s+(list|info|why|audit)/i,
+	/^\s*pnpm\s+(list|ls|info|why|audit)/i,
 	/^\s*node\s+--version/i,
-	/^\s*python\s+--version/i,
+	// Python
+	/^\s*python[23]?\s+--version/i,
+	/^\s*pip[23]?\s+(list|show|freeze|check|index)/i,
+	// System package managers (Fedora/RPM)
+	/^\s*dnf5?\s+(list|info|search|repolist|check-update|provides|repoquery|history\s+list)/i,
+	/^\s*rpm\s+-q/i,
+	// System package managers (Debian/macOS — kept for portability)
+	/^\s*apt(-cache)?\s+(list|show|search|depends|rdepends)/i,
+	/^\s*brew\s+(list|info|leaves|deps|uses|outdated|search)/i,
+	// Systemd — status and log reading only
+	/^\s*systemctl\s+status\b/i,
+	/^\s*journalctl\b/,
+	// Network / HTTP — stdout only; curl -o and wget with file dest are handled by protected-paths
 	/^\s*curl\s/i,
 	/^\s*wget\s+-O\s*-/i,
+	// Text processing
 	/^\s*jq\b/,
-	/^\s*sed\s+-n/i,
-	/^\s*awk\b/,
+	// sed without -i is stdout-only; sed -i is blocked in DESTRUCTIVE_PATTERNS
+	/^\s*sed\b/,
+	// gawk --sandbox disables all output redirections, pipes, and system() at the runtime level.
+	// Plain awk/gawk without --sandbox can write arbitrary files — do NOT add /^\s*awk\b/ here.
+	/^\s*gawk\s+--sandbox\b/,
 	/^\s*rg\b/,
 	/^\s*fd\b/,
 	/^\s*bat\b/,
