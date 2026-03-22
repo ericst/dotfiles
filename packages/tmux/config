@@ -42,14 +42,30 @@ bind n new-window
 # Enable mouse support for pane selection and resizing
 set -g mouse on
 
-# Set default terminal to screen-256color
-set -g default-terminal "screen-256color"
+# Set default terminal to tmux-256color (modern, correct value for tmux sessions)
+set -g default-terminal "tmux-256color"
 
 # Enable focus events for applications that need them
 set -g focus-events on
 
+# Enable extended key reporting and forward to inner apps that request it (tmux 3.5+).
+# extended-keys-format csi-u: use CSI-u encoding (\e[13;2u for Shift+Enter, etc.),
+# which is what pi and neovim expect.
+#
+# NOTE: 'terminal-features xterm*:extkeys' is intentionally NOT set here.
+# Ghostty's terminfo does NOT declare extkeys support — forcing it would make tmux
+# send \e[>4;1m to Ghostty, putting it in extended-key mode and corrupting bracketed
+# paste (newlines become \e[13;1u CSI sequences inside paste events).
+# Ghostty already emits extended key sequences natively without being asked,
+# so tmux receives them and forwards them to inner apps correctly without any override.
+set -g extended-keys on
+set -g extended-keys-format csi-u
+
+# Enable true color (RGB) for xterm-compatible terminals (Ghostty uses xterm-256color)
+set -as terminal-overrides ',xterm-256color:RGB'
+
 # Set history limit
-set -g history-limit 10000
+set -g history-limit 100000
 
 # Status bar customization with purple color to match terminal prompt
 set -g status-style bg=color56,fg=white
