@@ -27,7 +27,7 @@ if [[ -f "$cache_file" ]] && [[ "$force_check" != true ]]; then
 fi
 
 original_pwd="$PWD"
-repos=("$HOME/Projects/dotfiles" "$HOME/shelltape")
+repos=("$HOME/dotfiles" "$HOME/shelltape")
 has_issues=false
 
 for repo in "${repos[@]}"; do
