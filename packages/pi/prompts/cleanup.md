@@ -1,5 +1,5 @@
 ---
-description: Perform a cleanup pass on the code base
+description: Perform a cleanup pass on the codebase
 ---
 Perform a cleanup pass on the codebase. Do not change any logic or behavior — this is a refactoring-only pass.
 
