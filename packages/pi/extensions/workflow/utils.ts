@@ -1,9 +1,9 @@
 /**
- * Pure utility functions for plan mode.
+ * Pure utility functions for the workflow extension.
  * Extracted for testability.
  */
 
-// Destructive commands blocked in plan mode
+// Destructive commands blocked in think/plan mode
 const DESTRUCTIVE_PATTERNS = [
 	/\brm\b/i,
 	/\brmdir\b/i,
@@ -43,7 +43,7 @@ const DESTRUCTIVE_PATTERNS = [
 	/\b(vim?|nano|emacs|code|subl)\b/i,
 ];
 
-// Safe read-only commands allowed in plan mode
+// Safe read-only commands allowed in think/plan mode
 const SAFE_PATTERNS = [
 	/^\s*cat\b/,
 	/^\s*head\b/,
@@ -121,7 +121,7 @@ export function isSafeCommand(command: string): boolean {
 	return !isDestructive && isSafe;
 }
 
-export type TodoStatus = "pending" | "in_progress" | "completed";
+export type TodoStatus = "pending" | "in_progress" | "completed" | "blocked";
 
 export interface TodoItem {
 	step: number;
@@ -171,5 +171,3 @@ export function extractTodoItems(message: string): TodoItem[] {
 	}
 	return items;
 }
-
-
