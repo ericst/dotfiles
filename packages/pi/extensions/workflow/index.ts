@@ -346,7 +346,7 @@ export default function workflowExtension(pi: ExtensionAPI): void {
 	});
 
 	// ── Shortcuts ──────────────────────────────────────────────────────────────
-	pi.registerShortcut(Key.ctrlAlt("j"), {
+	pi.registerShortcut(Key.alt("j"), {
 		description: "Enter think mode",
 		handler: async (ctx) => {
 			abortExecution();
@@ -354,7 +354,7 @@ export default function workflowExtension(pi: ExtensionAPI): void {
 		},
 	});
 
-	pi.registerShortcut(Key.ctrlAlt("k"), {
+	pi.registerShortcut(Key.alt("k"), {
 		description: "Enter plan mode",
 		handler: async (ctx) => {
 			abortExecution();
@@ -362,7 +362,7 @@ export default function workflowExtension(pi: ExtensionAPI): void {
 		},
 	});
 
-	pi.registerShortcut(Key.ctrlAlt("l"), {
+	pi.registerShortcut(Key.alt("l"), {
 		description: "Enter execute mode",
 		handler: async (ctx) => {
 			if (todoItems.length === 0) {
@@ -373,7 +373,7 @@ export default function workflowExtension(pi: ExtensionAPI): void {
 		},
 	});
 
-	pi.registerShortcut(Key.ctrlAlt("h"), {
+	pi.registerShortcut(Key.alt("h"), {
 		description: "Enter full mode",
 		handler: async (ctx) => {
 			abortExecution();

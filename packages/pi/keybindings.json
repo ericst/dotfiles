@@ -1,14 +1,10 @@
 {
-  "tui.editor.cursorUp": ["up", "alt+k"],
-  "tui.editor.cursorDown": ["down", "alt+j"],
-  "tui.editor.cursorLeft": ["left", "alt+h"],
-  "tui.editor.cursorRight": ["right", "alt+l"],
+  "tui.editor.cursorUp": "up",
+  "tui.editor.cursorDown": "down",
+  "tui.editor.cursorLeft": "left",
+  "tui.editor.cursorRight": "right",
   "tui.editor.cursorWordLeft": ["alt+left", "alt+b"],
   "tui.editor.cursorWordRight": ["alt+right", "alt+w"],
-  "app.editor.external": ["ctrl+e"],
-  "app.clear": ["ctrl+q"],
-  "app.exit": ["ctrl+c"],
-  "tui.input.newLine": ["enter"],
-  "tui.input.submit": ["ctrl+enter"]
+  "app.editor.external": ["ctrl+e"]
 }
 
