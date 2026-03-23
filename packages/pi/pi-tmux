@@ -1,0 +1,9 @@
+# Auto-launch pi inside tmux if not already running in one
+
+pi() {
+    if [ -n "$TMUX" ]; then
+        command pi "$@"
+    else
+        exec tmux new-session -A -s pi "pi $*; read -p 'Done. Press Enter...'"
+    fi
+}

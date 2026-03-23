@@ -381,6 +381,16 @@ export default function workflowExtension(pi: ExtensionAPI): void {
 		},
 	});
 
+	pi.registerShortcut(Key.esc, {
+		description: "Abort execution and return to plan mode",
+		handler: async (ctx) => {
+			if (currentMode !== "execute") return;
+			abortExecution();
+			setMode("plan", ctx);
+			ctx.ui.notify("Execution aborted");
+		},
+	});
+
 	// ── Flags ──────────────────────────────────────────────────────────────────
 	pi.registerFlag("think-mode", {
 		description: "Start in think mode",
@@ -556,16 +566,22 @@ Do NOT attempt to make any changes — only describe what you would do.`,
 		const wasQuestionnaire = lastToolName === "questionnaire";
 		lastToolName = undefined;
 
-		// Check if all steps completed
+		// Check if all steps completed or all remaining steps are blocked
 		const allDone = todoItems.every((t) => t.status === "completed");
-		if (allDone) {
+		const remaining = todoItems.filter((t) => t.status !== "completed");
+		const allRemainingBlocked = remaining.length > 0 && remaining.every((t) => t.status === "blocked");
+		if (allDone || allRemainingBlocked) {
 			const completedList = todoItems.map((t) => `✓ ${t.text}`).join("\n");
+			const blockedList = remaining.filter((t) => t.status === "blocked").map((t) => `⚠ ${t.text}`).join("\n");
+			const message = allDone
+				? `**Plan Complete!** ✓\n\n${completedList}`
+				: `**Execution Blocked** ⚠\n\n${completedList}\n\n${blockedList}\n\nAll remaining steps are blocked.`;
 			pi.sendMessage(
-				{ customType: "workflow-complete", content: `**Plan Complete!** ✓\n\n${completedList}`, display: true },
+				{ customType: allDone ? "workflow-complete" : "workflow-blocked", content: message, display: true },
 				{ triggerTurn: false }
 			);
 			setMode("plan", ctx);
-			ctx.ui.notify("Plan execution complete!");
+			ctx.ui.notify(allDone ? "Plan execution complete!" : "Execution blocked — all remaining steps need human input");
 			return;
 		}
 
