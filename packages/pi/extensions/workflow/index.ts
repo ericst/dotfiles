@@ -26,7 +26,7 @@ import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-age
 import { Key, Text } from "@mariozechner/pi-tui";
 import { Type } from "@sinclair/typebox";
 import { extractTodoItems, isSafeCommand, type TodoItem } from "./utils.js";
-import { setStatus, setTodoWidget, clearTodoWidget, type WorkflowMode } from "../status.js";
+import { setStatus, type WorkflowMode } from "../status.js";
 
 // Tool sets per mode (think and plan share the same read-only set)
 const READ_ONLY_TOOLS = ["read", "bash", "grep", "find", "ls", "questionnaire", "websearch", "webfetch"];
@@ -38,6 +38,42 @@ const BUDGET_BUFFER = 2;
 
 /** Key used when persisting workflow state to the session entry store. */
 const PERSIST_KEY = "workflow";
+
+/** Widget key used for the todo list panel during execute mode. */
+const WIDGET_ID = "workflow-todos";
+
+/** Render the todo list as a widget panel. Pass an empty array to clear. */
+function setTodoWidget(todos: Array<{ step: number; text: string; status: string }>, ctx: ExtensionContext): void {
+	if (!ctx.hasUI) return;
+
+	if (todos.length === 0) {
+		ctx.ui.setWidget(WIDGET_ID, undefined);
+		return;
+	}
+
+	const theme = ctx.ui.theme;
+	const lines = todos.map((item) => {
+		if (item.status === "completed") {
+			return theme.fg("success", "☑ ") + theme.fg("muted", theme.strikethrough(item.text));
+		}
+		if (item.status === "in_progress") {
+			return theme.fg("accent", "▶ ") + theme.fg("text", item.text);
+		}
+		if (item.status === "blocked") {
+			return theme.fg("error", "⚠ ") + theme.fg("warning", item.text);
+		}
+		return `${theme.fg("dim", "☐ ")}${theme.fg("muted", item.text)}`;
+	});
+
+	ctx.ui.setWidget(WIDGET_ID, lines);
+}
+
+/** Remove the todo list widget panel. */
+function clearTodoWidget(ctx: ExtensionContext): void {
+	if (ctx.hasUI) {
+		ctx.ui.setWidget(WIDGET_ID, undefined);
+	}
+}
 
 /** Returns true when `m` is a fully-formed assistant message with a content array. */
 function isAssistantMessage(m: AgentMessage): m is AssistantMessage {

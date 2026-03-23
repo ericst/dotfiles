@@ -1,5 +1,5 @@
 ---
-description: Stages all uncommitted changes in the repository, inspects the diff, and produces a single well-formed Conventional Commit. Does not push. Does not modify any files outside of git staging.
+description: Stages all uncommitted changes and perform a commit. Does not push.
 ---
 
 Inspect the current state of the repository and produce a single, well-formed
