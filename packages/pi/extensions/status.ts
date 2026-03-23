@@ -1,17 +1,22 @@
 /**
  * Status Bar Extension
  *
- * Standalone helper module for the workflow extension's status bar.
- * Import the exported functions directly — no pi API needed at call sites.
+ * Standalone helper module shared by the workflow and sandbox extensions for
+ * status-bar management. Import the exported functions directly — no pi API
+ * needed at call sites.
  *
  * Usage:
  *   import { setStatus, clearStatus } from "./status.js";
+ *   import { setSandboxStatus } from "./status.js";
  */
 
 import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
 
 /** Status bar region key used for workflow mode display. */
 export const STATUS_REGION = "workflow-mode";
+
+/** Status bar region key for sandbox state (sorts after workflow-mode). */
+export const SANDBOX_STATUS_REGION = "workflow-sandbox";
 
 export type WorkflowMode = "think" | "plan" | "execute" | "full";
 
@@ -41,6 +46,27 @@ export function setStatus(mode: WorkflowMode, options: StatusOptions, ctx: Exten
 	} else if (mode === "full") {
 		ctx.ui.setStatus(STATUS_REGION, theme.fg("warning", "Full"));
 	}
+}
+
+/** Sandbox operating mode for the status bar. */
+export type SandboxStatusMode = "full" | "filesystem" | "disabled";
+
+/** Display labels for each sandbox mode. */
+export const SANDBOX_STATUS_LABELS: Record<SandboxStatusMode, string> = {
+	full: "Sandbox (fs + net)",
+	filesystem: "Sandbox (fs)",
+	disabled: "Sandbox (disabled)",
+};
+
+/**
+ * Set the sandbox status bar entry.
+ * Green for active modes (full, filesystem), red when disabled.
+ */
+export function setSandboxStatus(mode: SandboxStatusMode, ctx: ExtensionContext): void {
+	if (!ctx.hasUI) return;
+	const label = SANDBOX_STATUS_LABELS[mode];
+	const color = mode === "disabled" ? "error" : "success";
+	ctx.ui.setStatus(SANDBOX_STATUS_REGION, ctx.ui.theme.fg(color, label));
 }
 
 /**
