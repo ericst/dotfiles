@@ -1,0 +1,12 @@
+{
+  "name": "webtools",
+  "version": "1.0.0",
+  "description": "WebSearch and WebFetch tools for pi",
+  "type": "module",
+  "pi": {
+    "extensions": ["./index.ts"]
+  },
+  "dependencies": {
+    "turndown": "^7.2.0"
+  }
+}

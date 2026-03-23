@@ -22,9 +22,9 @@ import { Type } from "@sinclair/typebox";
 import { extractTodoItems, isSafeCommand, type TodoItem } from "./utils.js";
 
 // Tools
-const PLAN_MODE_TOOLS = ["read", "bash", "grep", "find", "ls", "questionnaire"];
-const NORMAL_MODE_TOOLS = ["read", "bash", "edit", "write"];
-const EXECUTION_MODE_TOOLS = ["read", "bash", "edit", "write", "plan_todo"];
+const PLAN_MODE_TOOLS = ["read", "bash", "grep", "find", "ls", "questionnaire", "websearch", "webfetch"];
+const NORMAL_MODE_TOOLS = ["read", "bash", "edit", "write", "websearch", "webfetch"];
+const EXECUTION_MODE_TOOLS = ["read", "bash", "edit", "write", "plan_todo", "websearch", "webfetch"];
 
 // Type guard for assistant messages
 function isAssistantMessage(m: AgentMessage): m is AssistantMessage {
@@ -45,10 +45,10 @@ export default function planModeExtension(pi: ExtensionAPI): void {
 	let todoItems: TodoItem[] = [];
 	let originalPlanText = "";
 
-	pi.registerFlag("plan", {
-		description: "Start in plan mode (default: on; pass --no-plan to disable)",
+	pi.registerFlag("no-plan", {
+		description: "Start without plan mode (plan mode is enabled by default)",
 		type: "boolean",
-		default: true,
+		default: false,
 	});
 
 	// plan_todo tool — available during execution mode only
@@ -273,7 +273,7 @@ export default function planModeExtension(pi: ExtensionAPI): void {
 You are in plan mode - a read-only exploration mode for safe code analysis.
 
 Restrictions:
-- You can only use: read, bash, grep, find, ls, questionnaire
+- You can only use: read, bash, grep, find, ls, questionnaire, websearch, webfetch
 - You CANNOT use: edit, write (file modifications are disabled)
 - Bash is restricted to an allowlist of read-only commands
 
@@ -452,16 +452,16 @@ Remember, one-step in_progress at the time.`;
 		originalPlanText = "";
 
 		if (forNewSession) {
-			// Brand-new session: honour the --plan flag (default: true)
-			if (pi.getFlag("plan") !== false) {
+			// Brand-new session: enable plan mode unless --no-plan is passed
+			if (!pi.getFlag("no-plan")) {
 				planModeEnabled = true;
 			}
 		} else {
 			// Process start or /resume: restore from persisted entries
 			const entries = ctx.sessionManager.getEntries();
 
-			// Apply --plan flag baseline before consulting persisted state
-			if (pi.getFlag("plan") !== false) {
+			// Apply --no-plan flag baseline before consulting persisted state
+			if (!pi.getFlag("no-plan")) {
 				planModeEnabled = true;
 			}
 
