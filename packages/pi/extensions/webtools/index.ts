@@ -7,10 +7,22 @@
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import { keyHint, keyText } from "@mariozechner/pi-coding-agent";
 import { Type } from "@sinclair/typebox";
 import { Text } from "@mariozechner/pi-tui";
 import { execFileSync } from "node:child_process";
 import TurndownService from "turndown";
+
+// Interfaces for tool details
+interface WebSearchDetails {
+  query: string;
+  resultCount: number;
+}
+
+interface WebFetchDetails {
+  url: string;
+  originalSizeBytes: number;
+}
 
 // SearXNG instance URL
 const SEARXNG_BASE = "https://searx.mars.ericst.ch";
@@ -76,23 +88,6 @@ function htmlToMarkdown(html: string): string {
     .trim();
   
   return markdown;
-}
-
-// Truncate text to a maximum size
-function truncateText(text: string, maxBytes: number = 40000): { text: string; truncated: boolean; originalSize: number } {
-  const encoder = new TextEncoder();
-  const originalSize = encoder.encode(text).length;
-
-  if (originalSize <= maxBytes) {
-    return { text, truncated: false, originalSize };
-  }
-
-  // Truncate and add indicator
-  return {
-    text: text.slice(0, maxBytes) + "\n\n... [Content truncated - original was " + Math.round(originalSize / 1024) + "KB]",
-    truncated: true,
-    originalSize,
-  };
 }
 
 export default function webtoolsExtension(pi: ExtensionAPI) {
@@ -204,6 +199,39 @@ export default function webtoolsExtension(pi: ExtensionAPI) {
         0,
       );
     },
+
+    renderResult(result, { expanded }, theme) {
+      const details = result.details as WebSearchDetails;
+
+      if (details.resultCount === 0) {
+        return new Text(theme.fg("dim", "No results found"), 0, 0);
+      }
+
+      // Collapsed view - summary only
+      if (!expanded) {
+        let text = theme.fg("success", `${details.resultCount} results`);
+        text += theme.fg("dim", ` for "${details.query}"`);
+        text += theme.fg("muted", ` (${keyText("app.tools.expand")} to expand)`);
+        return new Text(text, 0, 0);
+      }
+
+      // Expanded view - show ALL content
+      let text = theme.fg("success", `${details.resultCount} results`);
+      text += theme.fg("dim", ` for "${details.query}"`);
+
+      const content = result.content[0];
+      if (content?.type === "text") {
+        const lines = content.text.split("\n");
+        // Show ALL lines
+        for (const line of lines) {
+          text += `\n${theme.fg("dim", line)}`;
+        }
+        // Add hint to collapse
+        text += `\n${theme.fg("muted", `(${keyHint("app.tools.expand", "to collapse")})`)}`;
+      }
+
+      return new Text(text, 0, 0);
+    },
   });
 
   // Register WebFetch tool
@@ -249,14 +277,14 @@ export default function webtoolsExtension(pi: ExtensionAPI) {
         }
 
         const markdown = htmlToMarkdown(body);
-        const { text: truncatedMarkdown, truncated, originalSize } = truncateText(markdown);
+        const encoder = new TextEncoder();
+        const originalSizeBytes = encoder.encode(markdown).length;
 
         return {
-          content: [{ type: "text", text: truncatedMarkdown }],
+          content: [{ type: "text", text: markdown }],
           details: {
             url,
-            truncated,
-            originalSizeBytes: originalSize,
+            originalSizeBytes,
           },
         };
       } catch (error) {
@@ -272,6 +300,41 @@ export default function webtoolsExtension(pi: ExtensionAPI) {
         0,
         0,
       );
+    },
+
+    renderResult(result, { expanded }, theme) {
+      const details = result.details as WebFetchDetails;
+
+      // Format size
+      const sizeKB = Math.round(details.originalSizeBytes / 1024);
+      const sizeStr = sizeKB >= 1024
+        ? `${(sizeKB / 1024).toFixed(1)}MB`
+        : `${sizeKB}KB`;
+
+      // Collapsed view - summary only
+      if (!expanded) {
+        let text = theme.fg("success", "Fetched page");
+        text += theme.fg("dim", ` (${sizeStr})`);
+        text += theme.fg("muted", ` (${keyText("app.tools.expand")} to expand)`);
+        return new Text(text, 0, 0);
+      }
+
+      // Expanded view - show ALL content
+      let text = theme.fg("success", "Fetched page");
+      text += theme.fg("dim", ` (${sizeStr})`);
+
+      const content = result.content[0];
+      if (content?.type === "text") {
+        const lines = content.text.split("\n");
+        // Show ALL lines
+        for (const line of lines) {
+          text += `\n${theme.fg("dim", line)}`;
+        }
+        // Add hint to collapse
+        text += `\n${theme.fg("muted", `(${keyHint("app.tools.expand", "to collapse")})`)}`;
+      }
+
+      return new Text(text, 0, 0);
     },
   });
 }
