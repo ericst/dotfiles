@@ -4,6 +4,6 @@ pi() {
     if [ -n "$TMUX" ]; then
         command pi "$@"
     else
-        exec tmux new-session -A -s pi "pi $*; read -p 'Done. Press Enter...'"
+        tmux new-session -A -s pi "pi $*; read -p 'Done. Press Enter...'"
     fi
 }
