@@ -46,21 +46,11 @@ fi
 
 unset GHOSTTY_CACHE_DIR GHOSTTY_RESOURCES_CACHE
 
-# Source global definitions
+
+# Source global definitions first
 if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
-
-# Add some bin folders for my dotfiles
-if ! [[ "$PATH" =~ $HOME/shelltape/bin/ ]]; then
-    PATH="$HOME/shelltape/bin/:$PATH"
-fi
-
-if ! [[ "$PATH" =~ $HOME/.local/bin:$HOME/bin ]]; then
-    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
-fi
-
-export PATH
 
 
 # Most of this is taken from the article titled [[https://sanctum.geek.nz/arabesque/better-bash-history/][Better Bash History]].
@@ -89,7 +79,6 @@ HISTTIMEFORMAT='%F %T '
 # This is to make sure I don't loose history. It forces bash to write each
 # command to the history file immediately.
 PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
-
 
 
 # Now we only need to make a small alias to search easily into the history.
@@ -241,6 +230,54 @@ _build_ps1() {
 PROMPT_COMMAND="_build_ps1${PROMPT_COMMAND:+; ${PROMPT_COMMAND}}"
 
 
+# Rebuild PATH with correct ordering after system initialization.
+# Ensures /usr/local/* comes before /usr/*, removes all duplicates (including
+# trailing-slash variants), and keeps any extra dirs (e.g. shelltape/bin).
+#
+# Root cause of old bug: `for dir in $PATH` with default IFS never splits on
+# colons, so $PATH was treated as one big word and re-appended wholesale.
+# Fix: set IFS=: when iterating, and use a three-pass strategy.
+rebuild_path() {
+    local new_path="" seen="" dir
+
+    # Append dir to new_path only if it exists on disk and hasn't been seen yet.
+    # Strips trailing slashes before comparing so /foo/ and /foo are treated equal.
+    _path_add() {
+        local d="${1%/}"                              # normalize trailing slash
+        [ -d "$d" ] || return                         # skip non-existent dirs
+        [[ ":$seen:" == *":$d:"* ]] && return         # skip duplicates
+        new_path="${new_path:+$new_path:}$d"
+        seen="${seen:+$seen:}$d"
+    }
+
+    # Pass 1 — user home dirs first, preserving their original relative order
+    local IFS=:
+    for dir in $PATH; do
+        dir="${dir%/}"
+        [[ "$dir" == "$HOME"* ]] && _path_add "$dir"
+    done
+
+    # Pass 2 — known system dirs in explicit priority order
+    _path_add /usr/local/sbin
+    _path_add /usr/local/bin
+    _path_add /usr/sbin
+    _path_add /usr/bin
+    _path_add /usr/lib64/ccache
+    _path_add /sbin
+    _path_add /bin
+
+    # Pass 3 — anything else not yet captured (custom tools, future additions)
+    for dir in $PATH; do
+        _path_add "$dir"
+    done
+
+    PATH="$new_path"
+    unset -f _path_add
+}
+rebuild_path
+export PATH
+
+
 # Source everything into a ~/.bashrc.d.
 # TODO move configuration there, to make it nicer
 if [ -d ~/.bashrc.d ]; then
@@ -251,7 +288,6 @@ if [ -d ~/.bashrc.d ]; then
     done
 fi
 unset rc
-
 
 
 # References:
