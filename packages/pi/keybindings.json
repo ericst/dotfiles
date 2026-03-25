@@ -5,6 +5,7 @@
   "tui.editor.cursorRight": "right",
   "tui.editor.cursorWordLeft": ["alt+left", "alt+b"],
   "tui.editor.cursorWordRight": ["alt+right", "alt+w"],
-  "app.editor.external": ["ctrl+e"]
+  "app.editor.external": ["ctrl+e"],
+  "app.interrupt": ["ctrl+q", "escape"]
 }
 

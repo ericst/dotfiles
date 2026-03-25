@@ -132,6 +132,8 @@ export default function modelsExtension(pi: ExtensionAPI) {
 		const success = await pi.setModel(model);
 		if (!success) {
 			ctx.ui.notify(`No API key for ${model.provider}/${model.id}`, "error");
+		} else {
+			ctx.ui.notify(`Model: ${model.id}`);
 		}
 	}
 

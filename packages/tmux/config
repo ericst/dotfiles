@@ -64,6 +64,11 @@ set -g extended-keys-format csi-u
 # Enable true color (RGB) for xterm-compatible terminals (Ghostty uses xterm-256color)
 set -as terminal-overrides ',xterm-256color:RGB'
 
+# Set escape-time to 25ms for responsive Esc and Alt key handling
+# This fixes issues where Esc and Alt+key combinations are delayed or require
+# additional keypresses to register in nested terminal environments (tmux inside ghostty)
+set -g escape-time 25
+
 # Set history limit
 set -g history-limit 100000
 

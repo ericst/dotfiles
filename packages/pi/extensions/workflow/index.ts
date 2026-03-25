@@ -12,7 +12,6 @@
  * - Startup flags: --think-mode, --plan-mode, --full-mode
  * - step tool (replaces plan_todo) for tracking progress
  * - Dynamic relaunch budget (remaining incomplete steps + 2)
- * - Questionnaire answer resets budget
  * - Context injection before each agent turn
  * - Context filtering on mode transitions
  * - Session persistence
@@ -29,7 +28,7 @@ import { extractTodoItems, isSafeCommand, type TodoItem } from "./utils.js";
 import { setStatus, type WorkflowMode } from "../status.js";
 
 // Tool sets per mode (think and plan share the same read-only set)
-const READ_ONLY_TOOLS = ["read", "bash", "grep", "find", "ls", "questionnaire", "websearch", "webfetch"];
+const READ_ONLY_TOOLS = ["read", "bash", "grep", "find", "ls",  "websearch", "webfetch"];
 const EXECUTE_TOOLS = ["read", "bash", "edit", "write", "step", "websearch", "webfetch"];
 const FULL_TOOLS = ["read", "bash", "edit", "write", "websearch", "webfetch"];
 
@@ -90,7 +89,7 @@ function getTextContent(message: AssistantMessage): string {
 
 export default function workflowExtension(pi: ExtensionAPI): void {
 	// ── State ─────────────────────────────────────────────────────────────────
-	let currentMode: WorkflowMode = "plan";
+	let currentMode: WorkflowMode = "think";
 	let todoItems: TodoItem[] = [];
 	let relaunchBudget = 0;
 	let originalPlanText = "";
@@ -369,6 +368,7 @@ export default function workflowExtension(pi: ExtensionAPI): void {
 				ctx.ui.notify("No plan found. Create a plan first in plan mode.", "warning");
 				return;
 			}
+			setMode("execute", ctx);
 			startExecution(ctx);
 		},
 	});
@@ -381,15 +381,6 @@ export default function workflowExtension(pi: ExtensionAPI): void {
 		},
 	});
 
-	pi.registerShortcut(Key.esc, {
-		description: "Abort execution and return to plan mode",
-		handler: async (ctx) => {
-			if (currentMode !== "execute") return;
-			abortExecution();
-			setMode("plan", ctx);
-			ctx.ui.notify("Execution aborted");
-		},
-	});
 
 	// ── Flags ──────────────────────────────────────────────────────────────────
 	pi.registerFlag("think-mode", {
@@ -398,11 +389,9 @@ export default function workflowExtension(pi: ExtensionAPI): void {
 		default: false,
 	});
 
-	// plan-mode is the default; this flag is registered for discoverability and
-	// symmetry with --think-mode / --full-mode, but getFlag("plan-mode") is never
-	// checked — plan is simply the fallback when neither other flag is set.
+	// plan-mode flag is registered for discoverability and symmetry with --think-mode / --full-mode.
 	pi.registerFlag("plan-mode", {
-		description: "Start in plan mode (default when no other mode flag is given)",
+		description: "Start in plan mode",
 		type: "boolean",
 		default: false,
 	});
@@ -438,13 +427,14 @@ export default function workflowExtension(pi: ExtensionAPI): void {
 					customType: "workflow-think-context",
 					content: `You are in think mode — a free-form space to help the user clarify their ideas before committing to a plan.
 
-**Your training knowledge has a cutoff date and may be wrong or outdated. Before forming any opinion on a technology, library, architecture, or approach — gather evidence first. Inspect the codebase with read, bash, grep, find, ls. Check system tool behaviour with man, apropos, and --help. Use websearch and webfetch to ground your reasoning in current docs, benchmarks, changelogs, or prior art. Do not rely on what you already know if any of these can verify it.**
+**Inspect the codebase with read, bash, grep, find, ls. Check system tool behaviour with man, apropos, and --help. Use websearch and webfetch to ground your reasoning in current docs, benchmarks, changelogs, or prior art. Do not rely on what you already know if any of these can't verify it.**
 
+- You can only use: read, bash, grep, find, ls,  websearch, webfetch
 - Ask questions, surface assumptions, explore trade-offs
 - Be direct and assertive — if an idea is flawed, say so and explain why; do not validate ideas just to be agreeable
 - Push back when something doesn't make sense
-- Use the questionnaire tool for structured input
-- Do NOT produce a numbered plan under a \`Plan:\` header — that comes in plan mode`,
+- Do NOT produce a numbered plan that comes in plan mode
+- Do NOT try to modify files, you can't. All write and edit tools are disabled.`,
 					display: false,
 				},
 			};
@@ -456,16 +446,29 @@ export default function workflowExtension(pi: ExtensionAPI): void {
 					customType: "workflow-plan-context",
 					content: `You are in plan mode — read-only exploration for safe code analysis.
 
-**Your training knowledge has a cutoff date and may be wrong or outdated. Before writing any step that depends on a library, API, or tool — gather evidence first. Inspect the codebase with read, bash, grep, find, ls. Check system tool behaviour with man, apropos, and --help. Use websearch and webfetch to verify current docs, correct version numbers, and actual API signatures. A plan built on stale assumptions will fail at execution time.**
+**CRITICAL: You are in a SAFE, READ-ONLY environment. File modifications are DISABLED. Your plan must be executable in execute mode with ONLY the tools available there.**
 
-- You can only use: read, bash, grep, find, ls, questionnaire, websearch, webfetch
-- Do NOT use edit or write — file modifications are disabled
-- Bash is restricted to an allowlist of read-only commands
-  - Use \`gawk --sandbox\` instead of \`awk\` (disables file writes and system() at runtime)
-  - Use the \`read\` tool instead of vim, nano, emacs, or code
-- Use the questionnaire tool to ask clarifying questions
+**Before writing any step that depends on a library, API, or tool — gather evidence first:**
+- Inspect the codebase with read, grep, find, ls
+- Check system tool behaviour with man, apropos, --help
+- Use websearch and webfetch to verify current docs, correct versions, and API signatures
+- A plan built on stale assumptions will FAIL at execution time
 
-Produce a detailed numbered plan under a \`Plan:\` header using exactly this format:
+**AVAILABLE TOOLS (read-only only):**
+- read, grep, find, ls, websearch, webfetch
+- bash (RESTRICTED — see below)
+
+**DISABLED TOOLS (will cause errors):**
+- edit, write — file modifications are NOT allowed in plan mode
+
+**BASH COMMAND RESTRICTIONS (enforced by system):**
+- Only allowlisted read-only commands are permitted
+- Use \`gawk --sandbox\` instead of \`awk\` (disables file writes and system())
+- Use the \`read\` tool instead of vim, nano, emacs, or code
+- Commands like \`rm\`, \`mv\`, \`cp\` (without --no-clobber), \`chmod\` etc. will be BLOCKED by the bash guard
+
+**REQUIRED OUTPUT:**
+Once you have gathered all necessary information, produce a detailed numbered plan under a \`Plan:\` header:
 
 \`\`\`
 Plan:
@@ -474,12 +477,17 @@ Plan:
 3. Third step description
 \`\`\`
 
-Do NOT attempt to make any changes — only describe what you would do.`,
+**RULES:**
+- Do NOT attempt to make any changes — only describe what you would do
+- Do NOT include information gathering steps in the plan
+- Do NOT reference tools that won't be available in execute mode
+- Ensure all steps use ONLY the tools listed above
+- If anything is unclear, ask clarifying questions BEFORE producing the plan
+- Do NOT make assumptions about file contents, API signatures, or tool behavior`,
 					display: false,
 				},
 			};
 		}
-
 		if (currentMode === "execute") {
 			const statusIcon = (t: TodoItem) => {
 				if (t.status === "completed") return "✓ completed";
@@ -494,19 +502,32 @@ Do NOT attempt to make any changes — only describe what you would do.`,
 			return {
 				message: {
 					customType: "workflow-execute-context",
-					content: "You are executing the plan. Full tool access is enabled.\n\n" +
-						"Use the `step` tool to track progress:\n" +
-						"- Call `step({ id, status: \"in_progress\" })` when you start a step\n" +
-						"- Call `step({ id, status: \"completed\" })` when you finish a step\n" +
-						"- Only one step may be in_progress at a time\n\n" +
-						"If you are blocked and need human input:\n" +
-						"1. Use the questionnaire tool to ask your question\n" +
-						"2. Call `step({ id, status: \"blocked\" })` on the current step\n" +
-						"3. Stop — do not proceed further\n\n" +
-						"Work through steps in order. Do not skip steps.\n\n" +
-						"Original plan:\n" + (originalPlanText || "(no original plan text)") + "\n\n" +
-						"Current step statuses:\n" + allSteps + "\n\n" +
-						"Next step: " + nextStep,
+					content: `You are executing the plan. Full tool access is enabled.
+
+Use the \`step\` tool to track progress:
+- Call \`step({ id, status: "in_progress" })\` when you start a step
+- Call \`step({ id, status: "completed" })\` when you finish a step
+- Only one step may be in_progress at a time
+
+If you are blocked and need human input:
+2. CALL \`step({ id, status: "blocked" })\` on the current step
+3. STOP — do not proceed further
+
+Work through steps in order. Do not skip steps.
+
+Original plan:
+${originalPlanText || "(no original plan text)"}
+
+Current step statuses:
+${allSteps}
+
+Next step: ${nextStep}
+
+Do NOT forget to use the \`step\` tool to track progress:
+- Call \`step({ id, status: "in_progress" })\` BEFORE you start a step
+- Call \`step({ id, status: "completed" })\` AFTER you finish a step
+- Only one step may be in_progress at a time
+- Execute the steps in order unless something prevents you to do so`,
 					display: false,
 				},
 			};
@@ -538,13 +559,6 @@ Do NOT attempt to make any changes — only describe what you would do.`,
 		});
 	}
 
-	// Track last tool used (updated via tool_result event)
-	let lastToolName: string | undefined;
-
-	pi.on("tool_result", async (event) => {
-		lastToolName = event.toolName;
-	});
-
 	// ── agent_end Handler ──────────────────────────────────────────────────────
 	pi.on("agent_end", async (event, ctx) => {
 		// In plan mode: extract todos from the last assistant message
@@ -562,9 +576,6 @@ Do NOT attempt to make any changes — only describe what you would do.`,
 
 		// Only handle relaunch logic in execute mode
 		if (currentMode !== "execute") return;
-
-		const wasQuestionnaire = lastToolName === "questionnaire";
-		lastToolName = undefined;
 
 		// Check if all steps completed or all remaining steps are blocked
 		const allDone = todoItems.every((t) => t.status === "completed");
@@ -585,26 +596,16 @@ Do NOT attempt to make any changes — only describe what you would do.`,
 			return;
 		}
 
-		// Check for blocked step (questionnaire was called)
-		if (wasQuestionnaire) {
-			// Wait for user input - do not relaunch
-			const blockedStep = todoItems.find((t) => t.status === "blocked");
-			if (blockedStep) {
-				ctx.ui.notify(`Waiting for input on step ${blockedStep.step}...`, "info");
-			}
-			return;
-		}
-
-		// Recalculate budget
-		relaunchBudget = calculateBudget();
+		// Consume one relaunch slot
+		relaunchBudget--;
 
 		// Check if we can relaunch
-		if (relaunchBudget > 0) {
+		if (relaunchBudget >= 0) {
 			const remaining = todoItems.filter((t) => t.status !== "completed");
 			pi.sendMessage(
 				{
 					customType: "workflow-relaunch",
-					content: `Continue executing the plan. Relaunch budget: ${relaunchBudget}.\n\nCurrent status:\n${todoItems.map((t) => `${t.step}. [${t.status === "completed" ? "✓" : t.status === "in_progress" ? "→" : " "}] ${t.text}`).join("\n")}\n\n${remaining.length} step(s) remaining.`,
+					content: `Continue executing the plan.\n\nRemaining relaunches: ${relaunchBudget} (this turn uses 1 slot).\n\n${remaining.length} step(s) remaining.\n\nIf blocked: mark the step blocked with \`step({ id, status: "blocked" })\`, and stop working.`,
 					display: true,
 				},
 				{ triggerTurn: true }
@@ -630,7 +631,6 @@ Do NOT attempt to make any changes — only describe what you would do.`,
 	pi.on("input", async (event, ctx) => {
 		if (event.source !== "interactive") return;
 		if (currentMode !== "execute") return;
-		if (lastToolName !== "questionnaire") return;
 
 		// Recalculate budget
 		relaunchBudget = calculateBudget();
@@ -663,13 +663,15 @@ Do NOT attempt to make any changes — only describe what you would do.`,
 		originalPlanText = "";
 		frozenTodoList = false;
 
-		// Startup flags set the baseline mode; plan is the default.
+		// Startup flags set the baseline mode; think is the default.
 		if (pi.getFlag("think-mode")) {
 			currentMode = "think";
 		} else if (pi.getFlag("full-mode")) {
 			currentMode = "full";
-		} else {
+		} else if (pi.getFlag("plan-mode")) {
 			currentMode = "plan";
+		} else {
+			currentMode = "think";
 		}
 
 		if (!forNewSession) {
