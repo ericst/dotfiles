@@ -492,7 +492,13 @@ function createSandboxedBashOps(
 
 export default function (pi: ExtensionAPI) {
 	pi.registerFlag("no-sandbox", {
-		description: "Disable OS-level sandboxing for bash commands",
+		description: "Disable all OS-level sandboxing for bash commands (filesystem + network isolation)",
+		type: "boolean",
+		default: false,
+	});
+
+	pi.registerFlag("no-net-sandbox", {
+		description: "Disable network isolation while keeping filesystem sandbox active",
 		type: "boolean",
 		default: false,
 	});
@@ -565,11 +571,13 @@ export default function (pi: ExtensionAPI) {
 		if (noSandbox) {
 			sandboxEnabled = false;
 			setSandboxStatus("disabled", ctx);
-			ctx.ui.notify("Sandbox disabled via --no-sandbox", "warning");
+			ctx.ui.notify("Sandbox disabled via --no-sandbox (filesystem + network)", "warning");
 			return;
 		}
 
 		const config = loadConfig(ctx.cwd);
+
+		const noNetSandbox = pi.getFlag("no-net-sandbox") as boolean;
 
 		if (!config.enabled) {
 			sandboxEnabled = false;
@@ -597,7 +605,11 @@ export default function (pi: ExtensionAPI) {
 			ctx.ui.notify(`Sandbox warnings: ${deps.warnings.join(", ")}`, "warning");
 		}
 
-		if (config.networkEnabled !== false) {
+		if (noNetSandbox || config.networkEnabled === false) {
+			// Skip network initialization - filesystem sandbox remains active.
+			// When noNetSandbox is set, this is explicit (overrides config.networkEnabled).
+			// When config.networkEnabled is false, it's configured via sandbox.json.
+		} else {
 			try {
 				await SandboxManager.initialize(buildRuntimeConfig(config));
 				networkInitialized = true;
@@ -618,7 +630,8 @@ export default function (pi: ExtensionAPI) {
 		const sandboxMode: SandboxStatusMode = networkInitialized ? "full" : "filesystem";
 		setSandboxStatus(sandboxMode, ctx);
 		const modeLabel = networkInitialized ? "filesystem + network" : "filesystem only";
-		ctx.ui.notify(`Sandbox active (${modeLabel})`, "info");
+		const flagNote = noNetSandbox ? " (via --no-net-sandbox)" : "";
+		ctx.ui.notify(`Sandbox active (${modeLabel})${flagNote}`, "info");
 	});
 
 	pi.on("session_shutdown", async () => {

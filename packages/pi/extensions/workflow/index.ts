@@ -189,11 +189,39 @@ export default function workflowExtension(pi: ExtensionAPI): void {
 		// currentMode check already prevents it, but frozenTodoList adds a
 		// safety net for any future code path that may skip the mode check.
 		frozenTodoList = true;
+
+		// Build step list for the kick-off message
+		const statusIcon = (t: TodoItem) => {
+			if (t.status === "completed") return "✓ completed";
+			if (t.status === "in_progress") return "→ in_progress";
+			if (t.status === "blocked") return "⚠ blocked";
+			return "  pending";
+		};
+		const allSteps = todoItems.map((t) => `${t.step}. [${statusIcon(t)}] ${t.text}`).join("\n");
 		const first = todoItems[0];
+
 		pi.sendMessage(
 			{
 				customType: "workflow-execute-start",
-				content: `Execute the plan. Start with step 1: ${first.text}`,
+				content: `You are executing the plan. Full tool access is enabled.
+
+**CRITICAL: Use the \`step\` tool to track progress on EVERY step.**
+
+Track step progress:
+- Call \`step({ id, status: "in_progress" })\` **BEFORE** you start working on a step
+- Call \`step({ id, status: "completed" })\` **AFTER** you finish a step
+- Only **one** step may be \`in_progress\` at a time (the tool auto-resets others)
+- If blocked and human input is needed: call \`step({ id, status: "blocked" })\` and **STOP**
+
+Work through steps in order. Do not skip steps.
+
+Original plan:
+${originalPlanText || "(no original plan text)"}
+
+Step statuses:
+${allSteps}
+
+**Start with step 1:** ${first.text}`,
 				display: true,
 			},
 			{ triggerTurn: true },
