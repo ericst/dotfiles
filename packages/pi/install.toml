@@ -15,5 +15,9 @@ source = "pi-tmux"
 target = "~/.bashrc.d/pi-tmux"
 
 [[links]]
+source = "models.json"
+target = "~/.pi/agent/models.json"
+
+[[links]]
 source = "extensions"
 target = "~/.pi/agent/extensions"

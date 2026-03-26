@@ -17,6 +17,8 @@ const MODEL_PATTERNS = [
 	"minimax/MiniMax-M-latest",
 	"mistral/mistral-small-latest",
 	"mistral/devstral-medium-latest",
+	"local/qwen35-35b-a3b",
+	"zai/glm-5",
 ];
 
 export default function modelsExtension(pi: ExtensionAPI) {
