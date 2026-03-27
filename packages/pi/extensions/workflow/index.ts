@@ -177,10 +177,62 @@ export default function workflowExtension(pi: ExtensionAPI): void {
 	}
 
 	/**
+	 * Trigger plan generation with optional task context.
+	 * Called when entering plan mode via /plan command or Alt+K shortcut.
+	 */
+	function triggerPlanGeneration(task?: string): void {
+		const taskContext = task
+			? `${task}\n\n`
+			: "";
+
+		pi.sendMessage(
+			{
+				customType: "workflow-plan-trigger",
+				content: `We are switching to plan-mode:
+
+
+**AVAILABLE TOOLS (read-only only):**
+- read, grep, find, ls, websearch, webfetch
+- bash (RESTRICTED — see below)
+
+**DISABLED TOOLS (will cause errors):**
+- edit, write — file modifications are NOT allowed in plan mode
+
+**BASH COMMAND RESTRICTIONS (enforced by system):**
+- Only allowlisted read-only commands are permitted
+- Use \`gawk --sandbox\` instead of \`awk\` (disables file writes and system())
+- Use the \`read\` tool instead of vim, nano, emacs, or code
+- Commands like \`rm\`, \`mv\`, \`cp\` (without --no-clobber), \`chmod\` etc. will be BLOCKED by the bash guard
+
+Based on the conversation, produce a detailed numbered plan under a \`Plan:\` header:
+
+\`\`\`
+Plan:
+1. First step description
+2. Second step description
+3. Third step description
+\`\`\`
+
+Additional context:
+${taskContext}
+
+**RULES:**
+- Do NOT attempt to make any changes — only describe what you would do
+- Do NOT include information gathering steps in the plan
+- Do NOT reference tools that won't be available in execute mode
+- Ensure all steps use ONLY the tools listed above
+- Do NOT make assumptions about file contents, API signatures, or tool behavior`,
+				display: true,
+			},
+			{ triggerTurn: true },
+		);
+	}
+
+	/**
 	 * Freeze the todo list, set the relaunch budget, enter execute mode, and
 	 * send the kick-off message that triggers the first agent turn.
 	 */
-	function startExecution(ctx: ExtensionContext): void {
+	function startExecution(ctx: ExtensionContext, additionalContext?: string): void {
 		frozenTodoList = true;
 		relaunchBudget = calculateBudget();
 		setMode("execute", ctx);
@@ -199,11 +251,14 @@ export default function workflowExtension(pi: ExtensionAPI): void {
 		};
 		const allSteps = todoItems.map((t) => `${t.step}. [${statusIcon(t)}] ${t.text}`).join("\n");
 		const first = todoItems[0];
+		const contextSection = additionalContext
+			? `\n\n**Additional context:** ${additionalContext}\n`
+			: "";
 
 		pi.sendMessage(
 			{
 				customType: "workflow-execute-start",
-				content: `You are executing the plan. Full tool access is enabled.
+				content: `You are executing the plan. Full tool access is enabled.${contextSection}
 
 **CRITICAL: Use the \`step\` tool to track progress on EVERY step.**
 
@@ -343,23 +398,24 @@ ${allSteps}
 	});
 
 	pi.registerCommand("plan", {
-		description: "Enter plan mode (read-only, produce numbered plan)",
-		handler: async (_args, ctx) => {
+		description: "Enter plan mode and generate/refine a plan (usage: /plan [task description])",
+		handler: async (args, ctx) => {
 			abortExecution();
 			setMode("plan", ctx);
-			ctx.ui.notify("Plan mode — read-only exploration");
+			ctx.ui.notify("Plan mode — generating plan");
+			triggerPlanGeneration(args.trim() || undefined);
 		},
 	});
 
 	pi.registerCommand("execute", {
-		description: "Enter execute mode (run the plan)",
-		handler: async (_args, ctx) => {
+		description: "Enter execute mode and run the plan (usage: /execute [additional context])",
+		handler: async (args, ctx) => {
 			if (todoItems.length === 0) {
 				ctx.ui.notify("No plan found. Create a plan first in plan mode.", "warning");
 				return;
 			}
 			ctx.ui.notify(`Execute mode — ${todoItems.length} steps, ${calculateBudget()} relaunches`);
-			startExecution(ctx);
+			startExecution(ctx, args.trim() || undefined);
 		},
 	});
 
@@ -382,10 +438,11 @@ ${allSteps}
 	});
 
 	pi.registerShortcut(Key.alt("k"), {
-		description: "Enter plan mode",
+		description: "Enter plan mode and trigger plan generation",
 		handler: async (ctx) => {
 			abortExecution();
 			setMode("plan", ctx);
+			triggerPlanGeneration();
 		},
 	});
 
@@ -396,7 +453,6 @@ ${allSteps}
 				ctx.ui.notify("No plan found. Create a plan first in plan mode.", "warning");
 				return;
 			}
-			setMode("execute", ctx);
 			startExecution(ctx);
 		},
 	});
@@ -476,7 +532,7 @@ ${allSteps}
 
 **CRITICAL: You are in a SAFE, READ-ONLY environment. File modifications are DISABLED. Your plan must be executable in execute mode with ONLY the tools available there.**
 
-**Before writing any step that depends on a library, API, or tool — gather evidence first:**
+**Before writing any step that depends on a library, API, or tool — gather evidence not already in context first:**
 - Inspect the codebase with read, grep, find, ls
 - Check system tool behaviour with man, apropos, --help
 - Use websearch and webfetch to verify current docs, correct versions, and API signatures
@@ -510,8 +566,8 @@ Plan:
 - Do NOT include information gathering steps in the plan
 - Do NOT reference tools that won't be available in execute mode
 - Ensure all steps use ONLY the tools listed above
-- If anything is unclear, ask clarifying questions BEFORE producing the plan
-- Do NOT make assumptions about file contents, API signatures, or tool behavior`,
+- Do NOT make assumptions about file contents, API signatures, or tool behavior
+- Proceed with the best plan you can from available information; if critical information is missing, state assumptions and continue`,
 					display: false,
 				},
 			};
