@@ -661,22 +661,22 @@ Do NOT forget to use the \`step\` tool to track progress:
 		// Only handle relaunch logic in execute mode
 		if (currentMode !== "execute") return;
 
-		// Check if all steps completed or all remaining steps are blocked
+		// Check if all steps completed
 		const allDone = todoItems.every((t) => t.status === "completed");
-		const remaining = todoItems.filter((t) => t.status !== "completed");
-		const allRemainingBlocked = remaining.length > 0 && remaining.every((t) => t.status === "blocked");
-		if (allDone || allRemainingBlocked) {
+		if (allDone) {
 			const completedList = todoItems.map((t) => `✓ ${t.text}`).join("\n");
-			const blockedList = remaining.filter((t) => t.status === "blocked").map((t) => `⚠ ${t.text}`).join("\n");
-			const message = allDone
-				? `**Plan Complete!** ✓\n\n${completedList}`
-				: `**Execution Blocked** ⚠\n\n${completedList}\n\n${blockedList}\n\nAll remaining steps are blocked.`;
 			pi.sendMessage(
-				{ customType: allDone ? "workflow-complete" : "workflow-blocked", content: message, display: true },
+				{ customType: "workflow-complete", content: `**Plan Complete!** ✓\n\n${completedList}`, display: true },
 				{ triggerTurn: false }
 			);
-			setMode("plan", ctx);
-			ctx.ui.notify(allDone ? "Plan execution complete!" : "Execution blocked — all remaining steps need human input");
+			setMode("think", ctx);
+			ctx.ui.notify("Plan execution complete!");
+			return;
+		}
+
+		// If any step is blocked, skip relaunch and stay in execute mode
+		const anyBlocked = todoItems.some((t) => t.status === "blocked");
+		if (anyBlocked) {
 			return;
 		}
 

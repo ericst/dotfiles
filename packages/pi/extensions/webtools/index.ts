@@ -1,9 +1,9 @@
 /**
- * WebTools Extension - WebSearch and WebFetch tools using SearXNG
+ * WebTools Extension - WebSearch and WebFetch tools using SearXNG and Crawl4AI
  *
  * Provides:
  * - WebSearch: Search the web via self-hosted SearXNG instance
- * - WebFetch: Fetch web pages and convert to markdown-like text
+ * - WebFetch: Fetch web pages via Crawl4AI and return markdown
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
@@ -11,7 +11,6 @@ import { keyHint, keyText } from "@mariozechner/pi-coding-agent";
 import { Type } from "@sinclair/typebox";
 import { Text } from "@mariozechner/pi-tui";
 import { execFileSync } from "node:child_process";
-import TurndownService from "turndown";
 
 // Interfaces for tool details
 interface WebSearchDetails {
@@ -26,68 +25,31 @@ interface WebFetchDetails {
 
 // SearXNG instance URL
 const SEARXNG_BASE = "https://searx.mars.ericst.ch";
-
-// Create Turndown instance with sensible defaults
-const turndownService = new TurndownService({
-  headingStyle: "atx",
-  codeBlockStyle: "fenced",
-  bulletListMarker: "-",
-  emDelimiter: "*",
-  strongDelimiter: "**",
-});
-
-// Add custom rule to remove scripts and styles
-turndownService.addRule("removeScripts", {
-  filter: ["script", "style", "noscript", "iframe", "svg", "math"],
-  replacement: () => "",
-});
-
-// Add custom rule to clean up empty elements
-turndownService.addRule("removeEmpty", {
-  filter: (node) => {
-    return node.nodeName === "DIV" && !node.textContent?.trim();
-  },
-  replacement: () => "",
-});
+// Crawl4AI instance URL
+const CRAWL4AI_BASE = "https://crawl4ai.mars.ericst.ch";
 
 // Helper to fetch using curl (handles self-signed certs easily)
-async function curlFetch(url: string, headers: Record<string, string> = {}): Promise<{ body: string; status: number }> {
+async function curlFetch(
+  url: string,
+  headers: Record<string, string> = {},
+  body?: string,
+): Promise<{ body: string; status: number }> {
   const args = ["-s", "-k", "-w", "\n%{http_code}"];
   for (const [k, v] of Object.entries(headers)) {
     args.push("-H", `${k}: ${v}`);
   }
+  if (body) {
+    args.push("-d", body);
+  }
   args.push(url);
   const output = execFileSync("curl", args, { encoding: "utf8" });
-  
+
   // Extract status code from last line
   const lines = output.trim().split("\n");
   const status = parseInt(lines.pop() || "000", 10);
-  const body = lines.join("\n");
-  
-  return { body, status };
-}
+  const responseBody = lines.join("\n");
 
-// Convert HTML to markdown using Turndown
-function htmlToMarkdown(html: string): string {
-  // Pre-process: remove scripts, styles, and other unwanted elements
-  let cleaned = html
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
-    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "")
-    .replace(/<noscript\b[^<]*(?:(?!<\/noscript>)<[^<]*)*<\/noscript>/gi, "")
-    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, "")
-    .replace(/<!--[\s\S]*?-->/g, ""); // Remove HTML comments
-  
-  // Convert to markdown
-  let markdown = turndownService.turndown(cleaned);
-  
-  // Clean up excessive whitespace
-  markdown = markdown
-    .replace(/\n{3,}/g, "\n\n")
-    .replace(/[ \t]+\n/g, "\n")
-    .replace(/\n[ \t]+/g, "\n")
-    .trim();
-  
-  return markdown;
+  return { body: responseBody, status };
 }
 
 export default function webtoolsExtension(pi: ExtensionAPI) {
@@ -255,28 +217,28 @@ export default function webtoolsExtension(pi: ExtensionAPI) {
       }
 
       try {
-        const { body, status } = await curlFetch(url, {
-          "Accept": "text/html,application/xhtml+xml",
-          "User-Agent": "Mozilla/5.0 (compatible; pi-coding-agent/1.0)",
-        });
+        // Call Crawl4AI /md endpoint
+        const { body, status } = await curlFetch(
+          `${CRAWL4AI_BASE}/md`,
+          { "Content-Type": "application/json" },
+          JSON.stringify({ url }),
+        );
 
         if (status !== 200) {
-          throw new Error(`HTTP ${status}`);
+          throw new Error(`Crawl4AI returned HTTP ${status}`);
         }
 
-        if (!body || body.trim().length === 0) {
-          throw new Error("Empty response");
+        const data = JSON.parse(body) as {
+          success: boolean;
+          markdown: string;
+          url?: string;
+        };
+
+        if (!data.success) {
+          throw new Error("Crawl4AI failed to process the page");
         }
 
-        // Determine content type from response (curl doesn't give us headers easily)
-        // Assume HTML if no content-type detection
-        const contentType = "text/html";
-
-        if (!contentType.includes("text/html")) {
-          throw new Error(`Cannot fetch non-HTML content: ${contentType}`);
-        }
-
-        const markdown = htmlToMarkdown(body);
+        const markdown = data.markdown || "";
         const encoder = new TextEncoder();
         const originalSizeBytes = encoder.encode(markdown).length;
 

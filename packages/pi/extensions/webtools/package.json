@@ -1,12 +1,9 @@
 {
   "name": "webtools",
   "version": "1.0.0",
-  "description": "WebSearch and WebFetch tools for pi",
+  "description": "WebSearch and WebFetch tools for pi using SearXNG and Crawl4AI",
   "type": "module",
   "pi": {
     "extensions": ["./index.ts"]
-  },
-  "dependencies": {
-    "turndown": "^7.2.0"
   }
 }
