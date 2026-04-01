@@ -27,6 +27,7 @@ shell-integration=none
 ###############################################################################
 keybind=clear
 keybind=ctrl+space>comma=reload_config
+keybind=ctrl+space>p=toggle_command_palette
 
 keybind=ctrl+space>h=goto_split:left
 keybind=ctrl+space>j=goto_split:down
