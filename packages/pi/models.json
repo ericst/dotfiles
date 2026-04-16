@@ -1,7 +1,7 @@
 {
   "providers": {
     "local": {
-      "baseUrl": "http://127.0.0.1:9100/v1",
+      "baseUrl": "http://[fd92:805d:3b44::8]:9100/v1",
       "api": "openai-completions",
       "apiKey": "not-needed",
       "models": [
@@ -10,6 +10,20 @@
           "name": "Qwen3.5 35B A3B (Local)",
           "reasoning": true,
           "contextWindow": 196608,
+          "maxTokens": 16384
+        },
+        {
+          "id": "gemma-4-26B-A4B",
+          "name": "Gemma 4 26B A4B (Local)",
+          "reasoning": true,
+          "contextWindow": 253000,
+          "maxTokens": 16384
+        },
+        {
+          "id": "gemma-4-31B",
+          "name": "Gemma 4 31B (Local)",
+          "reasoning": true,
+          "contextWindow": 200000,
           "maxTokens": 16384
         }
       ]
