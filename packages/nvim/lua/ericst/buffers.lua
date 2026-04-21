@@ -1,34 +1,48 @@
 -- Working with specialized buffers / files
 
 -- From my stint with emacs, I liked the *scratch* buffer. This creates one on the fly and switches to it.
-function ese_create_or_switch_scratch_buffer(bufname)
-  if vim.fn.bufexists(bufname) == 0 then
-    vim.cmd("new " .. bufname)
-    local ese_scratch_buf =  vim.api.nvim_get_current_buf()
+function ese_scratch()
+  -- Use 'nofile' to prevent disk interaction/swaps 
+  -- and use a fixed name so we don't create multiple "Untitled" buffers.
+  local bufname = "_scratch_"
+  local target_buf = vim.fn.bufnr(bufname)
 
-    vim.api.nvim_buf_set_option(ese_scratch_buf, "buftype", "nofile")   -- The buffer has now file associated to it
-    vim.api.nvim_buf_set_option(ese_scratch_buf, "swapfile", false)     -- No swapping
+  if target_buf == -1 then
+    vim.cmd("new " .. bufname)
+    local buf = vim.api.nvim_get_current_buf()
+    
+    -- Specialized scratch settings
+    vim.api.nvim_set_option_value("buftype", "nofile", { buf = buf })
+    vim.api.nvim_set_option_value("swapfile", false,   { buf = buf })
   else
-    vim.cmd("buffer " .. bufname) 
+    vim.api.nvim_set_current_buf(target_buf)
   end
 end
 
--- BufLeave 
-function ese_create_or_switch_autosave_buffer(filepath)
-  if vim.fn.bufexists(filepath) == 0 then
-    vim.cmd("edit " .. filepath)
-    local buf =  vim.api.nvim_get_current_buf()
+--- Executes a command and captures output into an ephemeral vertical split.
+-- @param cmd string|nil The command to run. If provided, will be used as pre-filled input.
+function ese_command(cmd)
+  local initial_text = cmd or ""
+  
+  vim.ui.input({ prompt = 'Command: ', default = initial_text }, function(input)
+    if input and input ~= "" then
+      -- 1. Create the vertical split/buffer
+      vim.cmd("enew")
+      local buf = vim.api.nvim_get_current_buf()
 
-    vim.api.nvim_buf_set_option(buf, "bufhidden", "hide") -- Do not show the buffer
-    vim.api.nvim_buf_set_option(buf, "buflisted", false) -- Do not allow to switch to it with bn.
+      -- 2. Set ephemeral properties (wipe on close, no swap, no file)
+      vim.bo[buf].buftype   = "nofile"
+      vim.bo[buf].bufhidden = "wipe"
+      vim.bo[buf].swapfile  = false
 
-    vim.api.nvim_create_autocmd( {"BufLeave"}, { 
-      buffer = buf,
-      command = "write"
-    })
-  else
-
-    vim.cmd("buffer " .. filepath) 
-  end
+      -- 3. Run command and populate lines
+      local result = vim.fn.systemlist(input)
+      if #result > 0 then
+        vim.api.nvim_buf_set_lines(buf, 0, -1, false, result)
+      else
+          vim.api.nvim_buf_set_lines(buf, 0, -1, false, {"[No output]"})
+      end
+    end
+  end)
 end
 
