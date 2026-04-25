@@ -15,9 +15,5 @@ source = "README.md"
 target = "~/.config/nvim/README.md"
 
 [[links]]
-source = "ctags"
-target = "~/.config/ctags"
-
-[[links]]
 source = "nvim.desktop"
 target = "~/.local/share/applications/nvim.desktop"

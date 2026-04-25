@@ -3,7 +3,7 @@ install_group "rpm-development-tools" "c-development" "development-tools"
 
 # Development tools
 install_dependencies git neovim nodejs nodejs-npm ruby-devel rubygem-bundler rubygem-sqlite3
-install_dependencies ctags cloc
+install_dependencies cloc
 
 # Documentation and manual pages
 install_dependencies man-db man-pages
@@ -22,4 +22,5 @@ install_dependencies task
 
 # fonts
 install_dependencies fontawesome-fonts-all fira-code-fonts
+
 

@@ -10,21 +10,4 @@ if ! [[ "$ZIG_STD_DIR" =~ ^/ ]]; then
     unset std_dir
 fi
 
-zigtags() {
-    local original_dir=$(pwd)
-    
-    # Use the ZIG_STD_DIR environment variable
-    if [ -n "$ZIG_STD_DIR" ] && [ -d "$ZIG_STD_DIR" ]; then
-        echo "Running ctags -R in $ZIG_STD_DIR"
-        cd "$ZIG_STD_DIR" && ctags -R
-        echo "ctags completed."
-    else
-        echo "Could not find Zig standard library directory."
-        echo "Make sure zig is installed and in your PATH."
-    fi
-    
-    # Return to original directory
-    cd "$original_dir"
-}
-
 # vim: set ft=bash:
