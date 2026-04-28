@@ -10,9 +10,6 @@ target = "~/.pi/agent/prompts"
 source = "APPEND_SYSTEM.md"
 target = "~/.pi/agent/APPEND_SYSTEM.md"
 
-[[links]]
-source = "pi-tmux"
-target = "~/.bashrc.d/pi-tmux"
 
 [[links]]
 source = "models.json"
