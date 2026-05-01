@@ -27,6 +27,8 @@ vim.keymap.set("v", ">", ">gv", { desc = "Indent right and reselect" })
 -- The first two are redundant with ]b and [b but are here for consistancy
 vim.keymap.set("n", "<Leader>bn", "<Cmd>bnext<CR>", { desc = "Next buffer" })
 vim.keymap.set("n", "<Leader>bp", "<Cmd>bprevious<CR>", { desc = "Previous buffer" })
+vim.keymap.set("n", "<Leader>]", "<Cmd>bnext<CR>", { desc = "Next buffer" })
+vim.keymap.set("n", "<Leader>[", "<Cmd>bprevious<CR>", { desc = "Previous buffer" })
 vim.keymap.set("n", "<Leader>bs", ese_scratch, { desc = "Open the *scratch* buffer" })
 
 -- Commands
