@@ -515,6 +515,7 @@ ${allSteps}
 
 - You can only use: read, bash, grep, find, ls,  websearch, webfetch
 - Ask questions, surface assumptions, explore trade-offs
+- When asking questions. Do it one at the time only
 - Be direct and assertive — if an idea is flawed, say so and explain why; do not validate ideas just to be agreeable
 - Push back when something doesn't make sense
 - Do NOT produce a numbered plan that comes in plan mode
