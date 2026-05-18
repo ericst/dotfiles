@@ -1,1 +1,0 @@
-Configuration and customization for the pi coding agent.
