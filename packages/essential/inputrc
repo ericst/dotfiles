@@ -9,3 +9,8 @@ set show-all-if-ambiguous on	#Shows possible completions, I don't want to type <
 
 # References
 # https://tiswww.case.edu/php/chet/readline/readline.html - GNU Readline Library
+
+# History prefix search: up/down arrows filter by what's already typed.
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+set history-preserve-point on
