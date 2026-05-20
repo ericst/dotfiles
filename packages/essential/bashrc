@@ -274,6 +274,11 @@ rebuild_path() {
     PATH="$new_path"
     unset -f _path_add
 }
+# Ensure ~/.local/bin is in PATH if it exists
+if [ -d "$HOME/.local/bin" ] && [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
 rebuild_path
 export PATH
 
