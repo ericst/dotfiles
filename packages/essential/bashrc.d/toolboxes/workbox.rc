@@ -20,6 +20,9 @@ install_dependencies pandoc rsync sqlite
 # General tools
 install_dependencies task 
 
+# PDF Tools
+install_dependencies ghostscript poppler-utils
+
 # fonts
 install_dependencies fontawesome-fonts-all fira-code-fonts
 
