@@ -19,30 +19,41 @@ function ese_scratch()
   end
 end
 
---- Executes a command and captures output into an ephemeral vertical split.
--- @param cmd string|nil The command to run. If provided, will be used as pre-filled input.
-function ese_command(cmd)
+--- Executes a command and captures its output in a reusable named buffer.
+-- @param cmd string|nil The command to run. If provided, it pre-fills the prompt.
+-- @param bufname string The name of the buffer that receives the output.
+function ese_command(cmd, bufname)
   local initial_text = cmd or ""
-  
+
   vim.ui.input({ prompt = 'Command: ', default = initial_text }, function(input)
-    if input and input ~= "" then
-      -- 1. Create the vertical split/buffer
-      vim.cmd("enew")
-      local buf = vim.api.nvim_get_current_buf()
-
-      -- 2. Set ephemeral properties (wipe on close, no swap, no file)
-      vim.bo[buf].buftype   = "nofile"
-      vim.bo[buf].bufhidden = "wipe"
-      vim.bo[buf].swapfile  = false
-
-      -- 3. Run command and populate lines
-      local result = vim.fn.systemlist(input)
-      if #result > 0 then
-        vim.api.nvim_buf_set_lines(buf, 0, -1, false, result)
-      else
-          vim.api.nvim_buf_set_lines(buf, 0, -1, false, {"[No output]"})
-      end
+    if not input or input == "" then
+      return
     end
+
+    local buf = vim.fn.bufnr(bufname)
+    if buf == -1 then
+      vim.cmd("enew")
+      buf = vim.api.nvim_get_current_buf()
+      vim.api.nvim_buf_set_name(buf, bufname)
+    else
+      vim.api.nvim_set_current_buf(buf)
+    end
+
+    -- Keep editable command output in memory without swaps or write prompts.
+    vim.bo[buf].buftype = "nofile"
+    vim.bo[buf].bufhidden = "hide"
+    vim.bo[buf].swapfile = false
+    vim.bo[buf].modifiable = true
+
+    local result = vim.fn.systemlist(input)
+    if #result > 0 then
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, result)
+    else
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "[No output]" })
+    end
+
+    -- Generated output itself is not an unsaved edit; user changes still are.
+    vim.bo[buf].modified = false
   end)
 end
 

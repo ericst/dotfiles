@@ -26,6 +26,10 @@ centralize them for me.
 - `b` -> List buffers (interactive)
 - `s` -> Open the *scratch* buffer
 - `j` -> Open global journal (~/journal.md)
+- `bc` -> Run a command in the reusable `*command*` buffer
+- `br` -> Run ripgrep in the reusable `*ripgrep*` buffer
+- `bf` -> List files in the reusable `*files*` buffer
+- `bl` -> List the directory in the reusable `*listing*` buffer
 
 ### Window management (`<leader>w`)
 - `s` -> Create horizontal split

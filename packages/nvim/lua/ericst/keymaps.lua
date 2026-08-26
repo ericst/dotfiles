@@ -33,10 +33,10 @@ vim.keymap.set("n", "<Leader>bs", ese_scratch, { desc = "Open the *scratch* buff
 
 -- Commands
 -- Open a buffer with commands reseult
-vim.keymap.set("n", "<Leader>bc", function() ese_command() end, { desc = "Run a command in a temp buffer" })
-vim.keymap.set("n", "<Leader>br", function() ese_command("rg --follow --vimgrep --smart-case ") end, { desc = "Quick view: ripgrep through files" })
-vim.keymap.set("n", "<Leader>bf", function() ese_command("rg --follow --files ") end, { desc = "Quick view: ripgrep files" })
-vim.keymap.set("n", "<Leader>bl", function() ese_command("ls -la ") end, { desc = "Quick view: directory listing" })
+vim.keymap.set("n", "<Leader>bc", function() ese_command(nil, "*command*") end, { desc = "Run a command in the command buffer" })
+vim.keymap.set("n", "<Leader>br", function() ese_command("rg --follow --vimgrep --smart-case ", "*ripgrep*") end, { desc = "Quick view: ripgrep through files" })
+vim.keymap.set("n", "<Leader>bf", function() ese_command("rg --follow --files ", "*files*") end, { desc = "Quick view: ripgrep files" })
+vim.keymap.set("n", "<Leader>bl", function() ese_command("ls -la ", "*listing*") end, { desc = "Quick view: directory listing" })
 
 
 -- Center screen when jumping
