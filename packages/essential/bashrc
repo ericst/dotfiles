@@ -1,52 +1,6 @@
 # Clearing bullshit set by others...
 PROMPT_COMMAND=""
 
-# Ghostty shell integration for Bash with full resources caching
-GHOSTTY_CACHE_DIR="$HOME/.cache/ghostty"
-GHOSTTY_RESOURCES_CACHE="$GHOSTTY_CACHE_DIR/resources-copy"
-
-if [ -n "${GHOSTTY_RESOURCES_DIR}" ]; then
-    # Create cache directory if it doesn't exist
-    if [ ! -d "$GHOSTTY_CACHE_DIR" ]; then
-        mkdir -p "$GHOSTTY_CACHE_DIR"
-    fi
-    
-    # Copy entire resources directory if source is newer or cache doesn't exist
-    if [ -d "$GHOSTTY_RESOURCES_DIR" ]; then
-        # Check if we need to update the cache
-        # We'll use a timestamp file to track when we last synced
-        GHOSTTY_SYNC_TIMESTAMP="$GHOSTTY_CACHE_DIR/last-resource-sync"
-        NEEDS_SYNC=false
-        
-        # Check if cache doesn't exist or if source is newer than our last sync
-        if [ ! -d "$GHOSTTY_RESOURCES_CACHE" ] || [ ! -f "$GHOSTTY_SYNC_TIMESTAMP" ]; then
-            NEEDS_SYNC=true
-        elif [ -n "$(find "$GHOSTTY_RESOURCES_DIR" -newer "$GHOSTTY_SYNC_TIMESTAMP" -print -quit 2>/dev/null)" ]; then
-            NEEDS_SYNC=true
-        fi
-        
-        if [ "$NEEDS_SYNC" = true ]; then
-            # Remove old cache and copy fresh
-            rm -rf "$GHOSTTY_RESOURCES_CACHE"
-            cp -r "$GHOSTTY_RESOURCES_DIR" "$GHOSTTY_RESOURCES_CACHE"
-            # Update sync timestamp
-            touch "$GHOSTTY_SYNC_TIMESTAMP"
-        fi
-    fi
-    
-    # Clean up variables
-    unset GHOSTTY_SYNC_TIMESTAMP NEEDS_SYNC
-fi
-
-# Source the cached integration script if it exists, using cached resources
-if [ -f "$GHOSTTY_RESOURCES_CACHE/shell-integration/bash/ghostty.bash" ]; then
-    export GHOSTTY_RESOURCES_DIR="$GHOSTTY_RESOURCES_CACHE"
-    builtin source "$GHOSTTY_RESOURCES_CACHE/shell-integration/bash/ghostty.bash"
-fi
-
-unset GHOSTTY_CACHE_DIR GHOSTTY_RESOURCES_CACHE
-
-
 # Source global definitions first
 if [ -f /etc/bashrc ]; then
     . /etc/bashrc
@@ -290,6 +244,28 @@ if [ -d ~/.bashrc.d ]; then
     done
 fi
 unset rc
+
+# Load Ghostty integration last so its hook runs after our prompt is built.
+# Use installed resources, including the host installation inside Distrobox.
+# Do not reuse the old cache: package timestamps cannot reliably refresh it.
+if [[ $- == *i* && ${TERM_PROGRAM:-} == ghostty ]]; then
+    for _ghostty_resources in \
+        "${GHOSTTY_RESOURCES_DIR:-}" \
+        /usr/local/share/ghostty \
+        /usr/share/ghostty \
+        /run/host/usr/local/share/ghostty \
+        /run/host/usr/share/ghostty; do
+        _ghostty_resources=${_ghostty_resources%/}
+        [[ -n $_ghostty_resources ]] || continue
+        [[ $_ghostty_resources == "$HOME/.cache/ghostty/resources-copy" ]] && continue
+        if [[ -r $_ghostty_resources/shell-integration/bash/ghostty.bash ]]; then
+            export GHOSTTY_RESOURCES_DIR="$_ghostty_resources"
+            builtin source "$_ghostty_resources/shell-integration/bash/ghostty.bash"
+            break
+        fi
+    done
+    unset _ghostty_resources
+fi
 
 
 # References:
