@@ -1,7 +1,7 @@
 ###############################################################################
 # Styling
 ###############################################################################
-theme=tokyonight_night
+theme=TokyoNight
 font-family="Agave Nerd Font"
 font-size=15
 cursor-style=block
