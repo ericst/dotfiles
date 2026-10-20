@@ -1,3 +1,8 @@
 [[links]]
 source = "taskrc"
 target = "~/.config/task/taskrc"
+
+[[links]]
+source = "bashrc.d"
+target = "~/.bashrc.d"
+recursive = true
