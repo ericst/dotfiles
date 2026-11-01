@@ -30,6 +30,10 @@ shopt -s cmdhist
 shopt -s lithist
 HISTTIMEFORMAT='%F %T '
 
+
+# Lastly, we want to be able to control history expansion.
+shopt -s histverify
+
 # This is to make sure I don't loose history. It forces bash to write each
 # command to the history file immediately.
 PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
