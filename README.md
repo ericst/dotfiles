@@ -21,7 +21,6 @@ All managed files and directories are installed as regular files and directories
 including `dot_config/nvim/lua/` and `dot_config/nvim/ftplugin/`. No symlink-backed
 configuration is needed.
 
-The `executable_` attribute installs the repository checker as an executable.
 The `private_` attributes preserve private permissions on `~/.local`,
 `~/.local/share`, and `~/.local/share/applications`. Shared directories are not
 marked `exact_`, so unrelated local files are left alone. `.chezmoiignore` keeps
@@ -76,7 +75,7 @@ are not sourced automatically.
 | `20-navigation.sh` | Directory completion, `mcd`, and `cdtmp` |
 | `30-aliases.sh` | Safety and general-purpose aliases |
 | `40-editor.sh` | Editor variables, aliases, and man pager |
-| `50-repository-check.sh` | Interactive repository-status check |
+| `50-repository-check.sh` | Interactive local chezmoi-status warning |
 | `60-containers.sh` | Distrobox `workbox` helper and Podman aliases |
 | `70-prompt.sh` | Git, jobs, container, and exit-status prompt |
 | `80-path.sh` | PATH ordering and deduplication |
@@ -90,8 +89,11 @@ are not sourced automatically.
 
 Toolbox's existing automatic software installation is deliberately retained.
 Sourcing Bash configuration inside a fresh Toolbox can therefore run `sudo dnf`
-and create `/.first_run`. The repository checker can fetch Git remotes and write
-its cache. Neither behavior runs merely from chezmoi applying the configuration.
+and create `/.first_run`. Interactive shells also check `chezmoi status` with a
+five-second timeout and warn about differences in managed files. This check skips
+external refreshes, does not fetch Git remotes or maintain a custom cache, and
+never applies changes. If chezmoi is unavailable, the check is skipped. Neither
+behavior runs merely from chezmoi applying the configuration.
 
 Name additional local modules so they sort before `zz-ghostty.sh` if Ghostty
 integration should remain last. Existing local modules are not removed.
