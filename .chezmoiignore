@@ -1,0 +1,5 @@
+# Repository documentation is not installed in the home directory.
+README.md
+LICENSE
+docs
+docs/**

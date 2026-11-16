@@ -1,1 +1,0 @@
-XCompose key bindings for the X compose key

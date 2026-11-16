@@ -1,1 +1,0 @@
-Claude Code and AI coding assistant configuration with guidelines and agent settings

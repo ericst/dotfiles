@@ -1,0 +1,15 @@
+# Confirm destructive operations and protect the filesystem root.
+alias rm='rm -I --preserve-root'
+alias mv='mv -i'
+alias cp='cp -i'
+alias ln='ln -i'
+alias chown='chown --preserve-root'
+alias chmod='chmod --preserve-root'
+alias chgrp='chgrp --preserve-root'
+
+alias grep='grep --color=auto'
+alias ps='ps auxf'
+alias psl='ps auxf | less'
+alias psg='ps aux | grep -v grep | \grep -i -e VSZ -e'
+alias mkdir='mkdir -pv'
+alias o='xdg-open'

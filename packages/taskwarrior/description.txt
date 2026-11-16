@@ -1,1 +1,0 @@
-Taskwarrior manages my TODO list from the command line. It is flexible, fast, and unobtrusive.

@@ -1,1 +1,0 @@
-Ghostty terminal emulator configuration with desktop entries for regular and workbox modes

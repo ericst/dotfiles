@@ -1,0 +1,16 @@
+# Reset inherited prompt hooks before loading system defaults.
+PROMPT_COMMAND=""
+
+if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
+fi
+
+# Load readable configuration files in filename order; skip subdirectories.
+if [ -d "$HOME/.bashrc.d" ]; then
+    for rc in "$HOME"/.bashrc.d/*; do
+        if [ -f "$rc" ] && [ -r "$rc" ]; then
+            . "$rc"
+        fi
+    done
+fi
+unset rc

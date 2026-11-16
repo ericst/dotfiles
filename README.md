@@ -1,155 +1,117 @@
 # ericst's dotfiles
 
-A Python-based dotfiles management system that creates symlinks from configuration files in this repository to their expected locations in your home directory.
+Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/), using its
+conventional source-state layout. There is no package-selection layer or custom
+installer.
 
-## Prerequisites
+## Layout
 
-- Python 3 (any recent version)
-- Unix-like system (Linux, macOS)
-- Write permissions to your home directory
-
-## Quick Start
-
-```bash
-# Install essential shell configuration
-./dotfiles.py essential
-
-# Install multiple packages
-./dotfiles.py git nvim essential
-
-# Force installation (overwrite existing files)
-./dotfiles.py -f essential
-
-# Get help
-./dotfiles.py -h
+```text
+dot_bashrc                         -> ~/.bashrc
+dot_bashrc.d/                      -> ~/.bashrc.d/
+dot_config/                       -> ~/.config/
+dot_gitconfig                     -> ~/.gitconfig
+dot_inputrc                       -> ~/.inputrc
+dot_XCompose                      -> ~/.XCompose
+dot_tmux.conf                     -> ~/.tmux.conf
+private_dot_local/                -> ~/.local/
 ```
 
-## Available Packages
+All managed files and directories are installed as regular files and directories,
+including `dot_config/nvim/lua/` and `dot_config/nvim/ftplugin/`. No symlink-backed
+configuration is needed.
 
-### `essential`
-Core shell configuration including:
-- **bashrc** - Enhanced bash configuration with better history, safety aliases, and navigation helpers
-- **inputrc** - Readline configuration for improved command-line editing
-- **bashrc.d/** - Modular bash configuration directory with toolbox support
+The `executable_` attribute installs the repository checker as an executable.
+The `private_` attributes preserve private permissions on `~/.local`,
+`~/.local/share`, and `~/.local/share/applications`. Shared directories are not
+marked `exact_`, so unrelated local files are left alone. `.chezmoiignore` keeps
+repository documentation out of the destination.
 
-### `git`
-Git configuration:
-- **gitconfig** - Global git settings and aliases
+## Preview and apply
 
-### `nvim`
-Neovim configuration with Lua:
-- **init.lua** - Main Neovim entry point
-- **lua/ericst/** - Custom Lua configuration modules
-- **snippets/** - Custom code snippets for various languages
-- Includes plugin management via lazy.nvim
+Install chezmoi separately first. Bash configuration requires Bash 4 or newer.
+There are no chezmoi package-installation or apply scripts.
 
-### `ghostty`
-Ghostty terminal emulator configuration:
-- **config** - Main Ghostty configuration
-- **Desktop entries** - Application launchers for regular and workbox modes
+From this checkout, preview the migration without applying it:
 
-### `wezterm`
-WezTerm terminal emulator configuration:
-- **wezterm.lua** - Complete WezTerm configuration
-
-### `coding-agent`
-AI coding assistant configuration:
-- **CLAUDE.md** - Claude Code configuration and guidelines
-- **AGENTS.md** - OpenCode agent configuration
-
-## Usage Examples
-
-### Basic Installation
-```bash
-# Install just the essentials
-./dotfiles.py essential
-
-# Add git configuration
-./dotfiles.py git
-
-# Set up complete development environment
-./dotfiles.py essential git nvim
+```sh
+chezmoi --source "$PWD" --working-tree "$PWD" diff
+chezmoi --source "$PWD" --working-tree "$PWD" apply --dry-run --verbose
 ```
 
-### Advanced Usage
-```bash
-# Force overwrite existing configurations
-./dotfiles.py -f nvim
+Once the preview is approved, initialize chezmoi to use this checkout. This writes
+its configuration but does not apply the dotfiles:
 
-# Preview changes without executing
-./dotfiles.py --dry-run essential
-
-# Check what's installed
-./dotfiles.py --status
-
-# List available packages
-./dotfiles.py --list
-
-# Install with automatic yes to prompts
-./dotfiles.py -f -y essential
-
-# Install everything
-./dotfiles.py essential git nvim ghostty wezterm coding-agent
+```sh
+chezmoi --source "$PWD" --working-tree "$PWD" init
 ```
 
-## Command Line Options
+The config template remembers the selected source directory. Review once more,
+then apply interactively:
 
-- `-f, --force` - Force installation, overwriting existing files
-- `-l, --list` - List available packages with descriptions
-- `-s, --status` - Show installation status of all packages
-- `-n, --dry-run` - Preview changes without executing them
-- `-y, --yes` - Automatically answer yes to all prompts (for automation)
-- `-h, --help` - Show help message
-
-## How It Works
-
-The system uses Python scripts to create symlinks from files in this repository to their target locations:
-
-1. Each package is a directory under `packages/`
-2. Each package contains an `install.toml` file that defines what to link using TOML format
-3. The main `dotfiles.py` script processes packages and creates symlinks
-4. Existing files are protected unless `--force` is used
-
-### Link Functions
-
-- `link(source, target)` - Create a single symlink
-- `link_files_recursively(source_dir, target_dir)` - Recursively link all files in a directory
-
-## Troubleshooting
-
-### Permission Denied
-```bash
-# Make sure the script is executable
-chmod +x dotfiles.py
+```sh
+chezmoi diff
+chezmoi apply --interactive
 ```
 
-### File Already Exists
-```bash
-# Use force mode to overwrite
-./dotfiles.py -f package_name
+Applying replaces managed legacy symlinks with regular files and directories,
+including Neovim's `lua` and `ftplugin` directories. It does not remove the old
+checkout, unmanaged files, or previously installed opencode configuration.
+Review and remove those separately after checking that no remaining symlinks
+depend on the old checkout.
 
-# Or manually remove the conflicting file
-rm ~/.bashrc
-./dotfiles.py essential
+The package layout, Python/Ruby installers, and opencode sources have been
+removed. The Taskwarrior shell alias is included, as specified by its former
+installer, even if it was not previously installed on a particular machine.
+
+## Bash modules
+
+`dot_bashrc` only resets inherited prompt hooks, loads `/etc/bashrc`, and sources
+readable files directly inside `~/.bashrc.d` in filename order. Subdirectories
+are not sourced automatically.
+
+| Module in `dot_bashrc.d/` | Functionality |
+| --- | --- |
+| `10-history.sh` | History settings and immediate history saving |
+| `20-navigation.sh` | Directory completion, `mcd`, and `cdtmp` |
+| `30-aliases.sh` | Safety and general-purpose aliases |
+| `40-editor.sh` | Editor variables, aliases, and man pager |
+| `50-repository-check.sh` | Interactive repository-status check |
+| `60-containers.sh` | Distrobox `workbox` helper and Podman aliases |
+| `70-prompt.sh` | Git, jobs, container, and exit-status prompt |
+| `80-path.sh` | PATH ordering and deduplication |
+| `bgjobs` | Background-job helpers |
+| `git` | Git aliases |
+| `taskwarrior` | Taskwarrior inbox alias |
+| `toolbox.rc` | Toolbox first-run setup |
+| `toolboxes/workbox.rc` | Software installed by the workbox Toolbox setup |
+| `zig` | Zig standard-library discovery |
+| `zz-ghostty.sh` | Ghostty integration, after the other tracked modules |
+
+Toolbox's existing automatic software installation is deliberately retained.
+Sourcing Bash configuration inside a fresh Toolbox can therefore run `sudo dnf`
+and create `/.first_run`. The repository checker can fetch Git remotes and write
+its cache. Neither behavior runs merely from chezmoi applying the configuration.
+
+Name additional local modules so they sort before `zz-ghostty.sh` if Ghostty
+integration should remain last. Existing local modules are not removed.
+
+## Editing
+
+For regular managed files, use the standard chezmoi workflow:
+
+```sh
+chezmoi edit ~/.bashrc
+chezmoi diff
+chezmoi apply
 ```
 
-### Package Not Found
-```bash
-# List available packages
-./dotfiles.py --list
+You can also edit the corresponding source files directly, then run
+`chezmoi apply`. Use `chezmoi add ~/.config/example/config` to manage a new file,
+or `chezmoi re-add` to capture changes made directly to installed regular files.
 
-# Check installation status
-./dotfiles.py --status
+Neovim uses the same workflow: edit files under `dot_config/nvim/` and apply,
+or use `chezmoi edit` on their installed paths. Add new configuration files with
+`chezmoi add`.
 
-# Make sure you're in the dotfiles directory
-cd /path/to/dotfiles
-./dotfiles.py package_name
-```
-
-## Inspiration
-
-This system was inspired by:
-- [Manage your dotfiles like a boss](http://troydm.github.io/blog/2017/02/27/manage-your-dotfiles-like-a-boss/)
-- [troydm/central](https://github.com/troydm/central)
-
-The goal was to create a simple, local script without external gem dependencies.
+See [tmux notes](docs/tmux.md) for the GNOME Alt-Space adjustment.
