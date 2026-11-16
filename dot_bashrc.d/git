@@ -1,14 +1,60 @@
-# A few git aliases
+# Git inspection shortcuts; leave gs available for Ghostscript.
+alias gst='git status'
+alias gls='git log --oneline --decorate'
 
+# Clone into <directory>/{.bare,.git,<default-branch>}.
+# Usage: gwc <url> [directory]; the destination must be new or empty.
+# Keep the caller's directory unchanged and leave partial failures for inspection.
+gwc() {
+    if (( $# < 1 || $# > 2 )); then
+        printf 'Usage: gwc <url> [directory]\n' >&2
+        return 2
+    fi
 
-alias gs='git status'
-alias ga='git add'
-alias gc='git commit'
-alias gps='git push'
-alias gpl='git pull'
-alias gf='git fetch'
-alias gm='git merge'
-alias gr='git rebase'
-alias go='git checkout'
-alias gl='git log --graph --oneline'
+    local url=$1 directory branch entry
+    if (( $# == 2 )); then
+        directory=$2
+    else
+        # Support HTTPS, SSH/scp-style URLs, and local repository paths.
+        directory=${url%/}
+        directory=${directory%/.git}
+        directory=${directory##*/}
+        directory=${directory##*:}
+        directory=${directory%.git}
+        if [[ $directory == . || $directory == .. ]]; then
+            printf 'gwc: specify a destination directory for this repository.\n' >&2
+            return 2
+        fi
+    fi
+
+    if [[ -z $url || -z $directory ]]; then
+        printf 'Usage: gwc <url> [directory]\n' >&2
+        return 2
+    fi
+    if [[ -L $directory || ( -e $directory && ! -d $directory ) ]]; then
+        printf 'gwc: destination is not a regular directory: %s\n' "$directory" >&2
+        return 1
+    fi
+    # Check hidden entries and dangling symlinks too, without changing shell options.
+    for entry in "$directory"/* "$directory"/.[!.]* "$directory"/..?*; do
+        if [[ -e $entry || -L $entry ]]; then
+            printf 'gwc: destination is not empty: %s\n' "$directory" >&2
+            return 1
+        fi
+    done
+
+    command mkdir -p -- "$directory" || return
+    command git clone --bare --single-branch --origin origin -- "$url" "$directory/.bare" || return
+    printf 'gitdir: ./.bare\n' > "$directory/.git" || return
+
+    # Bare clones lack normal remote-tracking configuration. Fetch every branch,
+    # but keep only the default branch local until other worktrees are requested.
+    command git -C "$directory" config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*' || return
+    command git -C "$directory" fetch origin || return
+    branch=$(command git -C "$directory" symbolic-ref HEAD) || return
+    branch=${branch#refs/heads/}
+    command git -C "$directory" remote set-head origin "$branch" || return
+    command git -C "$directory" branch --set-upstream-to="origin/$branch" "$branch" || return
+    command git -C "$directory" worktree add -- "$branch" "$branch"
+}
 

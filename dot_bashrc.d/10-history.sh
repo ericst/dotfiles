@@ -9,4 +9,4 @@ HISTTIMEFORMAT='%F %T '
 
 # Save every command immediately rather than waiting for shell exit.
 PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
-alias hs="history | grep"
+alias hs='history | rg --smart-case'
