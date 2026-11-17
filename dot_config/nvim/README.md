@@ -18,28 +18,33 @@ centralize them for me.
 - `<A-j>` -> Move selection down
 - `<A-k>` -> Move selection up
 
-## Under `<leader>`
+## Under `<leader>` (Space)
 
-### Buffer management (`<leader>b`)
+Every action uses Space followed by one key, with no nested groups.
+Window keys mirror stock tmux's prefix bindings; tmux itself is unchanged.
+
+### Window management
+- `"` -> Split top/bottom
+- `%` -> Split side-by-side
+- `o` -> Move to next window
+- `x` -> Close this window
+
+### Buffer management
 - `n` -> Next buffer
 - `p` -> Previous buffer
-- `b` -> List buffers (interactive)
 - `s` -> Open the *scratch* buffer
-- `j` -> Open global journal (~/journal.md)
-- `bc` -> Run a command in the reusable `*command*` buffer
-- `br` -> Run ripgrep in the reusable `*ripgrep*` buffer
-- `bf` -> List files in the reusable `*files*` buffer
-- `bl` -> List the directory in the reusable `*listing*` buffer
 
-### Window management (`<leader>w`)
-- `s` -> Create horizontal split
-- `v` -> Create vertical split
-- `o` -> Keep only this window
-- `c` -> Close this window
-- `h` -> Move to left window
-- `j` -> Move to bottom window
-- `k` -> Move to top window
-- `l` -> Move to right window
+### Commands
+- `c` -> Run a command in the reusable `*command*` buffer
+- `r` -> Search file contents with ripgrep in the reusable `*ripgrep*` buffer
+- `f` -> List files with ripgrep in the reusable `*files*` buffer
+
+`<leader>l` is intentionally unassigned; use `<leader>c` to run `ls` if needed.
+
+## Native navigation
+- `<C-w>h/j/k/l` -> Move left/down/up/right between windows
+- `<C-w>o` -> Keep only this window (closes other windows; not a zoom toggle)
+- `]b` / `[b` -> Next/previous buffer
 
 
 <!-- vim: set tw=80 : -->
