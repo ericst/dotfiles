@@ -58,3 +58,31 @@ gwc() {
     command git -C "$directory" worktree add -- "$branch" "$branch"
 }
 
+# Initialize <directory>/{.bare,.git,main} without an initial commit.
+# Usage: gwi <directory>; the destination must be new or empty.
+# Keep the caller's directory unchanged and leave partial failures for inspection.
+gwi() {
+    if (( $# != 1 )) || [[ -z $1 ]]; then
+        printf 'Usage: gwi <directory>\n' >&2
+        return 2
+    fi
+
+    local directory=$1 entry
+    if [[ -L $directory || ( -e $directory && ! -d $directory ) ]]; then
+        printf 'gwi: destination is not a regular directory: %s\n' "$directory" >&2
+        return 1
+    fi
+    # Check hidden entries and dangling symlinks too, without changing shell options.
+    for entry in "$directory"/* "$directory"/.[!.]* "$directory"/..?*; do
+        if [[ -e $entry || -L $entry ]]; then
+            printf 'gwi: destination is not empty: %s\n' "$directory" >&2
+            return 1
+        fi
+    done
+
+    command mkdir -p -- "$directory" || return
+    command git init --bare --initial-branch=main -- "$directory/.bare" || return
+    printf 'gitdir: ./.bare\n' > "$directory/.git" || return
+    command git -C "$directory" worktree add --orphan -b main -- main
+}
+
